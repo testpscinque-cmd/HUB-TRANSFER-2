@@ -1,0 +1,38 @@
+{
+  "summary": "First-build validation of TransferMemory dashboard. All 12 pytest backend tests passed. Frontend end-to-end flow verified: dashboard load, seeded stats (Profiles=5, Rumors=12, Hot=4, Official=1), roster selection, predictive search, timeline rendering with stage/date/source/formula, source directory sorted by reliability, EN<->IT language toggle, New Rumor dialog, AI consistency check, and rumor save/persist. Note: AI consistency check actually returned a valid Claude Sonnet response (e.g. detected €50M vs €55M fee mismatch), NOT the fallback — so the Emergent LLM key currently has budget.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "AI consistency verdict after Save", "issue": "Panel C ConsistencyWidget shows idle placeholder immediately after saving a rumor because handleSaved calls setSelectedId which triggers the useEffect (App.js line 42) that resets checkResult to null before the passed-in result is applied. User loses the AI verdict from Panel C right after saving; it remains visible only inside the dialog before closing.", "affected_selectors": ["[data-testid=\"consistency-widget\"]"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/test_transfer_memory.py", "/app/backend/tests/conftest.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "In App.js handleSaved: apply setCheckResult(result) AFTER selectedId change (or set both together and adjust the selectedId useEffect to not clobber checkResult when a fresh result was just supplied), so the AI verdict remains in Panel C after Save.",
+    "Minor: React dev warning 'In HTML, <span> cannot be a child of <option>' originates from the Emergent visual-editor wrapper injecting a <span> inside <option> elements in NewRumorDialog selects — cosmetic dev-only warning, safe to ignore unless it appears in production build."
+  ],
+  "critical_code_review_comments": [
+    "server.py:222 — bare except Exception in consistency-check is fine, but the fallback returns HTTP 200 with error:true; consider logging error class for observability.",
+    "App.js:42 useEffect resets checkResult on selectedId change; combined with handleSaved changing selectedId, the freshly-computed AI result is lost. Prefer batching state or gating the reset.",
+    "server.py: consistency-check does not validate stage against STAGES enum; malformed stage flows straight into LLM prompt. Low priority since UI restricts values.",
+    "Frontend api.js has no error boundaries/toast on GET failures (getProfiles/getSources/getStats). Silent .catch(()=>{}) in App.js loadStats hides failures.",
+    "No pagination limit on /api/profiles or /api/rumors — .to_list(500) is fine at seed scale but should be paginated for production."
+  ],
+  "updated_files": [
+    "/app/backend/tests/__init__.py",
+    "/app/backend/tests/conftest.py",
+    "/app/backend/tests/test_transfer_memory.py"
+  ],
+  "success_rate": {"backend": "100% (12/12)", "frontend": "~95% (all core flows work; one post-save UX issue in Panel C)"},
+  "test_credentials": "N/A - no auth in this app",
+  "seed_data_creation": "Backend auto-seeds 5 profiles, 6 sources, 12 rumors on startup. Test suite creates TEST_-prefixed rumors (persist in DB, not cleaned up — seed data is idempotent so re-runs are safe).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend tests live at /app/backend/tests/test_transfer_memory.py. Emergent LLM key currently HAS budget: /api/consistency-check returned a real Claude analysis (fee mismatch detected) rather than the fallback. If retesting, note that seeded rumor count is 12 but TEST_ rumors from previous runs may increase Rumors/Hot/Official counters. Only known issue: Panel C consistency verdict disappears after Save due to state reset in App.js useEffect.",
+  "rca of the issue": "Panel C post-save behavior: NewRumorDialog.save() -> onSaved(profileId, localResult) -> App.handleSaved sets selectedId, calls loadRumors, then setCheckResult(result). But setSelectedId triggers useEffect (line 40-45) which runs setCheckResult(null) on the next render. Result: checkResult is briefly set then wiped. Fix: either (a) inside the selectedId useEffect only reset checkResult when the transition is user-driven (track via ref/flag), or (b) merge selection change + checkResult update into a single state via reducer so the reset can be conditional."
+}
