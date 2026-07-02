@@ -48,8 +48,13 @@ High-performance B2B operational dashboard for football (soccer) transfer-rumor 
 - Seed bumped to v3: 12 profiles (8 players + 4 coaches w/ career_history), 9 sources, 28 rumors, 5 alerts, 4 pipeline, 5 tasks. Idempotent via seed_version meta.
 - Verified: 34/34 backend tests + all frontend flows pass (iteration_2).
 
+## Implemented (2026-07-02) — v4 Rename + Article Export + Fake Google Login
+- Renamed brand TransferMemory → **MemoryTransfer** (sidebar, login, page title, API root).
+- **AI Article Draft export**: POST /api/profiles/{id}/article-draft?lang= — Claude turns a profile's rumor timeline into a publication-ready draft (title + body), shown in a modal with Copy (ArticleDraftDialog.jsx, "Export Draft" button in ProfileView). EN/IT aware.
+- **Simulated Google login** (LoginScreen.jsx): client-side only, NO real auth/OAuth/backend — "Continue with Google" gates the app; Logout returns to it. Persisted via localStorage `mt_authed`.
+
 ## Next Tasks
 1. Profile & source management UI (create/edit).
 2. Rumor & pipeline card edit/delete; drag-and-drop kanban.
-3. Saga → AI article draft export.
-4. Radar alert archiving / rolling window (avoid unbounded accumulation).
+3. Radar alert archiving / rolling window.
+4. (If ever needed) replace simulated login with real Emergent Google Auth.

@@ -23,6 +23,9 @@ export const getStats = () => client.get("/stats").then((r) => r.data);
 // AI
 export const consistencyCheck = (p) => client.post("/consistency-check", p).then((r) => r.data);
 
+export const generateArticle = (id, lang) =>
+  client.post(`/profiles/${id}/article-draft`, null, { params: { lang } }).then((r) => r.data);
+
 // Radar
 export const getAlerts = (status) =>
   client.get("/radar/alerts", { params: status ? { status } : {} }).then((r) => r.data);

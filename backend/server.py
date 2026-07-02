@@ -269,6 +269,49 @@ async def consistency_check(payload: ConsistencyRequest):
     return result
 
 
+# ---------- AI Article Draft (Saga -> Article) ----------
+@api_router.post("/profiles/{profile_id}/article-draft")
+async def article_draft(profile_id: str, lang: str = "en"):
+    profile = await db.profiles.find_one({"id": profile_id}, {"_id": 0})
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    rumors = await db.rumors.find({"profile_id": profile_id}, {"_id": 0}).to_list(500)
+    rumors.sort(key=lambda r: r.get("date_logged", ""))
+    if not rumors:
+        raise HTTPException(status_code=400, detail="No rumors to summarize")
+    language = "Italian" if lang == "it" else "English"
+    timeline = "\n".join(
+        f"- {r['date_logged']} [{r['stage']}] via {r['source_name']} ({r.get('deal_formula','')}): {r['evolution_description']}"
+        for r in rumors
+    )
+    system_message = (
+        f"You are a professional football transfer journalist writing for a modern sports newsroom. Write a concise, "
+        f"publication-ready DRAFT article in {language} summarizing the transfer saga of a player/coach based ONLY on the "
+        f"logged timeline and profile facts provided. Be factual, cite sources inline, note the current stage, and end with "
+        f"an outlook. Do NOT invent confirmed outcomes not present in the timeline. Respond with STRICT JSON only: "
+        f'{{"title": string, "body": string}}. "body" is 3-5 short paragraphs separated by \\n\\n, ~180-260 words.'
+    )
+    prompt = (
+        f"PROFILE:\n- Name: {profile['full_name']} ({profile['role']}, {profile.get('position','')})\n"
+        f"- Current club: {profile.get('current_club')}\n- Contract until: {profile.get('contract_expiry')}\n"
+        f"- Agent: {profile.get('representation_agency')}\n- Market value: {profile.get('market_value')}\n\n"
+        f"RUMOR TIMELINE (chronological):\n{timeline}\n\nWrite the draft."
+    )
+    try:
+        result = _extract_json(await _llm(system_message, prompt, f"article-{profile_id}"))
+        title = result.get("title") or f"{profile['full_name']}: transfer saga"
+        body = result.get("body") or ""
+        if not body:
+            raise ValueError("empty body")
+    except Exception as e:
+        logger.error(f"Article draft failed: {e}")
+        title = f"{profile['full_name']}: latest on the {profile.get('current_club')} saga"
+        body = "\n\n".join(
+            f"{r['date_logged']} — {r['evolution_description']} (source: {r['source_name']})" for r in rumors
+        )
+    return {"title": title, "body": body}
+
+
 # ---------- AI RADAR ----------
 @api_router.get("/radar/alerts")
 async def get_alerts(status: Optional[str] = None):
@@ -425,7 +468,7 @@ async def get_stats():
 
 @api_router.get("/")
 async def root():
-    return {"message": "TransferMemory API"}
+    return {"message": "MemoryTransfer API"}
 
 
 app.include_router(api_router)

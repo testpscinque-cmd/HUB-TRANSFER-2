@@ -25,7 +25,7 @@ export const Header = ({ stats }) => {
           </div>
           <div>
             <h1 className="font-heading text-xl font-black uppercase leading-none tracking-tight text-white">
-              Transfer<span className="text-[#39FF14]">Memory</span>
+              Memory<span className="text-[#39FF14]">Transfer</span>
             </h1>
             <p className="mt-0.5 text-[11px] font-medium uppercase tracking-[0.2em] text-[#FF007F]">
               {t.tagline}

@@ -1,5 +1,4 @@
 import { Zap, LayoutDashboard, Radar, Users, PlusCircle, Signal, LogOut } from "lucide-react";
-import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
 
 const NavBtn = ({ icon: Icon, label, active, onClick, testid, badge }) => (
@@ -22,7 +21,7 @@ const NavBtn = ({ icon: Icon, label, active, onClick, testid, badge }) => (
   </button>
 );
 
-export const Sidebar = ({ view, onNavigate, onAddRumor, alertsCount }) => {
+export const Sidebar = ({ view, onNavigate, onAddRumor, alertsCount, onLogout }) => {
   const { t } = useI18n();
   return (
     <aside className="flex w-60 shrink-0 flex-col border-r border-white/10 bg-[#0A1420] px-3 py-5">
@@ -32,7 +31,7 @@ export const Sidebar = ({ view, onNavigate, onAddRumor, alertsCount }) => {
         </div>
         <div>
           <h1 className="font-heading text-lg font-black uppercase leading-none tracking-tight text-white">
-            Transfer<span className="text-[#39FF14]">Memory</span>
+            Memory<span className="text-[#39FF14]">Transfer</span>
           </h1>
           <p className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-[#FF007F]">
             {t.tagline}
@@ -53,7 +52,7 @@ export const Sidebar = ({ view, onNavigate, onAddRumor, alertsCount }) => {
         icon={LogOut}
         label={t.nav.logout}
         active={false}
-        onClick={() => toast.info(t.logoutToast)}
+        onClick={onLogout}
       />
     </aside>
   );

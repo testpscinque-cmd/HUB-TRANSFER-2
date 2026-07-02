@@ -11,8 +11,9 @@ import { ProfileView } from "@/components/ProfileView";
 import { SourcesView } from "@/components/SourcesView";
 import { RadarView } from "@/components/RadarView";
 import { NewRumorDialog } from "@/components/NewRumorDialog";
+import { LoginScreen } from "@/components/LoginScreen";
 
-function Shell() {
+function Shell({ onLogout }) {
   const { t } = useI18n();
   const [view, setView] = useState("dashboard");
   const prevView = useRef("dashboard");
@@ -146,7 +147,7 @@ function Shell() {
 
   return (
     <div className="flex h-screen overflow-hidden tm-grid-bg">
-      <Sidebar view={view} onNavigate={navigate} onAddRumor={() => openDialog(selectedId)} alertsCount={alertsCount} />
+      <Sidebar view={view} onNavigate={navigate} onAddRumor={() => openDialog(selectedId)} alertsCount={alertsCount} onLogout={onLogout} />
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar query={query} onSearch={onSearch} showBack={view === "profile"} onBack={back} />
         <main className={`flex-1 overflow-y-auto p-6 sm:p-8 ${isRadar ? "" : ""}`}>
@@ -179,15 +180,25 @@ function Shell() {
         onSaved={handleSaved}
         onCheck={handleCheck}
       />
-      <Toaster position="top-right" theme="dark" richColors />
     </div>
   );
 }
 
 function App() {
+  const [authed, setAuthed] = useState(() => localStorage.getItem("mt_authed") === "1");
+  const login = () => {
+    localStorage.setItem("mt_authed", "1");
+    setAuthed(true);
+  };
+  const logout = () => {
+    localStorage.removeItem("mt_authed");
+    setAuthed(false);
+    toast.info("Signed out (demo).");
+  };
   return (
     <I18nProvider>
-      <Shell />
+      {authed ? <Shell onLogout={logout} /> : <LoginScreen onLogin={login} />}
+      <Toaster position="top-right" theme="dark" richColors />
     </I18nProvider>
   );
 }

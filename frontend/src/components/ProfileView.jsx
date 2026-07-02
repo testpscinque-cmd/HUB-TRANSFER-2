@@ -1,17 +1,28 @@
 import { useState } from "react";
-import { Plus, History, Route } from "lucide-react";
+import { Plus, History, Route, FileText } from "lucide-react";
+import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
 import { Crest } from "@/components/Crest";
 import { ContractCard } from "@/components/ContractCard";
 import { CareerOverview } from "@/components/CareerOverview";
 import { RumorTimeline } from "@/components/RumorTimeline";
 import { ConsistencyWidget } from "@/components/ConsistencyWidget";
+import { ArticleDraftDialog } from "@/components/ArticleDraftDialog";
 
 export const ProfileView = ({ profile, rumors, checkResult, checking, onAddRumor }) => {
   const { t } = useI18n();
   const [tab, setTab] = useState("cronologia");
+  const [articleOpen, setArticleOpen] = useState(false);
   const isCoach = profile.role === "Coach";
   const accent = isCoach ? "#00E5FF" : "#39FF14";
+
+  const openArticle = () => {
+    if (!rumors.length) {
+      toast.error(t.noRumorsDraft);
+      return;
+    }
+    setArticleOpen(true);
+  };
 
   const tabs = [
     { key: "cronologia", label: t.chronology, icon: History },
@@ -41,13 +52,22 @@ export const ProfileView = ({ profile, rumors, checkResult, checking, onAddRumor
             <span>{profile.nationality}</span>
           </div>
         </div>
-        <button
-          data-testid="profile-add-rumor-btn"
-          onClick={() => onAddRumor(profile.id)}
-          className="flex items-center justify-center gap-2 rounded-lg bg-[#39FF14] px-5 py-2.5 font-heading text-sm font-black uppercase tracking-widest text-black transition-all hover:bg-[#39FF14]/85 hover:shadow-[0_0_20px_rgba(57,255,20,0.4)]"
-        >
-          <Plus size={18} strokeWidth={3} /> {t.addRumorFor}
-        </button>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <button
+            data-testid="export-draft-btn"
+            onClick={openArticle}
+            className="flex items-center justify-center gap-2 rounded-lg border border-white/15 px-4 py-2.5 font-heading text-sm font-bold uppercase tracking-widest text-gray-200 transition-all hover:border-[#39FF14] hover:text-[#39FF14]"
+          >
+            <FileText size={16} /> {t.exportDraft}
+          </button>
+          <button
+            data-testid="profile-add-rumor-btn"
+            onClick={() => onAddRumor(profile.id)}
+            className="flex items-center justify-center gap-2 rounded-lg bg-[#39FF14] px-5 py-2.5 font-heading text-sm font-black uppercase tracking-widest text-black transition-all hover:bg-[#39FF14]/85 hover:shadow-[0_0_20px_rgba(57,255,20,0.4)]"
+          >
+            <Plus size={18} strokeWidth={3} /> {t.addRumorFor}
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -78,6 +98,8 @@ export const ProfileView = ({ profile, rumors, checkResult, checking, onAddRumor
           <ContractCard profile={profile} />
         </div>
       </div>
+
+      <ArticleDraftDialog open={articleOpen} onClose={() => setArticleOpen(false)} profile={profile} />
     </div>
   );
 };
