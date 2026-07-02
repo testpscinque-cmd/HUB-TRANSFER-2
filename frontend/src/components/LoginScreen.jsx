@@ -31,9 +31,6 @@ export const LoginScreen = ({ onLogin }) => {
             <h1 className="font-heading text-2xl font-black uppercase leading-none tracking-tight text-white">
               Memory<span className="text-[#39FF14]">Transfer</span>
             </h1>
-            <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#FF007F]">
-              {t.tagline}
-            </p>
           </div>
         </div>
 

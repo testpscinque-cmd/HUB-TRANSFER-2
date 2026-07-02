@@ -30,6 +30,11 @@ const ProfileCard = ({ p, onOpen, t }) => {
       <div className="flex flex-1 flex-col p-4">
         <h3 className="font-heading text-base font-bold leading-tight text-white">{p.full_name}</h3>
         <p className="text-xs text-gray-500">{p.position} · {p.current_club}</p>
+        {p.league && p.league !== "—" && (
+          <span className="mt-1.5 inline-block self-start rounded bg-white/5 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-gray-400">
+            {p.league}
+          </span>
+        )}
         <div className="mt-3 flex items-center justify-between border-t border-white/5 pt-3">
           <span className="text-[11px] text-gray-500">
             {t.expiry}: <span className="font-mono font-bold text-white">{yearOf(p.contract_expiry)}</span>

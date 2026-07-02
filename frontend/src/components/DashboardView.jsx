@@ -1,13 +1,10 @@
 import { Flame, ChevronRight, Newspaper, Users, ListChecks, CheckCircle2, Radar } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { stageConfig, stageLabel } from "@/lib/stages";
+import { timeAgo, dateTime } from "@/lib/time";
 import { Crest } from "@/components/Crest";
 
-const fmtDate = (d, lang) => {
-  try {
-    return new Date(d).toLocaleDateString(lang === "it" ? "it-IT" : "en-GB", { day: "2-digit", month: "short" });
-  } catch { return d; }
-};
+// timestamps handled by lib/time
 
 const StatCard = ({ icon: Icon, label, value, color }) => (
   <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-[#121620] px-4 py-3" data-testid={`stat-${label}`}>
@@ -45,7 +42,9 @@ const NewsCard = ({ r, onOpen, lang }) => {
           <span className={`rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${cfg.badge}`}>
             {stageLabel(r.stage, lang)}
           </span>
-          <span className="ml-auto text-[11px] text-gray-500">{fmtDate(r.date_logged, lang)}</span>
+          <span className="ml-auto flex items-center gap-1 text-[11px] text-gray-500" title={dateTime(r.logged_at || r.date_logged, lang)}>
+            {timeAgo(r.logged_at || r.date_logged, lang)}
+          </span>
         </div>
         <p className="mt-1.5 line-clamp-2 text-sm leading-snug text-gray-300">{r.evolution_description}</p>
         <p className="mt-1.5 text-[11px] font-medium text-[#00E5FF]">{r.source_name}</p>
@@ -95,6 +94,9 @@ export const DashboardView = ({ recent, stats, onOpenProfile }) => {
                   <div className="mb-2 flex items-center gap-2">
                     <Crest club={r.current_club} size={26} />
                     <span className="font-heading text-sm font-bold text-white">{r.full_name}</span>
+                    <span className="ml-auto text-[10px] text-gray-500" title={dateTime(r.logged_at || r.date_logged, lang)}>
+                      {timeAgo(r.logged_at || r.date_logged, lang)}
+                    </span>
                   </div>
                   <span className={`rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${cfg.badge}`}>
                     {stageLabel(r.stage, lang)}

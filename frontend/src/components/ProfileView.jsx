@@ -42,7 +42,7 @@ export const ProfileView = ({ profile, rumors, checkResult, checking, onAddRumor
             >
               {isCoach ? t.coach : t.player}
             </span>
-            <span className="text-xs text-gray-500">{profile.position}</span>
+            <span className="text-xs text-gray-500">{profile.position}{profile.league && profile.league !== "—" ? ` · ${profile.league}` : ""}</span>
           </div>
           <h2 className="mt-1 font-heading text-3xl font-black tracking-tight text-white">{profile.full_name}</h2>
           <div className="mt-1 flex items-center gap-2 text-sm text-gray-400">

@@ -54,6 +54,7 @@ class Profile(BaseModel):
     full_name: str
     role: str = "Player"
     position: Optional[str] = ""
+    league: Optional[str] = ""
     current_club: Optional[str] = ""
     contract_expiry: Optional[str] = ""
     estimated_salary: Optional[str] = ""
@@ -70,6 +71,7 @@ class ProfileCreate(BaseModel):
     full_name: str
     role: str = "Player"
     position: Optional[str] = ""
+    league: Optional[str] = ""
     current_club: Optional[str] = ""
     contract_expiry: Optional[str] = ""
     estimated_salary: Optional[str] = ""
@@ -181,7 +183,7 @@ async def get_profile_rumors(profile_id: str):
 @api_router.get("/rumors/recent")
 async def get_recent_rumors(limit: int = 25):
     docs = await db.rumors.find({}, {"_id": 0}).to_list(1000)
-    docs.sort(key=lambda r: (r.get("date_logged", ""), r.get("created_at", "")), reverse=True)
+    docs.sort(key=lambda r: (r.get("logged_at", "") or r.get("date_logged", ""), r.get("created_at", "")), reverse=True)
     docs = docs[:limit]
     profiles = {p["id"]: p for p in await db.profiles.find({}, {"_id": 0}).to_list(500)}
     out = []
@@ -200,7 +202,10 @@ async def get_recent_rumors(limit: int = 25):
 
 @api_router.post("/rumors", response_model=Rumor)
 async def create_rumor(payload: RumorCreate):
-    obj = Rumor(**payload.model_dump())
+    data = payload.model_dump()
+    now = datetime.now(timezone.utc)
+    data["logged_at"] = f"{data['date_logged']}T{now.strftime('%H:%M:%S')}"
+    obj = Rumor(**data)
     await db.rumors.insert_one(obj.model_dump())
     return obj
 
@@ -493,17 +498,35 @@ async def seed_db():
         await db.verification_tasks.delete_many({})
         await db.profiles.insert_many([dict(p) for p in PROFILES])
         await db.sources.insert_many([dict(s) for s in SOURCES])
+        now = datetime.now(timezone.utc)
         rows = []
         for r in RUMORS:
             row = dict(r)
-            row.setdefault("id", str(uuid.uuid4()))
-            row.setdefault("created_at", datetime.now(timezone.utc).isoformat())
+            ts = now - timedelta(minutes=row.pop("age_min", 0))
+            row["logged_at"] = ts.isoformat()
+            row["date_logged"] = ts.date().isoformat()
+            row["id"] = str(uuid.uuid4())
+            row["created_at"] = ts.isoformat()
             rows.append(row)
         await db.rumors.insert_many(rows)
-        now = datetime.now(timezone.utc).isoformat()
-        await db.global_alerts.insert_many([{**dict(a), "created_at": now} for a in GLOBAL_ALERTS])
-        await db.pipeline.insert_many([{**dict(p), "last_updated": now} for p in PIPELINE])
-        await db.verification_tasks.insert_many([dict(t) for t in VERIFICATION_TASKS])
+        alerts = []
+        for a in GLOBAL_ALERTS:
+            row = dict(a)
+            row["created_at"] = (now - timedelta(minutes=row.pop("age_min", 0))).isoformat()
+            alerts.append(row)
+        await db.global_alerts.insert_many(alerts)
+        pls = []
+        for p in PIPELINE:
+            row = dict(p)
+            row["last_updated"] = (now - timedelta(minutes=row.pop("age_min", 0))).isoformat()
+            pls.append(row)
+        await db.pipeline.insert_many(pls)
+        tasks = []
+        for t in VERIFICATION_TASKS:
+            row = dict(t)
+            row["deadline"] = (now + timedelta(days=row.pop("due_in_days", 0))).date().isoformat()
+            tasks.append(row)
+        await db.verification_tasks.insert_many(tasks)
         await db.meta.update_one({"_id": "seed"}, {"$set": {"version": SEED_VERSION}}, upsert=True)
         logger.info("Seed complete")
 

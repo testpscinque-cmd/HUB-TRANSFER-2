@@ -33,9 +33,6 @@ export const Sidebar = ({ view, onNavigate, onAddRumor, alertsCount, onLogout })
           <h1 className="font-heading text-lg font-black uppercase leading-none tracking-tight text-white">
             Memory<span className="text-[#39FF14]">Transfer</span>
           </h1>
-          <p className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-[#FF007F]">
-            {t.tagline}
-          </p>
         </div>
       </div>
 

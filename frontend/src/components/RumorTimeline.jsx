@@ -1,16 +1,7 @@
 import { CalendarDays, Radio, FileText } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { stageConfig, stageLabel } from "@/lib/stages";
-
-const fmtDate = (d, lang) => {
-  try {
-    return new Date(d).toLocaleDateString(lang === "it" ? "it-IT" : "en-GB", {
-      day: "2-digit", month: "short", year: "numeric",
-    });
-  } catch {
-    return d;
-  }
-};
+import { dateTime } from "@/lib/time";
 
 export const RumorTimeline = ({ rumors }) => {
   const { t, lang } = useI18n();
@@ -35,7 +26,7 @@ export const RumorTimeline = ({ rumors }) => {
                   {stageLabel(r.stage, lang)}
                 </span>
                 <span className="flex items-center gap-1 text-[11px] font-medium text-gray-500">
-                  <CalendarDays size={12} /> {fmtDate(r.date_logged, lang)}
+                  <CalendarDays size={12} /> {dateTime(r.logged_at || r.date_logged, lang)}
                 </span>
               </div>
               <p className="text-sm leading-relaxed text-gray-200">{r.evolution_description}</p>

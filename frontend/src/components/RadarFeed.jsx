@@ -1,5 +1,6 @@
-import { Radar, Loader2, Search, Trash2, Globe } from "lucide-react";
+import { Radar, Loader2, Search, Trash2, Globe, Clock } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { timeAgo, dateTime } from "@/lib/time";
 
 const anomalyStyle = {
   High: { cls: "border-[#FF007F]/50 bg-[#FF007F]/10 text-[#FF007F]", dot: "bg-[#FF007F]" },
@@ -15,7 +16,7 @@ const statusStyle = {
 };
 
 export const RadarFeed = ({ alerts, onInvestigate, onDismiss, onScan, scanning }) => {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const visible = alerts.filter((a) => a.status !== "Dismissed");
 
   return (
@@ -50,8 +51,11 @@ export const RadarFeed = ({ alerts, onInvestigate, onDismiss, onScan, scanning }
                 <span className={`ml-auto text-[10px] font-bold uppercase ${statusStyle[a.status] || "text-gray-500"}`}>{a.status}</span>
               </div>
               <div className="font-heading text-sm font-bold text-white">{a.player_name}</div>
-              <div className="mb-2 flex items-center gap-1 text-[11px] text-gray-500">
+              <div className="mb-2 flex flex-wrap items-center gap-1 text-[11px] text-gray-500">
                 <Globe size={11} /> {a.current_club} · {t.flaggedIn} {a.flagged_country}
+                <span className="flex items-center gap-1 text-[#00E5FF]" title={dateTime(a.created_at, lang)}>
+                  · <Clock size={10} /> {timeAgo(a.created_at, lang)}
+                </span>
               </div>
               <p className="text-xs leading-snug text-gray-300">{a.automated_summary}</p>
               {a.status === "New" && (
