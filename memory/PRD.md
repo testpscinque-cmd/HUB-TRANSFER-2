@@ -38,7 +38,18 @@ High-performance B2B operational dashboard for football (soccer) transfer-rumor 
 - P2: Pagination on profiles/rumors endpoints.
 - P2: Dashboard analytics (deals by stage, source accuracy over time).
 
+## Implemented (2026-07-02) — v3 Restructure + AI Radar
+- Multi-view app: left Sidebar nav (Dashboard / AI Radar / Profiles / Log Rumor / Sources / Logout) + top global search + language toggle.
+- Dashboard = "Latest News" feed (recent rumors across all profiles) + stats + Hot cards.
+- Profiles view: grid with Player/Coach role tabs + club filter; distinct coach (cyan) vs player styling.
+- Profile detail: header w/ crest, tabs Timeline (cronologia) + Career (career path with club monogram crests & years), Contract Data aside. Back button.
+- Club crests = text monograms (colored, no real logos) via lib/clubs.js.
+- NEW AI Radar module (simulated global media scanner): Radar Feed (anomaly alerts, Investigate/Dismiss, LIVE Claude "Simulate Scan"), Working Pipeline kanban (Contatti Avviati→Trattativa→Fonti Verificate→Here We Go) with stage moves, Verification Checklist with toggleable tasks. Backend: global_alerts / pipeline / verification_tasks collections; investigate auto-creates pipeline + tasks.
+- Seed bumped to v3: 12 profiles (8 players + 4 coaches w/ career_history), 9 sources, 28 rumors, 5 alerts, 4 pipeline, 5 tasks. Idempotent via seed_version meta.
+- Verified: 34/34 backend tests + all frontend flows pass (iteration_2).
+
 ## Next Tasks
-1. Add profile & source management UI.
-2. Rumor edit/delete.
-3. Saga export for article drafting.
+1. Profile & source management UI (create/edit).
+2. Rumor & pipeline card edit/delete; drag-and-drop kanban.
+3. Saga → AI article draft export.
+4. Radar alert archiving / rolling window (avoid unbounded accumulation).
