@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import "@/App.css";
 import { Toaster } from "sonner";
 import { I18nProvider } from "@/lib/i18n";
@@ -18,6 +18,7 @@ function Dashboard() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [checkResult, setCheckResult] = useState(null);
   const [checking, setChecking] = useState(false);
+  const preserveResult = useRef(false);
 
   const selectedProfile = profiles.find((p) => p.id === selectedId) || null;
 
@@ -39,7 +40,11 @@ function Dashboard() {
 
   useEffect(() => {
     if (selectedId) {
-      setCheckResult(null);
+      if (preserveResult.current) {
+        preserveResult.current = false;
+      } else {
+        setCheckResult(null);
+      }
       loadRumors(selectedId);
     }
   }, [selectedId, loadRumors]);
@@ -47,6 +52,7 @@ function Dashboard() {
   const handleSelect = (id) => setSelectedId(id);
 
   const handleSaved = (profileId, result) => {
+    if (result) preserveResult.current = true;
     setSelectedId(profileId);
     loadRumors(profileId);
     loadStats();
