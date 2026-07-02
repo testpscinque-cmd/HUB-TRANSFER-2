@@ -5,16 +5,21 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import re
 import json
+import random
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field
 from typing import List, Optional
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 
-from seed_data import PROFILES, SOURCES, RUMORS
+import seed_data
+from seed_data import (
+    PROFILES, SOURCES, RUMORS, SEED_VERSION,
+    GLOBAL_ALERTS, PIPELINE, VERIFICATION_TASKS, PIPELINE_STAGES,
+)
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -35,6 +40,15 @@ STAGES = ["Interesse Iniziale", "Contatti", "Trattativa Avanzata", "Fumata Bianc
 
 
 # ---------- Models ----------
+class CareerEntry(BaseModel):
+    club: str
+    from_: Optional[int] = Field(default=None, alias="from")
+    to: Optional[int] = None
+
+    class Config:
+        populate_by_name = True
+
+
 class Profile(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     full_name: str
@@ -46,8 +60,10 @@ class Profile(BaseModel):
     representation_agency: Optional[str] = ""
     nationality: Optional[str] = ""
     age: Optional[int] = None
+    market_value: Optional[str] = ""
     internal_notes: Optional[str] = ""
     image: Optional[str] = ""
+    career_history: List[dict] = []
 
 
 class ProfileCreate(BaseModel):
@@ -60,8 +76,10 @@ class ProfileCreate(BaseModel):
     representation_agency: Optional[str] = ""
     nationality: Optional[str] = ""
     age: Optional[int] = None
+    market_value: Optional[str] = ""
     internal_notes: Optional[str] = ""
     image: Optional[str] = ""
+    career_history: List[dict] = []
 
 
 class Rumor(BaseModel):
@@ -91,12 +109,6 @@ class Source(BaseModel):
     notes: Optional[str] = ""
 
 
-class SourceCreate(BaseModel):
-    source_name: str
-    reliability_score: int = 50
-    notes: Optional[str] = ""
-
-
 class ConsistencyRequest(BaseModel):
     profile_id: str
     stage: str
@@ -105,14 +117,42 @@ class ConsistencyRequest(BaseModel):
     evolution_description: str
 
 
+class PipelineUpdate(BaseModel):
+    stage: Optional[str] = None
+    priority_tier: Optional[str] = None
+    exclusive_angle_notes: Optional[str] = None
+
+
+class TaskUpdate(BaseModel):
+    is_done: Optional[bool] = None
+
+
+class TaskCreate(BaseModel):
+    pipeline_id: Optional[str] = ""
+    player_name: str
+    action_required: str
+    deadline: Optional[str] = ""
+
+
 # ---------- Profiles ----------
 @api_router.get("/profiles", response_model=List[Profile])
-async def get_profiles(q: Optional[str] = None):
+async def get_profiles(q: Optional[str] = None, role: Optional[str] = None, club: Optional[str] = None):
     query = {}
     if q:
-        query = {"full_name": {"$regex": re.escape(q), "$options": "i"}}
+        query["full_name"] = {"$regex": re.escape(q), "$options": "i"}
+    if role and role.lower() != "all":
+        query["role"] = role
+    if club and club.lower() != "all":
+        query["current_club"] = club
     docs = await db.profiles.find(query, {"_id": 0}).to_list(500)
+    docs.sort(key=lambda p: p.get("full_name", ""))
     return docs
+
+
+@api_router.get("/clubs")
+async def get_clubs():
+    clubs = await db.profiles.distinct("current_club")
+    return sorted([c for c in clubs if c])
 
 
 @api_router.get("/profiles/{profile_id}", response_model=Profile)
@@ -138,6 +178,26 @@ async def get_profile_rumors(profile_id: str):
     return docs
 
 
+@api_router.get("/rumors/recent")
+async def get_recent_rumors(limit: int = 25):
+    docs = await db.rumors.find({}, {"_id": 0}).to_list(1000)
+    docs.sort(key=lambda r: (r.get("date_logged", ""), r.get("created_at", "")), reverse=True)
+    docs = docs[:limit]
+    profiles = {p["id"]: p for p in await db.profiles.find({}, {"_id": 0}).to_list(500)}
+    out = []
+    for r in docs:
+        p = profiles.get(r["profile_id"], {})
+        out.append({
+            **r,
+            "full_name": p.get("full_name", "Unknown"),
+            "role": p.get("role", ""),
+            "current_club": p.get("current_club", ""),
+            "position": p.get("position", ""),
+            "image": p.get("image", ""),
+        })
+    return out
+
+
 @api_router.post("/rumors", response_model=Rumor)
 async def create_rumor(payload: RumorCreate):
     obj = Rumor(**payload.model_dump())
@@ -153,22 +213,20 @@ async def get_sources():
     return docs
 
 
-@api_router.post("/sources", response_model=Source)
-async def create_source(payload: SourceCreate):
-    obj = Source(**payload.model_dump())
-    await db.sources.insert_one(obj.model_dump())
-    return obj
-
-
 # ---------- AI Consistency Checker ----------
 def _extract_json(text: str) -> dict:
     text = text.strip()
     text = re.sub(r"^```(json)?", "", text).strip()
     text = re.sub(r"```$", "", text).strip()
     match = re.search(r"\{.*\}", text, re.DOTALL)
-    if match:
-        return json.loads(match.group(0))
-    return json.loads(text)
+    return json.loads(match.group(0) if match else text)
+
+
+async def _llm(system_message: str, prompt: str, session: str) -> str:
+    chat = LlmChat(
+        api_key=EMERGENT_LLM_KEY, session_id=session, system_message=system_message,
+    ).with_model("anthropic", "claude-sonnet-4-6")
+    return await chat.send_message(UserMessage(text=prompt))
 
 
 @api_router.post("/consistency-check")
@@ -176,78 +234,193 @@ async def consistency_check(payload: ConsistencyRequest):
     profile = await db.profiles.find_one({"id": payload.profile_id}, {"_id": 0})
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found")
-
     source = await db.sources.find_one({"source_name": payload.source_name}, {"_id": 0})
     reliability = source.get("reliability_score") if source else None
 
     system_message = (
-        "You are the Consistency Auditor for a professional football (soccer) transfer-market "
-        "intelligence desk used by sports journalists. You cross-check an incoming transfer rumor "
-        "against the verified profile database and flag logical contradictions before publication. "
-        "Focus on hard factual contradictions such as: a 'free transfer' or 'expiring contract' claim "
-        "while the database shows the contract runs for one or more years; a wrong current club; a deal "
-        "formula that conflicts with contractual reality; or a low-reliability source making a strong "
-        "official claim. Today's reference date is 2025-07-05. "
-        "Respond with STRICT JSON only, no prose, no markdown fences. Schema: "
-        '{"has_contradiction": boolean, "severity": "none"|"low"|"medium"|"high", '
-        '"message_en": string, "message_it": string, "advice_en": string, "advice_it": string}. '
-        "Keep each message under 240 characters. message_it must be natural Italian."
+        "You are the Consistency Auditor for a professional football transfer-market intelligence desk. "
+        "You cross-check an incoming transfer rumor against the verified profile database and flag logical "
+        "contradictions before publication (e.g. 'free transfer' claim while contract runs for years, wrong "
+        "current club, deal formula conflicting with reality, or a low-reliability source making a strong "
+        "official claim). Today is 2025-07-05. Respond with STRICT JSON only. Schema: "
+        '{"has_contradiction": boolean, "severity": "none"|"low"|"medium"|"high", "message_en": string, '
+        '"message_it": string, "advice_en": string, "advice_it": string}. Each message under 240 chars. '
+        "message_it must be natural Italian."
     )
-
     prompt = (
-        f"VERIFIED PROFILE DATABASE:\n"
-        f"- Name: {profile.get('full_name')}\n"
-        f"- Role: {profile.get('role')}\n"
-        f"- Current club: {profile.get('current_club')}\n"
-        f"- Contract expiry: {profile.get('contract_expiry')}\n"
-        f"- Estimated salary: {profile.get('estimated_salary')}\n"
-        f"- Agency: {profile.get('representation_agency')}\n"
-        f"- Internal notes: {profile.get('internal_notes')}\n\n"
-        f"INCOMING RUMOR TO AUDIT:\n"
-        f"- Stage: {payload.stage}\n"
-        f"- Source: {payload.source_name} (reliability score: {reliability if reliability is not None else 'unknown'}/100)\n"
-        f"- Deal formula: {payload.deal_formula}\n"
-        f"- Description: {payload.evolution_description}\n\n"
-        f"Audit the rumor against the database and return the JSON verdict."
+        f"VERIFIED PROFILE:\n- Name: {profile.get('full_name')}\n- Role: {profile.get('role')}\n"
+        f"- Current club: {profile.get('current_club')}\n- Contract expiry: {profile.get('contract_expiry')}\n"
+        f"- Salary: {profile.get('estimated_salary')}\n- Agency: {profile.get('representation_agency')}\n"
+        f"- Notes: {profile.get('internal_notes')}\n\nINCOMING RUMOR:\n- Stage: {payload.stage}\n"
+        f"- Source: {payload.source_name} (reliability {reliability if reliability is not None else '?'}/100)\n"
+        f"- Deal formula: {payload.deal_formula}\n- Description: {payload.evolution_description}\n\n"
+        f"Audit and return the JSON verdict."
     )
-
     try:
-        chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"consistency-{payload.profile_id}",
-            system_message=system_message,
-        ).with_model("anthropic", "claude-sonnet-4-6")
-        response = await chat.send_message(UserMessage(text=prompt))
-        result = _extract_json(response if isinstance(response, str) else str(response))
+        result = _extract_json(await _llm(system_message, prompt, f"consistency-{payload.profile_id}"))
     except Exception as e:
         logger.error(f"Consistency check failed: {e}")
-        return {
-            "has_contradiction": False,
-            "severity": "none",
-            "message_en": "AI audit unavailable right now. Please verify the rumor manually.",
-            "message_it": "Controllo AI non disponibile ora. Verifica manualmente il rumor.",
-            "advice_en": "",
-            "advice_it": "",
-            "error": True,
-        }
-
-    result.setdefault("has_contradiction", False)
-    result.setdefault("severity", "none")
-    result.setdefault("message_en", "")
-    result.setdefault("message_it", "")
-    result.setdefault("advice_en", "")
-    result.setdefault("advice_it", "")
+        return {"has_contradiction": False, "severity": "none",
+                "message_en": "AI audit unavailable right now. Please verify manually.",
+                "message_it": "Controllo AI non disponibile ora. Verifica manualmente.",
+                "advice_en": "", "advice_it": "", "error": True}
+    for k in ["has_contradiction", "severity", "message_en", "message_it", "advice_en", "advice_it"]:
+        result.setdefault(k, False if k == "has_contradiction" else ("none" if k == "severity" else ""))
     return result
+
+
+# ---------- AI RADAR ----------
+@api_router.get("/radar/alerts")
+async def get_alerts(status: Optional[str] = None):
+    query = {}
+    if status and status.lower() != "all":
+        query["status"] = status
+    docs = await db.global_alerts.find(query, {"_id": 0}).to_list(500)
+    docs.sort(key=lambda a: a.get("created_at", ""), reverse=True)
+    return docs
+
+
+def _fallback_alert() -> dict:
+    players = [
+        ("Arda Güler", "Real Madrid", "Turkey"), ("Nico Paz", "Como", "Argentina"),
+        ("Warren Zaïre-Emery", "PSG", "France"), ("Lamine Yamal", "Barcelona", "Spain"),
+        ("Kenan Yildiz", "Juventus", "Turkey"), ("Xavi Simons", "RB Leipzig", "Netherlands"),
+    ]
+    p, club, country = random.choice(players)
+    n = random.randint(2, 6)
+    mins = random.randint(20, 90)
+    score = random.choice(["High", "Medium", "Low"])
+    return {
+        "id": str(uuid.uuid4()), "player_name": p, "current_club": club, "flagged_country": country,
+        "anomaly_score": score, "status": "New",
+        "automated_summary": f"AI Alert: {n} local {country} outlets reported ongoing talks in the last {mins} mins. Frequency anomaly detected vs. baseline.",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+@api_router.post("/radar/scan")
+async def radar_scan():
+    known = [f"{p['full_name']} ({p['current_club']})" for p in PROFILES[:8]]
+    system_message = (
+        "You simulate a GLOBAL FOOTBALL MEDIA SCANNER for a transfer-rumor newsroom. You invent ONE realistic, "
+        "plausible (NOT officially confirmed) breaking radar alert about a footballer being linked with a move, "
+        "as if detected by a statistical anomaly in foreign-language media frequency. Respond with STRICT JSON only. "
+        'Schema: {"player_name": string, "current_club": string, "flagged_country": string, '
+        '"anomaly_score": "High"|"Medium"|"Low", "automated_summary": string}. The summary must be 2 lines max, '
+        "start with 'AI Alert:', mention how many outlets in which country and a time window (e.g. 'last 45 mins'), "
+        "and read like an automated translated brief. Keep it fresh and varied."
+    )
+    prompt = (
+        "Generate one new radar alert. You may use a real current footballer. Avoid repeating these already-tracked "
+        f"profiles verbatim: {', '.join(known)}. Make it feel like live intelligence."
+    )
+    try:
+        alert = _extract_json(await _llm(system_message, prompt, f"radar-{uuid.uuid4()}"))
+        alert["id"] = str(uuid.uuid4())
+        alert["status"] = "New"
+        alert.setdefault("anomaly_score", "Medium")
+        alert["created_at"] = datetime.now(timezone.utc).isoformat()
+        for k in ["player_name", "current_club", "flagged_country", "automated_summary"]:
+            if not alert.get(k):
+                raise ValueError("missing field")
+    except Exception as e:
+        logger.error(f"Radar scan fallback: {e}")
+        alert = _fallback_alert()
+    await db.global_alerts.insert_one(dict(alert))
+    return alert
+
+
+@api_router.post("/radar/alerts/{alert_id}/investigate")
+async def investigate_alert(alert_id: str):
+    alert = await db.global_alerts.find_one({"id": alert_id}, {"_id": 0})
+    if not alert:
+        raise HTTPException(status_code=404, detail="Alert not found")
+    await db.global_alerts.update_one({"id": alert_id}, {"$set": {"status": "Investigating"}})
+    # create pipeline entry
+    existing = await db.pipeline.find_one({"player_name": alert["player_name"], "stage": {"$ne": None}}, {"_id": 0})
+    if not existing:
+        pl = {
+            "id": str(uuid.uuid4()), "player_name": alert["player_name"], "target_club": "TBD",
+            "source_origin": f"{alert['flagged_country']} (Radar)", "priority_tier": "B",
+            "stage": "Contatti Avviati",
+            "exclusive_angle_notes": alert.get("automated_summary", ""),
+            "last_updated": datetime.now(timezone.utc).isoformat(),
+        }
+        await db.pipeline.insert_one(dict(pl))
+        # auto verification tasks
+        today = datetime.now(timezone.utc).date()
+        tasks = [
+            ("Contact agent for confirmation", 1),
+            (f"Cross-check with a second {alert['flagged_country']} source", 2),
+            ("Verify contract status in the profile database", 2),
+        ]
+        for action, days in tasks:
+            await db.verification_tasks.insert_one({
+                "id": str(uuid.uuid4()), "pipeline_id": pl["id"], "player_name": alert["player_name"],
+                "action_required": action, "deadline": (today + timedelta(days=days)).isoformat(), "is_done": False,
+            })
+    return {"ok": True}
+
+
+@api_router.post("/radar/alerts/{alert_id}/dismiss")
+async def dismiss_alert(alert_id: str):
+    res = await db.global_alerts.update_one({"id": alert_id}, {"$set": {"status": "Dismissed"}})
+    if res.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Alert not found")
+    return {"ok": True}
+
+
+# ---------- Pipeline ----------
+@api_router.get("/pipeline")
+async def get_pipeline():
+    docs = await db.pipeline.find({}, {"_id": 0}).to_list(500)
+    return docs
+
+
+@api_router.patch("/pipeline/{item_id}")
+async def update_pipeline(item_id: str, payload: PipelineUpdate):
+    update = {k: v for k, v in payload.model_dump().items() if v is not None}
+    update["last_updated"] = datetime.now(timezone.utc).isoformat()
+    res = await db.pipeline.update_one({"id": item_id}, {"$set": update})
+    if res.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Pipeline item not found")
+    return await db.pipeline.find_one({"id": item_id}, {"_id": 0})
+
+
+# ---------- Verification tasks ----------
+@api_router.get("/tasks")
+async def get_tasks():
+    docs = await db.verification_tasks.find({}, {"_id": 0}).to_list(500)
+    docs.sort(key=lambda t: (t.get("is_done", False), t.get("deadline", "")))
+    return docs
+
+
+@api_router.post("/tasks")
+async def create_task(payload: TaskCreate):
+    task = {"id": str(uuid.uuid4()), **payload.model_dump(), "is_done": False}
+    await db.verification_tasks.insert_one(dict(task))
+    return task
+
+
+@api_router.patch("/tasks/{task_id}")
+async def update_task(task_id: str, payload: TaskUpdate):
+    update = {k: v for k, v in payload.model_dump().items() if v is not None}
+    res = await db.verification_tasks.update_one({"id": task_id}, {"$set": update})
+    if res.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return await db.verification_tasks.find_one({"id": task_id}, {"_id": 0})
 
 
 @api_router.get("/stats")
 async def get_stats():
-    profiles = await db.profiles.count_documents({})
-    rumors = await db.rumors.count_documents({})
-    sources = await db.sources.count_documents({})
-    hot = await db.rumors.count_documents({"stage": "Trattativa Avanzata"})
-    official = await db.rumors.count_documents({"stage": "Fumata Bianca/Ufficiale"})
-    return {"profiles": profiles, "rumors": rumors, "sources": sources, "hot": hot, "official": official}
+    return {
+        "profiles": await db.profiles.count_documents({}),
+        "rumors": await db.rumors.count_documents({}),
+        "sources": await db.sources.count_documents({}),
+        "hot": await db.rumors.count_documents({"stage": "Trattativa Avanzata"}),
+        "official": await db.rumors.count_documents({"stage": "Fumata Bianca/Ufficiale"}),
+        "alerts": await db.global_alerts.count_documents({"status": "New"}),
+    }
 
 
 @api_router.get("/")
@@ -258,30 +431,38 @@ async def root():
 app.include_router(api_router)
 
 app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
+    CORSMiddleware, allow_credentials=True,
     allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"], allow_headers=["*"],
 )
 
 
 @app.on_event("startup")
 async def seed_db():
-    if await db.profiles.count_documents({}) == 0:
+    meta = await db.meta.find_one({"_id": "seed"})
+    if not meta or meta.get("version") != SEED_VERSION:
+        logger.info(f"Seeding DB to version {SEED_VERSION}")
+        await db.profiles.delete_many({})
+        await db.sources.delete_many({})
+        await db.rumors.delete_many({})
+        await db.global_alerts.delete_many({})
+        await db.pipeline.delete_many({})
+        await db.verification_tasks.delete_many({})
         await db.profiles.insert_many([dict(p) for p in PROFILES])
-        logger.info("Seeded profiles")
-    if await db.sources.count_documents({}) == 0:
         await db.sources.insert_many([dict(s) for s in SOURCES])
-        logger.info("Seeded sources")
-    if await db.rumors.count_documents({}) == 0:
         rows = []
         for r in RUMORS:
             row = dict(r)
+            row.setdefault("id", str(uuid.uuid4()))
             row.setdefault("created_at", datetime.now(timezone.utc).isoformat())
             rows.append(row)
         await db.rumors.insert_many(rows)
-        logger.info("Seeded rumors")
+        now = datetime.now(timezone.utc).isoformat()
+        await db.global_alerts.insert_many([{**dict(a), "created_at": now} for a in GLOBAL_ALERTS])
+        await db.pipeline.insert_many([{**dict(p), "last_updated": now} for p in PIPELINE])
+        await db.verification_tasks.insert_many([dict(t) for t in VERIFICATION_TASKS])
+        await db.meta.update_one({"_id": "seed"}, {"$set": {"version": SEED_VERSION}}, upsert=True)
+        logger.info("Seed complete")
 
 
 @app.on_event("shutdown")
