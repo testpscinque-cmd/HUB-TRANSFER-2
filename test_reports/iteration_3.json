@@ -1,0 +1,46 @@
+{
+  "summary": "Iteration 3 (v4) full backend + frontend regression for MemoryTransfer. All 45 backend pytest tests pass (12 core + 22 v3 + 11 new v4/streak). New Streak Lab endpoints (/api/challenges/active, /api/streak/me, /api/streak/leaderboard, POST /api/streak/vote) verified end-to-end with correct increment/reset behaviour. Fonte Zero external_link_url present on every seeded alert; profiles=21 across Serie A/B/C/Premier League with verified_status set for 9 star profiles; recent rumors now enriched with contract_expiry & verified_status and sorted by logged_at desc. Frontend: Streak Lab gateway → Google-mock spinner → arena flow works, correct SI vote extends streak w/ green toast, wrong NO resets to 0 w/ toast; 5-row leaderboard sorted by highest_streak desc. Radar has 7 verify-source links with target=_blank and http hrefs; Sources page shows blue verified check for 4 sources with score>85 (Romano 96, Di Marzio 92, Sky 90, Schira 87); Apply for Verification modal opens, submits and closes with success toast. Contract Mismatch badge appears on Lookman card (dashboard) and Lookman profile Timeline tab for the free-transfer Anonymous ITK rumor. Language toggle switches IT↔EN across views. Sidebar unchanged with new nav-streak flame item.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Dashboard 'Latest News'", "issues": ["Cosmetic/design consideration: coach rumors seeded with deal_formula='Free Transfer' (e.g. Cesc Fàbregas, Grosso, Dionisi, Gilardino) trigger the CONTRACT MISMATCH badge for coaches whose contract runs beyond 2026 (Fabregas 2028). Algorithmically correct given lib/consistency.js threshold (year > currentYear + 'free transfer' formula), but semantically the term 'Free Transfer' is used loosely for coach moves. Consider either narrowing the mismatch algorithm to role=='Player', or using a different deal_formula label for coach rumors in seed_data.py (e.g. 'Free' or blank). Not a bug — noted for design polish."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_transfer_memory.py",
+    "/app/backend/tests/test_v3_features.py",
+    "/app/backend/tests/test_streak_v4.py",
+    "/app/backend/tests/conftest.py",
+    "/app/test_reports/pytest/pytest_results.xml",
+    "/app/test_reports/pytest/streak_v4.xml"
+  ],
+  "action_items": [
+    "OPTIONAL polish: decide whether CONTRACT MISMATCH badge should apply to Coach rumors that use 'Free Transfer' deal_formula (currently triggers for Cesc Fàbregas etc.). Either scope the check to Player role or change coach rumor formulas in seed_data.py."
+  ],
+  "critical_code_review_comments": [
+    "StreakLabView: leaderboard is fetched from /api/streak/leaderboard which returns top-5 by highest_streak; 'You' (u-you highest=9) is NOT in the top-5 (all mock users are 11+), so the 'isYou' highlight path is never exercised at seed. Consider showing 'You' separately if not in top-5 for stronger UX, OR ensure u-you seed highest_streak is high enough to appear at least occasionally.",
+    "server.py POST /api/streak/vote does an upsert on u-you but never seeds u-you at first vote if streak_users collection is empty — safe because seed_db pre-inserts u-you. Still fine.",
+    "lib/consistency.js triggers on 'Free Transfer' formula for anything with contract_expiry year > currentYear. It does NOT scope by profile.role, so coach rumors using 'Free Transfer' formula produce mismatch badges — see design_issues above.",
+    "seed_data.py uses fixed external_link_url = google.com/search — acceptable for demo but a real 'Original Source' link would ideally be per-source (Romano X post, Sky article, etc.). Consider a `source_url` field on Rumor for production.",
+    "server.py `_extract_json` still uses greedy regex first; try json.loads before regex fallback — same suggestion as iteration_2.",
+    "App.js has grown to 235 lines with 12 state hooks + 8 handlers. Approaching complexity threshold; consider extracting a useTransferMemory hook or context per view family.",
+    "test_transfer_memory.py & test_v3_features.py had 3 stale assertions from v3 (Napoli, Thiago Motta, 3 Osimhen rumors) — fixed by testing agent to reflect v4 seed."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_streak_v4.py (new)",
+    "/app/backend/tests/test_transfer_memory.py (updated: Osimhen club->Galatasaray, min rumors 2, Koopmeiners->Yildiz in create-rumor test)",
+    "/app/backend/tests/test_v3_features.py (updated: Thiago Motta -> Cesc Fàbregas)"
+  ],
+  "success_rate": {"backend": "100% (45/45)", "frontend": "100% (streak gateway+arena+vote+leaderboard, radar verify-source, sources verified check + apply modal, dashboard & profile mismatch badges, EN/IT toggle, sidebar nav-streak — all verified)"},
+  "test_credentials": "N/A - localStorage mt_authed='1' bypasses the client-side mock login; no real auth.",
+  "seed_data_creation": "Backend auto-seeds SEED_VERSION=8 on first startup: 21 profiles (Serie A/B/C + Premier + Süper Lig), 10 sources (4 with score>85), 32 rumors (including 1 free-transfer contradiction for p-lookman), 7 global_alerts each with external_link_url, 4 pipeline items, 6 verification tasks, 6 streak_users (u-you + 5 mock), 3 daily_challenges (ch-1 active w/ correct_answer='SI').",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All v4 (iteration_3) features work end-to-end. Backend tests live at /app/backend/tests/test_transfer_memory.py, test_v3_features.py and test_streak_v4.py — run with `pytest /app/backend/tests -v`. AI Claude is LIVE (radar/scan + article draft + consistency). Streak vote endpoint mutates u-you streak — tests explicitly reset via a wrong vote first, so ordering is idempotent. If seed_version bumps again, re-check the three previously-stale assertions (Osimhen club, coach name, number of Osimhen rumors, and any p-{id} used in POST /rumors test). The CONTRACT MISMATCH badge is intentionally strict: it fires anytime deal_formula==\"Free Transfer\" AND contract_expiry year > current year (currently 2026) regardless of profile role.",
+  "rca of the issue": "N/A — no bugs found in iteration_3. The 3 initial regression failures were stale test assertions from iteration_2 (v3 seed) that had not been updated for the v4 seed (Osimhen moved Napoli→Galatasaray, Thiago Motta removed, rumor counts changed). Testing agent updated the tests to match v4 semantics; all 45 tests now pass."
+}

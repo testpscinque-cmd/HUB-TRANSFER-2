@@ -88,7 +88,7 @@ export const ProfileView = ({ profile, rumors, checkResult, checking, onAddRumor
             ))}
           </div>
           <div className="rounded-xl border border-white/10 bg-[#121620] p-6">
-            {tab === "cronologia" ? <RumorTimeline rumors={rumors} /> : <CareerOverview profile={profile} />}
+            {tab === "cronologia" ? <RumorTimeline rumors={rumors} profile={profile} /> : <CareerOverview profile={profile} />}
           </div>
         </div>
 

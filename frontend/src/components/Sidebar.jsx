@@ -1,4 +1,4 @@
-import { Zap, LayoutDashboard, Radar, Users, PlusCircle, Signal, LogOut } from "lucide-react";
+import { Zap, LayoutDashboard, Radar, Users, PlusCircle, Signal, LogOut, Flame } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 
 const NavBtn = ({ icon: Icon, label, active, onClick, testid, badge }) => (
@@ -42,6 +42,8 @@ export const Sidebar = ({ view, onNavigate, onAddRumor, alertsCount, onLogout })
         <NavBtn testid="nav-profiles" icon={Users} label={t.nav.profiles} active={view === "profiles" || view === "profile"} onClick={() => onNavigate("profiles")} />
         <NavBtn testid="nav-add-rumor" icon={PlusCircle} label={t.nav.addRumor} active={false} onClick={onAddRumor} />
         <NavBtn testid="nav-sources" icon={Signal} label={t.nav.sources} active={view === "sources"} onClick={() => onNavigate("sources")} />
+        <div className="my-2 h-px bg-white/10" />
+        <NavBtn testid="nav-streak" icon={Flame} label={t.nav.streak} active={view === "streak"} onClick={() => onNavigate("streak")} />
       </nav>
 
       <NavBtn

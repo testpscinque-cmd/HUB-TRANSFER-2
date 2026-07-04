@@ -10,6 +10,7 @@ import { ProfilesView } from "@/components/ProfilesView";
 import { ProfileView } from "@/components/ProfileView";
 import { SourcesView } from "@/components/SourcesView";
 import { RadarView } from "@/components/RadarView";
+import { StreakLabView } from "@/components/StreakLabView";
 import { NewRumorDialog } from "@/components/NewRumorDialog";
 import { LoginScreen } from "@/components/LoginScreen";
 
@@ -39,6 +40,10 @@ function Shell({ onLogout }) {
   const [tasks, setTasks] = useState([]);
   const [scanning, setScanning] = useState(false);
 
+  const [challenge, setChallenge] = useState(null);
+  const [streakMe, setStreakMe] = useState(null);
+  const [leaderboard, setLeaderboard] = useState([]);
+
   const selectedProfile = profiles.find((p) => p.id === selectedId) || null;
 
   const refreshStats = useCallback(() => api.getStats().then(setStats).catch(() => {}), []);
@@ -48,15 +53,21 @@ function Shell({ onLogout }) {
     api.getPipeline().then(setPipeline).catch(() => {});
     api.getTasks().then(setTasks).catch(() => {});
   }, []);
+  const refreshStreak = useCallback(() => {
+    api.getStreakMe().then(setStreakMe).catch(() => {});
+    api.getLeaderboard().then(setLeaderboard).catch(() => {});
+  }, []);
 
   useEffect(() => {
     api.getProfiles().then(setProfiles);
     api.getClubs().then(setClubs);
     api.getSources().then(setSources);
+    api.getActiveChallenge().then(setChallenge).catch(() => {});
     refreshStats();
     refreshRecent();
     refreshRadar();
-  }, [refreshStats, refreshRecent, refreshRadar]);
+    refreshStreak();
+  }, [refreshStats, refreshRecent, refreshRadar, refreshStreak]);
 
   const loadRumors = useCallback((id) => id && api.getRumors(id).then(setRumors), []);
 
@@ -142,6 +153,21 @@ function Shell({ onLogout }) {
     api.getTasks().then(setTasks);
   };
 
+  const onVote = async (answer) => {
+    if (!challenge?.id) return null;
+    try {
+      const res = await api.submitVote({ challenge_id: challenge.id, answer });
+      setStreakMe((prev) => ({ ...(prev || {}), current_streak: res.current_streak, highest_streak: res.highest_streak }));
+      api.getLeaderboard().then(setLeaderboard);
+      if (res.correct) toast.success(t.correctToast);
+      else toast.error(t.wrongToast);
+      return res;
+    } catch {
+      toast.error("Vote failed");
+      return null;
+    }
+  };
+
   const alertsCount = alerts.filter((a) => a.status === "New").length;
   const isRadar = view === "radar";
 
@@ -168,6 +194,9 @@ function Shell({ onLogout }) {
             />
           )}
           {view === "sources" && <SourcesView sources={sources} />}
+          {view === "streak" && (
+            <StreakLabView challenge={challenge} streak={streakMe} leaderboard={leaderboard} onVote={onVote} />
+          )}
         </main>
       </div>
 

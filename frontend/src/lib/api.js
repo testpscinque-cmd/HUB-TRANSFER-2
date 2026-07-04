@@ -39,3 +39,9 @@ export const updatePipeline = (id, p) => client.patch(`/pipeline/${id}`, p).then
 export const getTasks = () => client.get("/tasks").then((r) => r.data);
 export const createTask = (p) => client.post("/tasks", p).then((r) => r.data);
 export const updateTask = (id, p) => client.patch(`/tasks/${id}`, p).then((r) => r.data);
+
+// Streak Lab
+export const getActiveChallenge = () => client.get("/challenges/active").then((r) => r.data);
+export const getStreakMe = () => client.get("/streak/me").then((r) => r.data);
+export const getLeaderboard = () => client.get("/streak/leaderboard").then((r) => r.data);
+export const submitVote = (payload) => client.post("/streak/vote", payload).then((r) => r.data);

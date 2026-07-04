@@ -12,10 +12,10 @@ class TestProfileFilters:
         roles = {p['role'] for p in profiles}
         assert 'Player' in roles
         assert 'Coach' in roles
-        # verify a known coach
+        # v4: verify known coaches present
         names = [p['full_name'] for p in profiles]
-        assert 'Thiago Motta' in names
         assert 'Antonio Conte' in names
+        assert 'Cesc Fàbregas' in names
 
     def test_filter_by_role_player(self, api_client, base_url):
         r = api_client.get(f"{base_url}/api/profiles", params={'role': 'Player'})

@@ -2,8 +2,10 @@ import { CalendarDays, Radio, FileText } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { stageConfig, stageLabel } from "@/lib/stages";
 import { dateTime } from "@/lib/time";
+import { contractMismatch } from "@/lib/consistency";
+import { MismatchBadge } from "@/components/MismatchBadge";
 
-export const RumorTimeline = ({ rumors }) => {
+export const RumorTimeline = ({ rumors, profile }) => {
   const { t, lang } = useI18n();
   if (!rumors.length) {
     return <p className="py-10 text-center text-sm text-gray-500">{t.noRumors}</p>;
@@ -25,6 +27,7 @@ export const RumorTimeline = ({ rumors }) => {
                 <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${cfg.badge}`}>
                   {stageLabel(r.stage, lang)}
                 </span>
+                {contractMismatch(r.deal_formula, r.evolution_description, profile?.contract_expiry) && <MismatchBadge />}
                 <span className="flex items-center gap-1 text-[11px] font-medium text-gray-500">
                   <CalendarDays size={12} /> {dateTime(r.logged_at || r.date_logged, lang)}
                 </span>

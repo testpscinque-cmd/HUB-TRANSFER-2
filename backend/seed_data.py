@@ -1,6 +1,6 @@
 """Demo data for MemoryTransfer — v4 (2026 window, expanded, minor leagues, Twitter-style times)."""
 
-SEED_VERSION = 6
+SEED_VERSION = 8
 
 _A = "https://images.pexels.com/photos/10349959/pexels-photo-10349959.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
 _B = "https://images.pexels.com/photos/14741747/pexels-photo-14741747.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
@@ -162,6 +162,8 @@ RUMORS = [
     {"profile_id": "c-grosso", "age_min": 700, "stage": "Contatti", "source_name": "Gianluca Di Marzio", "deal_formula": "Free Transfer", "evolution_description": "Sassuolo want to extend Grosso after promotion, but a bigger Serie A club has made an approach."},
     {"profile_id": "c-gilardino", "age_min": 1800, "stage": "Interesse Iniziale", "source_name": "Sky Sport Italia", "deal_formula": "Free Transfer", "evolution_description": "Free agent Gilardino shortlisted by two Serie A mid-table sides and an ambitious Serie B club."},
     {"profile_id": "c-dionisi", "age_min": 260, "stage": "Contatti", "source_name": "Tuttosport", "deal_formula": "Free Transfer", "evolution_description": "Palermo's board back Dionisi for now, but Serie B rivals monitor the situation closely."},
+    # Deliberate contradiction demo: free-transfer claim while contract runs beyond current year
+    {"profile_id": "p-lookman", "age_min": 20, "stage": "Contatti", "source_name": "Anonymous ITK (X)", "deal_formula": "Free Transfer", "evolution_description": "Unverified report claims Lookman could leave Atalanta as a free agent this summer on a free transfer."},
 ]
 
 # age_min for created_at (Twitter-style live times)
@@ -201,4 +203,22 @@ VERIFICATION_TASKS = [
     {"id": "t-4", "pipeline_id": "pl-3", "player_name": "Cosimo Patierno", "action_required": "Check Avellino asking price & contract length in database", "due_in_days": 3, "is_done": False},
     {"id": "t-5", "pipeline_id": "pl-4", "player_name": "Joshua Zirkzee", "action_required": "Get final confirmation on wage split before publishing", "due_in_days": -1, "is_done": True},
     {"id": "t-6", "pipeline_id": "pl-2", "player_name": "Moise Kean", "action_required": "Cross-check Arabic-media reports with agent Lucci", "due_in_days": 1, "is_done": True},
+]
+
+# ---------------- STREAK LAB (isolated gamification) ----------------
+VERIFIED_PROFILE_IDS = {"p-yildiz", "p-nicopaz", "p-kean", "p-lookman", "p-osimhen", "p-zirkzee", "p-calafiori", "c-conte", "c-fabregas"}
+
+STREAK_USERS = [
+    {"id": "u-you", "mock_username": "You", "current_streak": 4, "highest_streak": 9},
+    {"id": "u-1", "mock_username": "@MercatoMaster", "current_streak": 12, "highest_streak": 28},
+    {"id": "u-2", "mock_username": "@TifosoVerace", "current_streak": 7, "highest_streak": 21},
+    {"id": "u-3", "mock_username": "@GialloRossoITK", "current_streak": 0, "highest_streak": 18},
+    {"id": "u-4", "mock_username": "@NerazzurroNews", "current_streak": 5, "highest_streak": 15},
+    {"id": "u-5", "mock_username": "@CalcioProphet", "current_streak": 3, "highest_streak": 11},
+]
+
+DAILY_CHALLENGES = [
+    {"id": "ch-1", "question_text": "Will Joshua Zirkzee complete his loan move to Juventus before Friday?", "correct_answer": "SI", "is_active": True},
+    {"id": "ch-2", "question_text": "Will Real Madrid trigger the Nico Paz buy-back this summer?", "correct_answer": "NO", "is_active": False},
+    {"id": "ch-3", "question_text": "Will Cesc Fàbregas leave Como for a Premier League club in 2026?", "correct_answer": "NO", "is_active": False},
 ]

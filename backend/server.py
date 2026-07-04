@@ -19,7 +19,9 @@ import seed_data
 from seed_data import (
     PROFILES, SOURCES, RUMORS, SEED_VERSION,
     GLOBAL_ALERTS, PIPELINE, VERIFICATION_TASKS, PIPELINE_STAGES,
+    STREAK_USERS, DAILY_CHALLENGES, VERIFIED_PROFILE_IDS,
 )
+from urllib.parse import quote_plus
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -62,6 +64,7 @@ class Profile(BaseModel):
     nationality: Optional[str] = ""
     age: Optional[int] = None
     market_value: Optional[str] = ""
+    verified_status: Optional[bool] = False
     internal_notes: Optional[str] = ""
     image: Optional[str] = ""
     career_history: List[dict] = []
@@ -92,6 +95,8 @@ class Rumor(BaseModel):
     source_name: str
     deal_formula: Optional[str] = ""
     evolution_description: str
+    logged_at: Optional[str] = ""
+    external_link_url: Optional[str] = ""
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 
@@ -195,6 +200,9 @@ async def get_recent_rumors(limit: int = 25):
             "role": p.get("role", ""),
             "current_club": p.get("current_club", ""),
             "position": p.get("position", ""),
+            "league": p.get("league", ""),
+            "contract_expiry": p.get("contract_expiry", ""),
+            "verified_status": p.get("verified_status", False),
             "image": p.get("image", ""),
         })
     return out
@@ -459,6 +467,48 @@ async def update_task(task_id: str, payload: TaskUpdate):
     return await db.verification_tasks.find_one({"id": task_id}, {"_id": 0})
 
 
+# ---------- STREAK LAB ----------
+class VoteReq(BaseModel):
+    challenge_id: str
+    answer: str
+
+
+@api_router.get("/challenges/active")
+async def active_challenge():
+    doc = await db.daily_challenges.find_one({"is_active": True}, {"_id": 0})
+    return doc or {}
+
+
+@api_router.get("/streak/me")
+async def streak_me():
+    doc = await db.streak_users.find_one({"id": "u-you"}, {"_id": 0})
+    return doc or {"id": "u-you", "mock_username": "You", "current_streak": 0, "highest_streak": 0}
+
+
+@api_router.get("/streak/leaderboard")
+async def leaderboard():
+    docs = await db.streak_users.find({}, {"_id": 0}).to_list(200)
+    docs.sort(key=lambda u: (u.get("highest_streak", 0), u.get("current_streak", 0)), reverse=True)
+    return docs[:5]
+
+
+@api_router.post("/streak/vote")
+async def streak_vote(payload: VoteReq):
+    ch = await db.daily_challenges.find_one({"id": payload.challenge_id}, {"_id": 0})
+    if not ch:
+        raise HTTPException(status_code=404, detail="Challenge not found")
+    user = await db.streak_users.find_one({"id": "u-you"}, {"_id": 0}) or {"current_streak": 0, "highest_streak": 0}
+    correct = payload.answer.strip().upper() == str(ch["correct_answer"]).strip().upper()
+    current = user.get("current_streak", 0) + 1 if correct else 0
+    highest = max(user.get("highest_streak", 0), current)
+    await db.streak_users.update_one(
+        {"id": "u-you"},
+        {"$set": {"current_streak": current, "highest_streak": highest, "mock_username": "You"}},
+        upsert=True,
+    )
+    return {"correct": correct, "current_streak": current, "highest_streak": highest, "correct_answer": ch["correct_answer"]}
+
+
 @api_router.get("/stats")
 async def get_stats():
     return {
@@ -496,7 +546,16 @@ async def seed_db():
         await db.global_alerts.delete_many({})
         await db.pipeline.delete_many({})
         await db.verification_tasks.delete_many({})
-        await db.profiles.insert_many([dict(p) for p in PROFILES])
+        await db.streak_users.delete_many({})
+        await db.daily_challenges.delete_many({})
+        prof_rows = []
+        name_by_id = {}
+        for p in PROFILES:
+            row = dict(p)
+            row["verified_status"] = row["id"] in VERIFIED_PROFILE_IDS
+            name_by_id[row["id"]] = row["full_name"]
+            prof_rows.append(row)
+        await db.profiles.insert_many(prof_rows)
         await db.sources.insert_many([dict(s) for s in SOURCES])
         now = datetime.now(timezone.utc)
         rows = []
@@ -507,12 +566,16 @@ async def seed_db():
             row["date_logged"] = ts.date().isoformat()
             row["id"] = str(uuid.uuid4())
             row["created_at"] = ts.isoformat()
+            pname = name_by_id.get(row["profile_id"], "")
+            row["external_link_url"] = f"https://www.google.com/search?q={quote_plus(pname + ' transfer news')}"
             rows.append(row)
         await db.rumors.insert_many(rows)
         alerts = []
         for a in GLOBAL_ALERTS:
             row = dict(a)
             row["created_at"] = (now - timedelta(minutes=row.pop("age_min", 0))).isoformat()
+            if not row.get("external_link_url"):
+                row["external_link_url"] = f"https://www.google.com/search?q={quote_plus(row['player_name'] + ' transfer ' + row.get('flagged_country',''))}"
             alerts.append(row)
         await db.global_alerts.insert_many(alerts)
         pls = []
@@ -527,6 +590,8 @@ async def seed_db():
             row["deadline"] = (now + timedelta(days=row.pop("due_in_days", 0))).date().isoformat()
             tasks.append(row)
         await db.verification_tasks.insert_many(tasks)
+        await db.streak_users.insert_many([dict(u) for u in STREAK_USERS])
+        await db.daily_challenges.insert_many([dict(c) for c in DAILY_CHALLENGES])
         await db.meta.update_one({"_id": "seed"}, {"$set": {"version": SEED_VERSION}}, upsert=True)
         logger.info("Seed complete")
 

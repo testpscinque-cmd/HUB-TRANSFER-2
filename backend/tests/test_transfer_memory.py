@@ -47,7 +47,8 @@ class TestProfiles:
         data = r.json()
         assert data['id'] == 'p-osimhen'
         assert data['full_name'] == 'Victor Osimhen'
-        assert data['current_club'] == 'Napoli'
+        # v4 seed: Osimhen moved to Galatasaray
+        assert data['current_club'] == 'Galatasaray'
 
     def test_get_profile_404(self, api_client, base_url):
         r = api_client.get(f"{base_url}/api/profiles/nonexistent-id")
@@ -81,7 +82,8 @@ class TestRumors:
         r = api_client.get(f"{base_url}/api/profiles/p-osimhen/rumors")
         assert r.status_code == 200
         rumors = r.json()
-        assert len(rumors) >= 3
+        # v4 seed: 2 rumors for Osimhen
+        assert len(rumors) >= 2
         dates = [x['date_logged'] for x in rumors]
         assert dates == sorted(dates)
 
@@ -92,12 +94,12 @@ class TestRumors:
 
     def test_create_rumor_persists_and_visible_in_timeline(self, api_client, base_url):
         payload = {
-            'profile_id': 'p-koopmeiners',
-            'date_logged': '2025-07-10',
+            'profile_id': 'p-yildiz',
+            'date_logged': '2026-01-10',
             'stage': 'Fumata Bianca/Ufficiale',
             'source_name': 'Fabrizio Romano',
             'deal_formula': 'Definitive',
-            'evolution_description': 'TEST_ Here we go, Koopmeiners to Juventus.',
+            'evolution_description': 'TEST_ Here we go, Yildiz renews with Juventus.',
         }
         r = api_client.post(f"{base_url}/api/rumors", json=payload)
         assert r.status_code == 200, r.text
@@ -108,7 +110,7 @@ class TestRumors:
         assert 'id' in data
 
         # verify persistence via GET
-        r2 = api_client.get(f"{base_url}/api/profiles/p-koopmeiners/rumors")
+        r2 = api_client.get(f"{base_url}/api/profiles/p-yildiz/rumors")
         assert r2.status_code == 200
         rumors = r2.json()
         found = [x for x in rumors if x.get('id') == data['id']]

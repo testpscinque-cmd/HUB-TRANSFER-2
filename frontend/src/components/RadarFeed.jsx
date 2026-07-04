@@ -58,6 +58,17 @@ export const RadarFeed = ({ alerts, onInvestigate, onDismiss, onScan, scanning }
                 </span>
               </div>
               <p className="text-xs leading-snug text-gray-300">{a.automated_summary}</p>
+              {a.external_link_url && (
+                <a
+                  href={a.external_link_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-testid={`verify-source-${a.id}`}
+                  className="mt-3 flex items-center justify-center gap-1.5 rounded-lg bg-[#39FF14] py-2 text-xs font-black uppercase tracking-wider text-black transition-all hover:brightness-110"
+                >
+                  {t.verifySource}
+                </a>
+              )}
               {a.status === "New" && (
                 <div className="mt-3 flex gap-2">
                   <button

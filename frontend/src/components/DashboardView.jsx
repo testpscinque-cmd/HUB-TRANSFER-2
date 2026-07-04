@@ -2,7 +2,9 @@ import { Flame, ChevronRight, Newspaper, Users, ListChecks, CheckCircle2, Radar 
 import { useI18n } from "@/lib/i18n";
 import { stageConfig, stageLabel } from "@/lib/stages";
 import { timeAgo, dateTime } from "@/lib/time";
+import { contractMismatch } from "@/lib/consistency";
 import { Crest } from "@/components/Crest";
+import { MismatchBadge } from "@/components/MismatchBadge";
 
 // timestamps handled by lib/time
 
@@ -36,6 +38,7 @@ const NewsCard = ({ r, onOpen, lang }) => {
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           <span className="font-heading text-sm font-bold text-white">{r.full_name}</span>
+          {contractMismatch(r.deal_formula, r.evolution_description, r.contract_expiry) && <MismatchBadge />}
           <span className={`rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${isCoach ? "border-[#00E5FF]/40 bg-[#00E5FF]/10 text-[#00E5FF]" : "border-white/10 bg-white/5 text-gray-400"}`}>
             {isCoach ? "Coach" : r.position || "Player"}
           </span>
