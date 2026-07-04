@@ -1,141 +1,99 @@
 {
-  "theme": "dark",
-  "archetype": "Performance Pro with Neon Accents (Italian Sports Pop)",
+  "app_name": "MemoryTransfer",
+  "theme": "light",
+  "archetype": "Vibrant Sports (Fantacalcio Inspired)",
   "colors": {
-    "background": {
-      "primary": "#0D1B2A",
-      "secondary": "#121620",
-      "tertiary": "#1B2432"
+    "background": "#F8FAFC",
+    "surface": "#FFFFFF",
+    "border": "#E2E8F0",
+    "primary": "#05A845",
+    "primary_hover": "#048B39",
+    "text_main": "#0F172A",
+    "text_muted": "#64748B",
+    "success": "#10B981",
+    "warning": "#F59E0B",
+    "danger": "#EF4444",
+    "thermometer": {
+      "cold": "#3B82F6",
+      "warm": "#FACC15",
+      "hot": "#EF4444"
     },
-    "text": {
-      "primary": "#FFFFFF",
-      "secondary": "#94A3B8",
-      "muted": "#64748B",
-      "inverse": "#000000"
-    },
-    "brand": {
-      "primary": "#39FF14",
-      "secondary": "#FF007F",
-      "accent": "#00E5FF"
-    },
-    "status": {
-      "success": "#39FF14",
-      "warning": "#FF007F",
-      "error": "#EF4444",
-      "info": "#3B82F6"
-    },
-    "border": {
-      "default": "rgba(255, 255, 255, 0.1)",
-      "focus": "#39FF14",
-      "glow_magenta": "rgba(255, 0, 127, 0.3)",
-      "glow_volt": "rgba(57, 255, 20, 0.3)"
+    "market_signal": {
+      "border": "#F97316",
+      "bg": "#FFF7ED",
+      "text": "#C2410C"
     }
   },
   "typography": {
-    "font_family": {
-      "heading": "Outfit, sans-serif",
-      "body": "Manrope, sans-serif",
-      "mono": "JetBrains Mono, monospace"
-    },
-    "rules": {
-      "h1": "text-4xl sm:text-5xl font-black tracking-tight uppercase",
-      "h2": "text-2xl sm:text-3xl font-bold tracking-tight",
-      "h3": "text-lg sm:text-xl font-bold uppercase tracking-wider",
-      "body": "text-sm sm:text-base leading-relaxed text-gray-300",
-      "label": "text-xs font-bold uppercase tracking-[0.2em] text-gray-400"
-    }
+    "heading_font": "Outfit",
+    "body_font": "Figtree"
   },
-  "spacing_and_layout": {
-    "container_padding": "p-6 sm:p-8",
-    "section_gap": "gap-6 sm:gap-8",
+  "layout": {
+    "spacing_scale": "Generous (p-4, p-6, p-8)",
+    "card_padding": "p-6",
     "border_radius": {
       "card": "rounded-xl",
       "button": "rounded-lg",
-      "badge": "rounded-full"
+      "crest": "rounded-full"
     },
-    "grid_architecture": {
-      "mobile": "grid-cols-1 gap-6",
-      "desktop": "grid-cols-12 gap-6",
-      "panel_a": "col-span-12 lg:col-span-3 h-full flex flex-col gap-6",
-      "panel_b": "col-span-12 lg:col-span-6 h-full flex flex-col gap-6",
-      "panel_c": "col-span-12 lg:col-span-3 h-full flex flex-col gap-6"
+    "shadows": {
+      "card_default": "shadow-sm",
+      "card_hover": "shadow-md transition-shadow duration-200"
     }
-  },
-  "surface_strategies": {
-    "dashboard_cards": "bg-[#121620] border border-white/10 rounded-xl shadow-lg hover:border-white/20 transition-colors",
-    "glass_header": "backdrop-blur-xl bg-[#0D1B2A]/80 border-b border-white/10",
-    "alert_card_magenta": "bg-[#121620] border border-[#FF007F]/50 shadow-[0_0_15px_rgba(255,0,127,0.15)] rounded-xl relative overflow-hidden",
-    "highlight_card_volt": "bg-[#121620] border border-[#39FF14]/30 shadow-[0_0_15px_rgba(57,255,20,0.1)] rounded-xl"
   },
   "components": {
-    "buttons": {
-      "primary": "bg-[#39FF14] text-black font-black uppercase tracking-widest px-6 py-3 rounded-lg hover:bg-[#39FF14]/80 hover:shadow-[0_0_20px_rgba(57,255,20,0.4)] transition-all",
-      "secondary": "bg-transparent border border-white/20 text-white font-bold px-4 py-2 rounded-lg hover:border-white/50 transition-colors",
-      "ghost": "text-gray-400 hover:text-white transition-colors"
+    "thermometer_icon": {
+      "description": "Graphic icon (not text) indicating rumor temperature.",
+      "states": [
+        {"state": "Cold", "color": "#3B82F6", "visual": "Empty/Low thermometer filled with blue"},
+        {"state": "Warm", "color": "#FACC15", "visual": "Half-filled thermometer with yellow"},
+        {"state": "Hot", "color": "#EF4444", "visual": "Full thermometer filled with red"}
+      ]
     },
-    "inputs": {
-      "search": "w-full bg-[#1B2432] border border-white/10 text-white rounded-lg px-4 py-3 pl-10 focus:outline-none focus:border-[#39FF14] focus:ring-1 focus:ring-[#39FF14] transition-all placeholder:text-gray-500",
-      "standard": "bg-[#1B2432] border border-white/10 text-white rounded-lg px-4 py-2 focus:border-[#39FF14] focus:outline-none transition-all"
+    "market_signals_card": {
+      "description": "Distinctive card inside AI Radar.",
+      "styles": "border-2 border-dashed border-orange-500 bg-orange-50 rounded-xl p-4 text-orange-800"
     },
-    "badges": {
-      "volt": "bg-[#39FF14]/10 text-[#39FF14] border border-[#39FF14]/30 px-2 py-1 rounded text-xs font-bold uppercase",
-      "magenta": "bg-[#FF007F]/10 text-[#FF007F] border border-[#FF007F]/30 px-2 py-1 rounded text-xs font-bold uppercase",
-      "gray": "bg-white/5 text-gray-300 border border-white/10 px-2 py-1 rounded text-xs font-bold uppercase"
+    "profile_timeline": {
+      "description": "Player/Coach profiles with chronological vertical timeline.",
+      "styles": "Vertical line in border-slate-200. Timeline nodes are thermometer icons. Crest monograms are rounded-full w-12 h-12 bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-lg."
     },
-    "timeline": {
-      "node_container": "relative pl-8 pb-8 border-l border-white/10 last:border-0 last:pb-0",
-      "node_dot": "absolute left-[-5px] top-1 w-[9px] h-[9px] rounded-full ring-4 ring-[#121620]",
-      "card": "bg-[#1B2432] border border-white/5 p-4 rounded-xl hover:border-white/20 transition-all hover:-translate-y-1",
-      "states": {
-        "interesse": "bg-gray-500 ring-gray-500/20",
-        "contatti": "bg-blue-500 ring-blue-500/20",
-        "trattativa": "bg-[#FF007F] ring-[#FF007F]/20 shadow-[0_0_10px_rgba(255,0,127,0.5)]",
-        "ufficiale": "bg-[#39FF14] ring-[#39FF14]/20 shadow-[0_0_10px_rgba(57,255,20,0.5)]",
-        "saltata": "bg-red-500 ring-red-500/20"
-      }
+    "top_news_feed": {
+      "description": "List of recent rumor cards.",
+      "styles": "bg-white rounded-xl shadow-sm border border-slate-100 p-6 flex flex-col gap-4"
+    },
+    "ai_radar": {
+      "description": "Automated alerts with Verify Original Source external links.",
+      "styles": "bg-white rounded-xl shadow-sm border border-slate-100 p-6. Link should be primary color (#05A845) with hover underline and external link icon."
+    },
+    "contract_data": {
+      "description": "Card showing contract details with mismatch warning badge.",
+      "styles": "Warning badge uses bg-red-100 text-red-700 font-medium px-2 py-1 rounded-md text-xs."
+    },
+    "source_directory": {
+      "description": "Rows with trust score bars and verified checkmark.",
+      "styles": "Score bar: h-2 bg-slate-100 rounded-full, fill with primary color width based on score. Verified checkmark in #10B981."
+    },
+    "streak_lab": {
+      "description": "Gamified voting arena.",
+      "styles": "SÌ button: bg-[#05A845] text-white hover:bg-[#048B39]. NO button: bg-slate-200 text-slate-800 hover:bg-slate-300. Mock Google Login gate overlay over the arena."
     }
   },
-  "animations": {
-    "hover_lift": "transition-transform duration-200 ease-out hover:-translate-y-1",
-    "pulse_glow": "animate-pulse shadow-[0_0_15px_rgba(255,0,127,0.4)]",
-    "fade_in": "animate-in fade-in slide-in-from-bottom-4 duration-500"
+  "image_urls": {
+    "players": [
+      "https://images.unsplash.com/photo-1779304551934-3a25eaaa22dc?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODF8MHwxfHNlYXJjaHwzfHxmb290YmFsbCUyMHBsYXllciUyMHBvcnRyYWl0fGVufDB8fHx8MTc4MzE2ODAxMXww&ixlib=rb-4.1.0&q=85",
+      "https://images.pexels.com/photos/5114503/pexels-photo-5114503.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    ]
   },
-  "media": {
-    "images": [
-      {
-        "category": "player_portrait",
-        "url": "https://images.pexels.com/photos/10349959/pexels-photo-10349959.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-        "description": "Studio portrait of soccer player, dark background",
-        "usage": "Contract Card Profile Image"
-      },
-      {
-        "category": "player_portrait_alt",
-        "url": "https://images.pexels.com/photos/14741747/pexels-photo-14741747.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-        "description": "Portrait of soccer player in yellow jersey",
-        "usage": "Alternative Player Profile / Search Result"
-      },
-      {
-        "category": "team_logo",
-        "url": "https://images.pexels.com/photos/17879546/pexels-photo-17879546.jpeg",
-        "description": "FC Barcelona emblem on jersey",
-        "usage": "Club context image in Timeline or Source Directory"
-      }
-    ],
-    "icons_library": "@phosphor-icons/react"
-  },
-  "accessibility_and_testing": {
-    "testing_attributes": "All interactive elements (buttons, inputs, timeline nodes, tabs, specific cards) MUST have a data-testid attribute in kebab-case. Example: data-testid='search-player-input', data-testid='new-rumor-btn'.",
-    "contrast": "Ensure white text on #0D1B2A meets APCA standards. Volt Green text must be bolded to ensure readability."
+  "accessibility": {
+    "testing_attributes": "All interactive elements MUST include data-testid attribute in kebab-case format."
   },
   "instructions_to_main_agent": [
-    "Use a Dark Theme with #0D1B2A as main background and #121620 for cards.",
-    "Implement a 3-Panel grid layout: Left (3 cols), Center (6 cols), Right (3 cols) on large screens. Stack them on mobile.",
-    "PANEL A (Left): Add a predictive search bar with MagnifyingGlass icon. Below it, design a striking Contract Card with the player image provided in media. Use Volt Green (#39FF14) for the 'Registra Nuovo Rumor' button.",
-    "PANEL B (Center): Implement a vertical chronological Timeline for the player 'sagas'. Use different dot colors based on rumor stage (Interesse = Gray, Trattativa = Magenta, Ufficiale = Volt).",
-    "PANEL C (Right): Build the Consistency Check Widget with Fuchsia (#FF007F) borders and warnings for contradictory reports. Below it, create a Source Directory list with reliability scores (progress bars).",
-    "Use @phosphor-icons/react for icons. Run `yarn add @phosphor-icons/react framer-motion date-fns`.",
-    "Apply 'Outfit' font for headings and 'Manrope' for body. Import them via Google Fonts in index.css.",
-    "Use the provided image URLs for the player avatars and context imagery.",
-    "Ensure the design feels urgent, energetic, and professional, like a high-end Italian sports broadcast."
+    "Use Tailwind CSS utility classes strictly. Apply `.js` component rules as Shadcn works nicely with standard React and Tailwind.",
+    "Implement the layout precisely matching the colors and typography described.",
+    "Create a vertical timeline with the thermometer indicators dynamically colored based on temperature prop.",
+    "Ensure 'Market Signals' use the dashed border style and orange tint.",
+    "Do not use dark mode or neon fuchsia; strictly stick to this Fantacalcio-inspired light, clean theme.",
+    "Use Phosphor icons or lucide-react for the thermometer, external links, and checkmarks."
   ]
 }
