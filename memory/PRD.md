@@ -53,8 +53,15 @@ High-performance B2B operational dashboard for football (soccer) transfer-rumor 
 - **AI Article Draft export**: POST /api/profiles/{id}/article-draft?lang= — Claude turns a profile's rumor timeline into a publication-ready draft (title + body), shown in a modal with Copy (ArticleDraftDialog.jsx, "Export Draft" button in ProfileView). EN/IT aware.
 - **Simulated Google login** (LoginScreen.jsx): client-side only, NO real auth/OAuth/backend — "Continue with Google" gates the app; Logout returns to it. Persisted via localStorage `mt_authed`.
 
+## Implemented (2026-07-04) — v8 Directive: Fonte Zero, Consistency Badge, Trust Audit, Streak Lab
+- **Fonte Zero AI Radar**: alert cards show metadata only + green "🔗 Verify Original Source" link (external_link_url, target=_blank). No article text scraped.
+- **Contract Mismatch badge** (fuchsia, tooltip) on Dashboard & Profile timeline when a Player's rumor implies a free transfer but contract year > current year (lib/consistency.js, Player-scoped).
+- **Sources Trust Audit**: blue verified check for score>85 + "Apply for Verification" mock modal.
+- **Streak Lab** (isolated view, sidebar 🔥): mock Google gateway → arena (current/best streak, active daily challenge, SÌ/NO vote with correct++/wrong-reset + toasts) → Top Tipsters leaderboard. Endpoints: /api/challenges/active, /api/streak/me, /api/streak/leaderboard, POST /api/streak/vote.
+- Data expanded: 21 profiles (Serie A/B/C + estero, verified_status), 32 rumors, 7 alerts, 6 tipsters, 3 challenges. Twitter-style timestamps everywhere. SEED_VERSION=8.
+- Verified: 45/45 backend tests + all frontend flows pass (iteration_3). AI (Claude) live, no mocks.
+
 ## Next Tasks
-1. Profile & source management UI (create/edit).
-2. Rumor & pipeline card edit/delete; drag-and-drop kanban.
-3. Radar alert archiving / rolling window.
-4. (If ever needed) replace simulated login with real Emergent Google Auth.
+1. Per-source real "Original Source" URLs (source_url on Rumor) instead of google search.
+2. Profile/source management UI; rumor & pipeline edit/delete; kanban drag-and-drop.
+3. Extract a useTransferMemory hook (App.js growing).

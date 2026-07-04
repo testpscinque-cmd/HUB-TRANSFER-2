@@ -27,7 +27,7 @@ export const RumorTimeline = ({ rumors, profile }) => {
                 <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${cfg.badge}`}>
                   {stageLabel(r.stage, lang)}
                 </span>
-                {contractMismatch(r.deal_formula, r.evolution_description, profile?.contract_expiry) && <MismatchBadge />}
+                {contractMismatch(r.deal_formula, r.evolution_description, profile?.contract_expiry, profile?.role) && <MismatchBadge />}
                 <span className="flex items-center gap-1 text-[11px] font-medium text-gray-500">
                   <CalendarDays size={12} /> {dateTime(r.logged_at || r.date_logged, lang)}
                 </span>

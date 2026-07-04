@@ -38,7 +38,7 @@ const NewsCard = ({ r, onOpen, lang }) => {
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           <span className="font-heading text-sm font-bold text-white">{r.full_name}</span>
-          {contractMismatch(r.deal_formula, r.evolution_description, r.contract_expiry) && <MismatchBadge />}
+          {contractMismatch(r.deal_formula, r.evolution_description, r.contract_expiry, r.role) && <MismatchBadge />}
           <span className={`rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${isCoach ? "border-[#00E5FF]/40 bg-[#00E5FF]/10 text-[#00E5FF]" : "border-white/10 bg-white/5 text-gray-400"}`}>
             {isCoach ? "Coach" : r.position || "Player"}
           </span>
