@@ -49,3 +49,12 @@ export const stageConfig = {
 
 export const stageLabel = (stage, lang) =>
   stageConfig[stage] ? stageConfig[stage][lang] : stage;
+
+// Graphic "thermometer" mapping for negotiation heat.
+export const stageTemp = {
+  "Interesse Iniziale": { color: "#38BDF8", key: "cold" },
+  Contatti: { color: "#FBBF24", key: "warm" },
+  "Trattativa Avanzata": { color: "#FF3B30", key: "hot" },
+  "Fumata Bianca/Ufficiale": { color: "#39FF14", key: "done" },
+  Saltata: { color: "#64748B", key: "off" },
+};
