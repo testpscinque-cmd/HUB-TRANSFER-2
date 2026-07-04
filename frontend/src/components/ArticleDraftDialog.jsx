@@ -34,17 +34,17 @@ export const ArticleDraftDialog = ({ open, onClose, profile }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="tm-fade-up relative z-10 flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-white/10 bg-[#121620] shadow-2xl" data-testid="article-dialog">
-        <div className="flex items-start justify-between border-b border-white/5 px-6 py-4">
+      <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="tm-fade-up relative z-10 flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl" data-testid="article-dialog">
+        <div className="flex items-start justify-between border-b border-slate-100 px-6 py-4">
           <div className="flex items-center gap-2">
-            <Newspaper size={18} className="text-[#39FF14]" />
+            <Newspaper size={18} className="text-[#05A845]" />
             <div>
-              <h2 className="font-heading text-xl font-black uppercase text-white">{t.articleModalTitle}</h2>
-              <p className="mt-0.5 text-xs text-gray-500">{t.articleModalSub}</p>
+              <h2 className="font-heading text-xl font-black uppercase text-slate-900">{t.articleModalTitle}</h2>
+              <p className="mt-0.5 text-xs text-slate-500">{t.articleModalSub}</p>
             </div>
           </div>
-          <button onClick={onClose} data-testid="article-close" className="text-gray-500 hover:text-white">
+          <button onClick={onClose} data-testid="article-close" className="text-slate-400 hover:text-slate-900">
             <X size={20} />
           </button>
         </div>
@@ -52,26 +52,26 @@ export const ArticleDraftDialog = ({ open, onClose, profile }) => {
         <div className="flex-1 overflow-y-auto px-6 py-6" data-testid="article-body">
           {loading ? (
             <div className="flex flex-col items-center justify-center gap-3 py-16">
-              <Loader2 size={26} className="animate-spin text-[#39FF14]" />
-              <span className="text-sm text-gray-400">{t.generating}</span>
+              <Loader2 size={26} className="animate-spin text-[#05A845]" />
+              <span className="text-sm text-slate-500">{t.generating}</span>
             </div>
           ) : article ? (
             <article>
-              <h1 className="font-heading text-2xl font-black leading-tight text-white">{article.title}</h1>
-              <div className="mt-4 whitespace-pre-line text-sm leading-relaxed text-gray-300">{article.body}</div>
+              <h1 className="font-heading text-2xl font-black leading-tight text-slate-900">{article.title}</h1>
+              <div className="mt-4 whitespace-pre-line text-sm leading-relaxed text-slate-600">{article.body}</div>
             </article>
           ) : null}
         </div>
 
-        <div className="flex items-center justify-end gap-3 border-t border-white/5 px-6 py-4">
-          <button onClick={onClose} className="rounded-lg border border-white/15 px-4 py-2 text-sm font-bold text-gray-300 transition-colors hover:border-white/40 hover:text-white">
+        <div className="flex items-center justify-end gap-3 border-t border-slate-100 px-6 py-4">
+          <button onClick={onClose} className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 transition-colors hover:border-slate-400 hover:text-slate-900">
             {t.close}
           </button>
           <button
             data-testid="article-copy-btn"
             onClick={copy}
             disabled={!article}
-            className="flex items-center gap-2 rounded-lg bg-[#39FF14] px-5 py-2 font-heading text-sm font-black uppercase tracking-wider text-black transition-all hover:bg-[#39FF14]/85 disabled:opacity-50"
+            className="flex items-center gap-2 rounded-lg bg-[#05A845] px-5 py-2 font-heading text-sm font-black uppercase tracking-wider text-white transition-all hover:bg-[#048B39] disabled:opacity-50"
           >
             {copied ? <Check size={16} /> : <Copy size={16} />} {t.copy}
           </button>

@@ -8,7 +8,7 @@ import { consistencyCheck, createRumor } from "@/lib/api";
 const today = () => new Date().toISOString().slice(0, 10);
 
 const fieldClass =
-  "w-full rounded-lg border border-white/10 bg-[#1B2432] px-3 py-2.5 text-sm text-white focus:border-[#39FF14] focus:outline-none focus:ring-1 focus:ring-[#39FF14] transition-all";
+  "w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 focus:border-[#05A845] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#05A845]/20 transition-all";
 
 export const NewRumorDialog = ({ open, onClose, profiles, selectedProfile, sources, onSaved, onCheck }) => {
   const { t, lang } = useI18n();
@@ -81,29 +81,29 @@ export const NewRumorDialog = ({ open, onClose, profiles, selectedProfile, sourc
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
       <div
-        className="tm-fade-up relative z-10 flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-xl border border-white/10 bg-[#121620] shadow-2xl"
+        className="tm-fade-up relative z-10 flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl"
         data-testid="new-rumor-dialog"
       >
-        <div className="flex items-start justify-between border-b border-white/5 px-6 py-4">
+        <div className="flex items-start justify-between border-b border-slate-100 px-6 py-4">
           <div>
-            <h2 className="font-heading text-xl font-black uppercase text-white">{t.dialogTitle}</h2>
-            <p className="mt-0.5 text-xs text-gray-500">{t.dialogSub}</p>
+            <h2 className="font-heading text-xl font-black uppercase text-slate-900">{t.dialogTitle}</h2>
+            <p className="mt-0.5 text-xs text-slate-500">{t.dialogSub}</p>
           </div>
-          <button onClick={onClose} data-testid="dialog-close" className="text-gray-500 hover:text-white">
+          <button onClick={onClose} data-testid="dialog-close" className="text-slate-400 hover:text-slate-900">
             <X size={20} />
           </button>
         </div>
 
         <div className="flex-1 space-y-4 overflow-y-auto px-6 py-5">
           <div>
-            <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-gray-400">
+            <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-slate-500">
               {t.profile}
             </label>
             <select data-testid="rumor-profile-select" value={form.profile_id} onChange={set("profile_id")} className={fieldClass}>
               {profiles.map((p) => (
-                <option key={p.id} value={p.id} className="bg-[#1B2432]">
+                <option key={p.id} value={p.id}>
                   {p.full_name} — {p.current_club}
                 </option>
               ))}
@@ -112,19 +112,19 @@ export const NewRumorDialog = ({ open, onClose, profiles, selectedProfile, sourc
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-gray-400">
+              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-slate-500">
                 {t.stage}
               </label>
               <select data-testid="rumor-stage-select" value={form.stage} onChange={set("stage")} className={fieldClass}>
                 {STAGES.map((s) => (
-                  <option key={s} value={s} className="bg-[#1B2432]">
+                  <option key={s} value={s}>
                     {stageLabel(s, lang)}
                   </option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-gray-400">
+              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-slate-500">
                 {t.dateLogged}
               </label>
               <input type="date" data-testid="rumor-date-input" value={form.date_logged} onChange={set("date_logged")} className={fieldClass} />
@@ -133,24 +133,24 @@ export const NewRumorDialog = ({ open, onClose, profiles, selectedProfile, sourc
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-gray-400">
+              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-slate-500">
                 {t.source}
               </label>
               <select data-testid="rumor-source-select" value={form.source_name} onChange={set("source_name")} className={fieldClass}>
                 {sources.map((s) => (
-                  <option key={s.id} value={s.source_name} className="bg-[#1B2432]">
-                    {s.source_name} ({s.reliability_score}%)
+                  <option key={s.id} value={s.source_name}>
+                    {s.source_name}
                   </option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-gray-400">
+              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-slate-500">
                 {t.dealFormula}
               </label>
               <select data-testid="rumor-formula-select" value={form.deal_formula} onChange={set("deal_formula")} className={fieldClass}>
                 {DEAL_FORMULAS.map((d) => (
-                  <option key={d} value={d} className="bg-[#1B2432]">
+                  <option key={d} value={d}>
                     {d}
                   </option>
                 ))}
@@ -159,7 +159,7 @@ export const NewRumorDialog = ({ open, onClose, profiles, selectedProfile, sourc
           </div>
 
           <div>
-            <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-gray-400">
+            <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-slate-500">
               {t.description}
             </label>
             <textarea
@@ -176,8 +176,8 @@ export const NewRumorDialog = ({ open, onClose, profiles, selectedProfile, sourc
             <div
               className={`rounded-lg border p-3 text-sm ${
                 localResult.has_contradiction
-                  ? "border-[#FF007F]/50 bg-[#FF007F]/5 text-[#FF007F]"
-                  : "border-[#39FF14]/40 bg-[#39FF14]/5 text-[#39FF14]"
+                  ? "border-red-200 bg-red-50 text-red-600"
+                  : "border-green-200 bg-green-50 text-[#05A845]"
               }`}
               data-testid="dialog-check-result"
             >
@@ -186,12 +186,12 @@ export const NewRumorDialog = ({ open, onClose, profiles, selectedProfile, sourc
           )}
         </div>
 
-        <div className="flex items-center gap-3 border-t border-white/5 px-6 py-4">
+        <div className="flex items-center gap-3 border-t border-slate-100 px-6 py-4">
           <button
             data-testid="run-check-btn"
             onClick={runCheck}
             disabled={checking}
-            className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-[#FF007F]/50 bg-[#FF007F]/10 py-2.5 text-sm font-bold text-[#FF007F] transition-all hover:bg-[#FF007F]/20 disabled:opacity-50"
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-[#05A845]/40 bg-[#05A845]/5 py-2.5 text-sm font-bold text-[#05A845] transition-all hover:bg-[#05A845]/10 disabled:opacity-50"
           >
             {checking ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
             {t.runCheck}
@@ -200,7 +200,7 @@ export const NewRumorDialog = ({ open, onClose, profiles, selectedProfile, sourc
             data-testid="save-rumor-btn"
             onClick={save}
             disabled={saving}
-            className="flex items-center justify-center gap-2 rounded-lg bg-[#39FF14] px-5 py-2.5 font-heading text-sm font-black uppercase tracking-wider text-black transition-all hover:bg-[#39FF14]/85 disabled:opacity-50"
+            className="flex items-center justify-center gap-2 rounded-lg bg-[#05A845] px-5 py-2.5 font-heading text-sm font-black uppercase tracking-wider text-white transition-all hover:bg-[#048B39] disabled:opacity-50"
           >
             {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
             {t.save}

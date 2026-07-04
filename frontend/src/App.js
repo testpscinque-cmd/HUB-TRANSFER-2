@@ -11,7 +11,6 @@ import { ProfileView } from "@/components/ProfileView";
 import { SourcesView } from "@/components/SourcesView";
 import { RadarView } from "@/components/RadarView";
 import { StreakLabView } from "@/components/StreakLabView";
-import { NewRumorDialog } from "@/components/NewRumorDialog";
 import { LoginScreen } from "@/components/LoginScreen";
 
 function Shell({ onLogout }) {
@@ -28,12 +27,6 @@ function Shell({ onLogout }) {
 
   const [selectedId, setSelectedId] = useState(null);
   const [rumors, setRumors] = useState([]);
-
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogProfile, setDialogProfile] = useState(null);
-  const [checkResult, setCheckResult] = useState(null);
-  const [checking, setChecking] = useState(false);
-  const preserveResult = useRef(false);
 
   const [alerts, setAlerts] = useState([]);
   const [pipeline, setPipeline] = useState([]);
@@ -73,8 +66,6 @@ function Shell({ onLogout }) {
 
   useEffect(() => {
     if (selectedId) {
-      if (preserveResult.current) preserveResult.current = false;
-      else setCheckResult(null);
       loadRumors(selectedId);
     }
   }, [selectedId, loadRumors]);
@@ -99,26 +90,6 @@ function Shell({ onLogout }) {
   };
 
   const back = () => setView(prevView.current || "dashboard");
-
-  const openDialog = (profileId) => {
-    setDialogProfile(profiles.find((p) => p.id === profileId) || selectedProfile);
-    setDialogOpen(true);
-  };
-
-  const handleSaved = (profileId, result) => {
-    if (result) preserveResult.current = true;
-    setSelectedId(profileId);
-    setView("profile");
-    loadRumors(profileId);
-    refreshRecent();
-    refreshStats();
-    if (result) setCheckResult(result);
-  };
-
-  const handleCheck = (res, isChecking) => {
-    setChecking(!!isChecking);
-    if (!isChecking) setCheckResult(res);
-  };
 
   // Radar actions
   const onScan = async () => {
@@ -159,6 +130,8 @@ function Shell({ onLogout }) {
       const res = await api.submitVote({ challenge_id: challenge.id, answer });
       setStreakMe((prev) => ({ ...(prev || {}), current_streak: res.current_streak, highest_streak: res.highest_streak }));
       api.getLeaderboard().then(setLeaderboard);
+      if (res.next_challenge) setChallenge(res.next_challenge);
+      else api.getActiveChallenge().then(setChallenge).catch(() => {});
       if (res.correct) toast.success(t.correctToast);
       else toast.error(t.wrongToast);
       return res;
@@ -173,25 +146,22 @@ function Shell({ onLogout }) {
 
   return (
     <div className="flex h-screen overflow-hidden tm-grid-bg">
-      <Sidebar view={view} onNavigate={navigate} onAddRumor={() => openDialog(selectedId)} alertsCount={alertsCount} onLogout={onLogout} />
+      <Sidebar view={view} onNavigate={navigate} alertsCount={alertsCount} onLogout={onLogout} />
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar query={query} onSearch={onSearch} showBack={view === "profile"} onBack={back} />
         <main className={`flex-1 overflow-y-auto p-6 sm:p-8 ${isRadar ? "" : ""}`}>
-          {view === "dashboard" && <DashboardView recent={recent} stats={stats} onOpenProfile={openProfile} />}
+          {view === "dashboard" && <DashboardView recent={recent} sources={sources} onOpenProfile={openProfile} />}
           {view === "radar" && (
             <RadarView
-              alerts={alerts} pipeline={pipeline} tasks={tasks} scanning={scanning}
-              onScan={onScan} onInvestigate={onInvestigate} onDismiss={onDismiss} onMove={onMove} onToggleTask={onToggleTask}
+              alerts={alerts} pipeline={pipeline} tasks={tasks} sources={sources}
+              onInvestigate={onInvestigate} onDismiss={onDismiss} onMove={onMove} onToggleTask={onToggleTask}
             />
           )}
           {view === "profiles" && (
             <ProfilesView profiles={profiles} clubs={clubs} query={query} onOpenProfile={openProfile} />
           )}
           {view === "profile" && selectedProfile && (
-            <ProfileView
-              profile={selectedProfile} rumors={rumors} checkResult={checkResult} checking={checking}
-              onAddRumor={openDialog}
-            />
+            <ProfileView profile={selectedProfile} rumors={rumors} />
           )}
           {view === "sources" && <SourcesView sources={sources} />}
           {view === "streak" && (
@@ -199,16 +169,6 @@ function Shell({ onLogout }) {
           )}
         </main>
       </div>
-
-      <NewRumorDialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        profiles={profiles}
-        selectedProfile={dialogProfile}
-        sources={sources}
-        onSaved={handleSaved}
-        onCheck={handleCheck}
-      />
     </div>
   );
 }
@@ -227,7 +187,7 @@ function App() {
   return (
     <I18nProvider>
       {authed ? <Shell onLogout={logout} /> : <LoginScreen onLogin={login} />}
-      <Toaster position="top-right" theme="dark" richColors />
+      <Toaster position="top-right" theme="light" richColors />
     </I18nProvider>
   );
 }

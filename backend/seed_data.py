@@ -1,6 +1,6 @@
-"""Demo data for MemoryTransfer — v4 (2026 window, expanded, minor leagues, Twitter-style times)."""
+"""Demo data for MemoryTransfer — v5 (2026/2027 window, expanded DB, rotating challenges)."""
 
-SEED_VERSION = 8
+SEED_VERSION = 12
 
 _A = "https://images.pexels.com/photos/10349959/pexels-photo-10349959.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
 _B = "https://images.pexels.com/photos/14741747/pexels-photo-14741747.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
@@ -102,19 +102,70 @@ PROFILES = [
        contract_expiry="2026-06-30", estimated_salary="€1.2M / year", representation_agency="Independent", nationality="Italy", age=46, market_value="—",
        internal_notes="Under pressure to deliver Palermo promotion. Job security a live topic; Serie B rivals watching.",
        image=_A, career_history=[{"club": "Empoli", "from": 2020, "to": 2021}, {"club": "Sassuolo", "from": 2021, "to": 2024}, {"club": "Palermo", "from": 2024, "to": None}]),
+    # ---------------- 2026/2027 EXPANSION — SERIE A STARS ----------------
+    _p(id="p-vlahovic", full_name="Dušan Vlahović", role="Player", position="Centre-Forward", current_club="Juventus", league="Serie A",
+       contract_expiry="2026-06-30", estimated_salary="€12M / year", representation_agency="Darko Ristić", nationality="Serbia", age=26, market_value="€40M",
+       internal_notes="MASSIVE 2026 saga: contract expires June 2026, no renewal agreed. Free-agent watch — Premier League & Saudi circling. Juve may cash in this window.",
+       image=_A, career_history=[{"club": "Partizan", "from": 2016, "to": 2018}, {"club": "Fiorentina", "from": 2018, "to": 2022}, {"club": "Juventus", "from": 2022, "to": None}]),
+    _p(id="p-leao", full_name="Rafael Leão", role="Player", position="Winger", current_club="Milan", league="Serie A",
+       contract_expiry="2028-06-30", estimated_salary="€7M / year", representation_agency="Ted Dimvula", nationality="Portugal", age=26, market_value="€75M",
+       internal_notes="Perennial Premier League target. Milan hold a high release clause (~€175M). Any drop in valuation reopens the file.",
+       image=_B, career_history=[{"club": "Sporting CP", "from": 2018, "to": 2018}, {"club": "Lille", "from": 2018, "to": 2019}, {"club": "Milan", "from": 2019, "to": None}]),
+    _p(id="p-tonali", full_name="Sandro Tonali", role="Player", position="Central Midfielder", current_club="Newcastle", league="Premier League",
+       contract_expiry="2028-06-30", estimated_salary="€6M / year", representation_agency="Giuseppe Riso", nationality="Italy", age=26, market_value="€55M",
+       internal_notes="Heartthrob of a Serie A return story. Milan & Juventus dream; Newcastle demand a big fee. Homesick angle recurring.",
+       image=_A, career_history=[{"club": "Brescia", "from": 2017, "to": 2020}, {"club": "Milan", "from": 2020, "to": 2023}, {"club": "Newcastle", "from": 2023, "to": None}]),
+    _p(id="p-chiesa", full_name="Federico Chiesa", role="Player", position="Winger", current_club="Liverpool", league="Premier League",
+       contract_expiry="2028-06-30", estimated_salary="€5M / year", representation_agency="Fali Ramadani", nationality="Italy", age=28, market_value="€25M",
+       internal_notes="Limited minutes at Liverpool. Napoli, Roma & Milan track a possible Serie A return in 2026.",
+       image=_B, career_history=[{"club": "Fiorentina", "from": 2016, "to": 2020}, {"club": "Juventus", "from": 2020, "to": 2024}, {"club": "Liverpool", "from": 2024, "to": None}]),
+    _p(id="p-koopmeiners", full_name="Teun Koopmeiners", role="Player", position="Central Midfielder", current_club="Juventus", league="Serie A",
+       contract_expiry="2029-06-30", estimated_salary="€5M / year", representation_agency="SEG", nationality="Netherlands", age=28, market_value="€35M",
+       internal_notes="Underwhelming since his big-money move. Juventus open to offers to balance the books in 2026.",
+       image=_A, career_history=[{"club": "AZ Alkmaar", "from": 2018, "to": 2021}, {"club": "Atalanta", "from": 2021, "to": 2024}, {"club": "Juventus", "from": 2024, "to": None}]),
+    _p(id="p-comuzzo", full_name="Pietro Comuzzo", role="Player", position="Centre-Back", current_club="Fiorentina", league="Serie A",
+       contract_expiry="2029-06-30", estimated_salary="€1.2M / year", representation_agency="Tullio Tinti", nationality="Italy", age=21, market_value="€35M",
+       internal_notes="Elite young Italian centre-back. Napoli & Premier clubs bid in Jan 2025; Fiorentina resisted. Live 2026 saga.",
+       image=_B, career_history=[{"club": "Fiorentina", "from": 2023, "to": None}]),
+    _p(id="p-raspadori", full_name="Giacomo Raspadori", role="Player", position="Second Striker", current_club="Napoli", league="Serie A",
+       contract_expiry="2028-06-30", estimated_salary="€3M / year", representation_agency="Tullio Tinti", nationality="Italy", age=26, market_value="€28M",
+       internal_notes="Wants regular minutes. Atletico Madrid & Serie A rivals interested. A clean sale opportunity for Napoli in 2026.",
+       image=_A, career_history=[{"club": "Sassuolo", "from": 2019, "to": 2022}, {"club": "Napoli", "from": 2022, "to": None}]),
+    _p(id="p-scalvini", full_name="Giorgio Scalvini", role="Player", position="Centre-Back", current_club="Atalanta", league="Serie A",
+       contract_expiry="2027-06-30", estimated_salary="€2M / year", representation_agency="Tullio Tinti", nationality="Italy", age=22, market_value="€40M",
+       internal_notes="Recovered from ACL injury. Premier League & Real Madrid have long tracked him. Atalanta valuation firm.",
+       image=_B, career_history=[{"club": "Atalanta", "from": 2021, "to": None}]),
+    # ---------------- SERIE B / C 2026/2027 ----------------
+    _p(id="p-pohjanpalo", full_name="Joel Pohjanpalo", role="Player", position="Centre-Forward", current_club="Palermo", league="Serie B",
+       contract_expiry="2027-06-30", estimated_salary="€1M / year", representation_agency="Independent", nationality="Finland", age=31, market_value="€5M",
+       internal_notes="Serie B goal guarantee. Serie A promotion contenders monitor if Palermo stall.",
+       image=_A, career_history=[{"club": "Bayer Leverkusen", "from": 2015, "to": 2020}, {"club": "Venezia", "from": 2022, "to": 2025}, {"club": "Palermo", "from": 2025, "to": None}]),
+    _p(id="p-adorante", full_name="Andrea Adorante", role="Player", position="Centre-Forward", current_club="Cesena", league="Serie B",
+       contract_expiry="2026-06-30", estimated_salary="€0.35M / year", representation_agency="Independent", nationality="Italy", age=26, market_value="€1.5M",
+       internal_notes="Expiring 2026 — free-agent watch. Serie C promotion sides and mid-table Serie B interested.",
+       image=_B, career_history=[{"club": "Inter", "from": 2020, "to": 2021}, {"club": "Modena", "from": 2023, "to": 2024}, {"club": "Cesena", "from": 2024, "to": None}]),
+    # ---------------- COACHES 2026/2027 ----------------
+    _p(id="c-motta", full_name="Thiago Motta", role="Coach", position="Head Coach", current_club="Free Agent", league="—",
+       contract_expiry="", estimated_salary="€4M / year (target)", representation_agency="Independent", nationality="Italy", age=43, market_value="—",
+       internal_notes="Free after the Juventus spell. Premier League & Serie A mid-table projects consider him for 2026/27.",
+       image=_A, career_history=[{"club": "Spezia", "from": 2021, "to": 2022}, {"club": "Bologna", "from": 2022, "to": 2024}, {"club": "Juventus", "from": 2024, "to": 2025}]),
+    _p(id="c-italiano", full_name="Vincenzo Italiano", role="Coach", position="Head Coach", current_club="Bologna", league="Serie A",
+       contract_expiry="2027-06-30", estimated_salary="€2.2M / year", representation_agency="Independent", nationality="Italy", age=48, market_value="—",
+       internal_notes="Won silverware with Bologna. Bigger Serie A clubs monitor; Bologna push to extend and build.",
+       image=_B, career_history=[{"club": "Spezia", "from": 2019, "to": 2021}, {"club": "Fiorentina", "from": 2021, "to": 2024}, {"club": "Bologna", "from": 2024, "to": None}]),
 ]
 
 SOURCES = [
-    {"id": "s-romano", "source_name": "Fabrizio Romano", "reliability_score": 96, "notes": "Tier 1. 'Here we go' standard. Rarely wrong on done deals."},
-    {"id": "s-dimarzio", "source_name": "Gianluca Di Marzio", "reliability_score": 92, "notes": "Tier 1. Excellent on Serie A negotiations."},
-    {"id": "s-sky", "source_name": "Sky Sport Italia", "reliability_score": 90, "notes": "Broadcaster. Strong on medicals & official confirmations."},
-    {"id": "s-schira", "source_name": "Nicolò Schira", "reliability_score": 87, "notes": "Strong on contracts, salaries & Serie B/C moves."},
-    {"id": "s-moretto", "source_name": "Matteo Moretto", "reliability_score": 85, "notes": "Reliable on La Liga <-> Serie A movements."},
-    {"id": "s-pedulla", "source_name": "Alfredo Pedullà", "reliability_score": 83, "notes": "Veteran. Great on lower-league & Serie B deals."},
-    {"id": "s-longari", "source_name": "Gianluigi Longari", "reliability_score": 80, "notes": "Sportitalia. Solid on Serie A/B targets."},
-    {"id": "s-galetti", "source_name": "Rudy Galetti", "reliability_score": 78, "notes": "Good on emerging targets, occasional misses."},
-    {"id": "s-tuttosport", "source_name": "Tuttosport", "reliability_score": 62, "notes": "Turin-based. Juventus bias, sometimes optimistic."},
-    {"id": "s-twitter-itk", "source_name": "Anonymous ITK (X)", "reliability_score": 31, "notes": "Unverified insider. Treat with heavy caution."},
+    {"id": "s-romano", "source_name": "Fabrizio Romano", "reliability_score": 99, "url": "https://x.com/FabrizioRomano", "notes": "Tier 1. Lo standard 'Here we go'. Il riferimento sugli affari conclusi."},
+    {"id": "s-dimarzio", "source_name": "Gianluca Di Marzio", "reliability_score": 96, "url": "https://www.gianlucadimarzio.com", "notes": "Tier 1. Eccellente sulle trattative di Serie A."},
+    {"id": "s-ornstein", "source_name": "David Ornstein (The Athletic)", "reliability_score": 95, "url": "https://www.nytimes.com/athletic/football/", "notes": "Tier 1. Autorevole sui movimenti Premier League <-> Serie A."},
+    {"id": "s-sky", "source_name": "Sky Sport Italia", "reliability_score": 95, "url": "https://sport.sky.it/calciomercato", "notes": "Emittente. Forte su visite mediche e ufficialità."},
+    {"id": "s-schira", "source_name": "Nicolò Schira", "reliability_score": 93, "url": "https://x.com/NicoSchira", "notes": "Forte su contratti, ingaggi e mosse di Serie B/C."},
+    {"id": "s-moretto", "source_name": "Matteo Moretto", "reliability_score": 92, "url": "https://x.com/MatteMoretto", "notes": "Affidabile sui movimenti La Liga <-> Serie A."},
+    {"id": "s-pedulla", "source_name": "Alfredo Pedullà", "reliability_score": 91, "url": "https://www.alfredopedulla.com", "notes": "Veterano. Ottimo sugli affari di categorie minori e Serie B."},
+    {"id": "s-longari", "source_name": "Gianluigi Longari", "reliability_score": 90, "url": "https://x.com/longarigianluca", "notes": "Sportitalia. Solido su obiettivi di Serie A/B."},
+    {"id": "s-galetti", "source_name": "Rudy Galetti", "reliability_score": 89, "url": "https://x.com/RudyGaletti", "notes": "Bravo sugli obiettivi internazionali emergenti."},
+    {"id": "s-tuttosport", "source_name": "Tuttosport", "reliability_score": 88, "url": "https://www.tuttosport.com", "notes": "Storico quotidiano sportivo torinese. Forte copertura Serie A."},
 ]
 
 # age_min = minutes ago from 'now' (computed at seed time) so the feed always looks live.
@@ -134,7 +185,7 @@ RUMORS = [
     {"profile_id": "p-kean", "age_min": 5000, "stage": "Contatti", "source_name": "Sky Sport Italia", "deal_formula": "Definitive", "evolution_description": "Premier League sides ask about Kean's clause terms and payment structure."},
     # Ademola Lookman
     {"profile_id": "p-lookman", "age_min": 300, "stage": "Contatti", "source_name": "Fabrizio Romano", "deal_formula": "Definitive", "evolution_description": "PSG revive their interest in Lookman. Atalanta's valuation remains firmly above €50M."},
-    {"profile_id": "p-lookman", "age_min": 30000, "stage": "Saltata", "source_name": "Anonymous ITK (X)", "deal_formula": "Definitive", "evolution_description": "Reported agreement with a Premier club falls through; Atalanta deny any deal was close."},
+    {"profile_id": "p-lookman", "age_min": 30000, "stage": "Saltata", "source_name": "Tuttosport", "deal_formula": "Definitive", "evolution_description": "Reported agreement with a Premier club falls through; Atalanta deny any deal was close."},
     # Lucca
     {"profile_id": "p-lucca", "age_min": 600, "stage": "Interesse Iniziale", "source_name": "Gianluigi Longari", "deal_formula": "Loan", "evolution_description": "With limited minutes at Napoli, Serie A sides explore a loan for Lorenzo Lucca to guarantee playing time."},
     # Pio Esposito
@@ -163,7 +214,35 @@ RUMORS = [
     {"profile_id": "c-gilardino", "age_min": 1800, "stage": "Interesse Iniziale", "source_name": "Sky Sport Italia", "deal_formula": "Free Transfer", "evolution_description": "Free agent Gilardino shortlisted by two Serie A mid-table sides and an ambitious Serie B club."},
     {"profile_id": "c-dionisi", "age_min": 260, "stage": "Contatti", "source_name": "Tuttosport", "deal_formula": "Free Transfer", "evolution_description": "Palermo's board back Dionisi for now, but Serie B rivals monitor the situation closely."},
     # Deliberate contradiction demo: free-transfer claim while contract runs beyond current year
-    {"profile_id": "p-lookman", "age_min": 20, "stage": "Contatti", "source_name": "Anonymous ITK (X)", "deal_formula": "Free Transfer", "evolution_description": "Unverified report claims Lookman could leave Atalanta as a free agent this summer on a free transfer."},
+    {"profile_id": "p-lookman", "age_min": 20, "stage": "Contatti", "source_name": "Tuttosport", "deal_formula": "Free Transfer", "evolution_description": "A speculative report suggests Lookman could leave Atalanta as a free agent this summer on a free transfer."},
+    # ---------------- 2026/2027 EXPANSION RUMORS ----------------
+    # Vlahović (expiring 2026 — flagship saga)
+    {"profile_id": "p-vlahovic", "age_min": 25, "stage": "Trattativa Avanzata", "source_name": "Fabrizio Romano", "deal_formula": "Definitive", "evolution_description": "Juventus and Vlahović remain far apart on renewal. With the deal expiring in June 2026, Juve now consider selling to avoid a free exit. Premier clubs alerted."},
+    {"profile_id": "p-vlahovic", "age_min": 2600, "stage": "Contatti", "source_name": "Gianluca Di Marzio", "deal_formula": "Definitive", "evolution_description": "A Saudi Pro League club and two Premier sides ask about Vlahović's wage demands and a mid-season fee."},
+    {"profile_id": "p-vlahovic", "age_min": 30000, "stage": "Interesse Iniziale", "source_name": "Tuttosport", "deal_formula": "Definitive", "evolution_description": "Juventus table an improved renewal offer, but the striker's camp stalls, opening the door to a 2026 departure."},
+    # Contradiction demo #2: free-transfer claim while contract runs beyond current year handled by Vlahović? No — his expires 2026. Use Leão instead.
+    {"profile_id": "p-leao", "age_min": 15, "stage": "Contatti", "source_name": "Tuttosport", "deal_formula": "Free Transfer", "evolution_description": "A speculative report suggests Rafael Leão could walk away from Milan on a free transfer this summer despite his long-term deal."},
+    {"profile_id": "p-leao", "age_min": 500, "stage": "Interesse Iniziale", "source_name": "Sky Sport Italia", "deal_formula": "Definitive", "evolution_description": "A Premier League heavyweight asks Milan about Leão's release-clause mechanics. Milan not entertaining offers for now."},
+    # Tonali return
+    {"profile_id": "p-tonali", "age_min": 140, "stage": "Contatti", "source_name": "Fabrizio Romano", "deal_formula": "Definitive", "evolution_description": "Milan explore the feasibility of bringing Sandro Tonali home. Newcastle's stance: only a premium fee would be considered."},
+    {"profile_id": "p-tonali", "age_min": 9000, "stage": "Interesse Iniziale", "source_name": "Nicolò Schira", "deal_formula": "Definitive", "evolution_description": "Juventus also register interest in Tonali as a long-term midfield anchor for the 2026/27 project."},
+    # Chiesa return
+    {"profile_id": "p-chiesa", "age_min": 320, "stage": "Contatti", "source_name": "Gianluca Di Marzio", "deal_formula": "Loan", "evolution_description": "Napoli and Roma discuss a loan-to-buy structure for Federico Chiesa as Liverpool consider letting him play regularly."},
+    # Koopmeiners
+    {"profile_id": "p-koopmeiners", "age_min": 700, "stage": "Interesse Iniziale", "source_name": "Matteo Moretto", "deal_formula": "Definitive", "evolution_description": "Juventus signal willingness to listen to offers for Koopmeiners to fund their 2026 rebuild."},
+    # Comuzzo (hot young CB)
+    {"profile_id": "p-comuzzo", "age_min": 85, "stage": "Trattativa Avanzata", "source_name": "Fabrizio Romano", "deal_formula": "Definitive", "evolution_description": "Napoli return for Comuzzo with an improved package. Fiorentina hold firm on a €40M valuation; talks intensify."},
+    {"profile_id": "p-comuzzo", "age_min": 22000, "stage": "Contatti", "source_name": "Nicolò Schira", "deal_formula": "Definitive", "evolution_description": "Premier League scouts log repeated viewings of Comuzzo; Fiorentina plan a renewal to protect the asset."},
+    # Raspadori
+    {"profile_id": "p-raspadori", "age_min": 420, "stage": "Contatti", "source_name": "Gianluigi Longari", "deal_formula": "Definitive", "evolution_description": "Atlético Madrid and a Serie A rival ask Napoli about Raspadori. The player seeks guaranteed minutes for 2026."},
+    # Scalvini
+    {"profile_id": "p-scalvini", "age_min": 1600, "stage": "Interesse Iniziale", "source_name": "Sky Sport Italia", "deal_formula": "Definitive", "evolution_description": "Now fully fit, Scalvini re-enters the radar of Premier clubs and Real Madrid. Atalanta's price stays high."},
+    # Serie B/C new
+    {"profile_id": "p-pohjanpalo", "age_min": 260, "stage": "Contatti", "source_name": "Alfredo Pedullà", "deal_formula": "Definitive", "evolution_description": "Serie A promotion hopefuls sound out Pohjanpalo as a ready-made goalscorer if Palermo miss out."},
+    {"profile_id": "p-adorante", "age_min": 3100, "stage": "Contatti", "source_name": "Nicolò Schira", "deal_formula": "Free Transfer", "evolution_description": "Adorante's Cesena deal expires in 2026; several Serie B and promotion-chasing Serie C clubs line up free-agent talks."},
+    # Coaches new
+    {"profile_id": "c-motta", "age_min": 200, "stage": "Contatti", "source_name": "Fabrizio Romano", "deal_formula": "Free Transfer", "evolution_description": "Thiago Motta, free since leaving Juventus, is contacted by a Premier League project and a Serie A mid-table side for 2026/27."},
+    {"profile_id": "c-italiano", "age_min": 1500, "stage": "Interesse Iniziale", "source_name": "Gianluca Di Marzio", "deal_formula": "Free Transfer", "evolution_description": "Bologna open renewal talks with Italiano, but a bigger Serie A club monitors his situation for next season."},
 ]
 
 # age_min for created_at (Twitter-style live times)
@@ -206,7 +285,7 @@ VERIFICATION_TASKS = [
 ]
 
 # ---------------- STREAK LAB (isolated gamification) ----------------
-VERIFIED_PROFILE_IDS = {"p-yildiz", "p-nicopaz", "p-kean", "p-lookman", "p-osimhen", "p-zirkzee", "p-calafiori", "c-conte", "c-fabregas"}
+VERIFIED_PROFILE_IDS = {"p-yildiz", "p-nicopaz", "p-kean", "p-lookman", "p-osimhen", "p-zirkzee", "p-calafiori", "c-conte", "c-fabregas", "p-vlahovic", "p-leao", "p-tonali", "p-chiesa", "p-comuzzo", "c-motta", "c-italiano"}
 
 STREAK_USERS = [
     {"id": "u-you", "mock_username": "You", "current_streak": 4, "highest_streak": 9},
@@ -218,7 +297,14 @@ STREAK_USERS = [
 ]
 
 DAILY_CHALLENGES = [
-    {"id": "ch-1", "question_text": "Will Joshua Zirkzee complete his loan move to Juventus before Friday?", "correct_answer": "SI", "is_active": True},
-    {"id": "ch-2", "question_text": "Will Real Madrid trigger the Nico Paz buy-back this summer?", "correct_answer": "NO", "is_active": False},
-    {"id": "ch-3", "question_text": "Will Cesc Fàbregas leave Como for a Premier League club in 2026?", "correct_answer": "NO", "is_active": False},
+    {"id": "ch-1", "order": 0, "question_text": "Will Dušan Vlahović sign a new Juventus contract before his 2026 deadline?", "correct_answer": "NO", "is_active": True},
+    {"id": "ch-2", "order": 1, "question_text": "Will Real Madrid trigger the Nico Paz buy-back this summer?", "correct_answer": "NO", "is_active": False},
+    {"id": "ch-3", "order": 2, "question_text": "Will Joshua Zirkzee complete his loan move to Juventus?", "correct_answer": "SI", "is_active": False},
+    {"id": "ch-4", "order": 3, "question_text": "Will Victor Osimhen return to Serie A in 2026?", "correct_answer": "SI", "is_active": False},
+    {"id": "ch-5", "order": 4, "question_text": "Will Rafael Leão leave Milan in the 2026 window?", "correct_answer": "NO", "is_active": False},
+    {"id": "ch-6", "order": 5, "question_text": "Will Sandro Tonali make a Serie A return before 2027?", "correct_answer": "NO", "is_active": False},
+    {"id": "ch-7", "order": 6, "question_text": "Will Moise Kean's release clause be triggered by a Saudi club?", "correct_answer": "SI", "is_active": False},
+    {"id": "ch-8", "order": 7, "question_text": "Will Cesc Fàbregas leave Como for a Premier League club in 2026?", "correct_answer": "NO", "is_active": False},
+    {"id": "ch-9", "order": 8, "question_text": "Will Fiorentina sell Pietro Comuzzo to Napoli in 2026?", "correct_answer": "NO", "is_active": False},
+    {"id": "ch-10", "order": 9, "question_text": "Will Thiago Motta take a new head-coach job before 2027?", "correct_answer": "SI", "is_active": False},
 ]

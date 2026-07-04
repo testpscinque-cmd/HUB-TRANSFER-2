@@ -1,0 +1,31 @@
+{
+  "summary": "Frontend-only regression after removing 'Nuovo Rumor' feature and fixing the 'checkResult is not defined' profile crash. All 7 requested scenarios verified end-to-end with 0 page errors and 0 runtime exceptions. Player profile (p-lookman) AND Coach profile (c-gilardino) both open cleanly with Cronologia + Carriera tabs rendering. Dashboard TOP NEWS shows CALDISSIME ORA hot cards and ULTIME NOTIZIE feed. News page (nav-radar) exposes news-search-input which filters cards (7→0 for non-matching query), each card has a green verify-source-* button whose href AND visible label are a https://news.google.com/... URL. NO 'Simulate Scan' button anywhere. Investigate + Dismiss buttons on 'New' alerts work (Dismiss removes the card). Sidebar has NO nav-add-rumor; nav-radar has permanent nav-live-dot (red pulse) + 'Live' badge. Profile header exposes transfer-card-btn + export-draft-btn only (no add-rumor). TransferCardDialog opens with transfer-card-download + transfer-card-copy buttons. Article Draft dialog opens correctly. Streak Lab: streak-google-login gateway → mock spinner → arena; both vote-yes and vote-no rotate challenge-question to a new question (verified 3 distinct questions across gate→vote SI→vote NO). Source Guarantee banner (scoop-guarantee) + SCOOP badge visible on Lookman timeline.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_transfer_memory.py",
+    "/app/backend/tests/test_v3_features.py",
+    "/app/backend/tests/test_streak_v4.py"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "App.js: verified no leftover `checkResult`/`onAddRumor` props are passed to ProfileView. Grep across /app/frontend/src for 'checkResult', 'onAddRumor', 'nav-add-rumor', 'add-rumor', 'radar-scan' returns zero matches — clean removal.",
+    "ProfileView.jsx now cleanly renders header with only transfer-card-btn + export-draft-btn, tabs cronologia/carriera, and aside ContractCard. No dead code.",
+    "Sidebar.jsx: nav-add-rumor removed. nav-live-dot is rendered permanently on nav-radar via the `dot` prop regardless of alertsCount — matches spec.",
+    "RadarFeed.jsx: no `radar-scan-btn` code path remains; feed has search + investigate/dismiss actions only. Green verify-source button correctly shows the google news URL as visible text (font-mono, truncated).",
+    "Minor optional polish: verify-source button uses `truncate` on the URL text — on very narrow screens the URL is elided but this is by design and the full href is on the anchor's title tooltip.",
+    "TransferCardDialog + ArticleDraftDialog are custom (not role='dialog'); use data-testid selectors for automation (already documented)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "not tested (frontend-only request)", "frontend": "100% (7/7 requested scenarios pass, 0 runtime errors)"},
+  "test_credentials": "N/A — client-side mock auth via localStorage.setItem('mt_authed','1') or Google button on LoginScreen.",
+  "seed_data_creation": "None (used existing v4 seed).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Bug 'checkResult is not defined' on profile open is FIXED. Verified with pageerror + console.error listeners: 0 errors when opening Lookman (player) and Gilardino (coach) profiles, switching Cronologia↔Carriera tabs, opening Transfer Card + Export Draft dialogs. No nav-add-rumor exists. verify-source-* count on News feed = 7 (matches 7 seeded alerts). Challenge rotation confirmed: after each vote (either SI or NO), /api/streak/vote returns next_challenge and the UI re-renders challenge-question with a new question. Data-testids for this build: nav-dashboard, nav-radar, nav-profiles, nav-sources, nav-streak, nav-live-dot, nav-logout, news-search-input, verify-source-{id}, investigate-{id}, dismiss-{id}, alert-{id}, profile-card-{id}, profile-tab-cronologia, profile-tab-carriera, transfer-card-btn, transfer-card-dialog, transfer-card-download, transfer-card-copy, transfer-card-close, export-draft-btn, article-dialog, article-copy-btn, scoop-guarantee, scoop-badge-{id}, timeline-node-{id}, rumor-source-link-{id}, streak-google-login, challenge-question, vote-yes, vote-no.",
+  "rca of the issue": "The original crash was caused by leftover JSX references to `checkResult` and `onAddRumor` props (used by the removed New Rumor dialog) inside ProfileView. Main agent removed them and now App.js renders <ProfileView profile={selectedProfile} rumors={rumors} /> without those props. Regression suite confirms no ReferenceError occurs anymore."
+}

@@ -476,6 +476,11 @@ class VoteReq(BaseModel):
 @api_router.get("/challenges/active")
 async def active_challenge():
     doc = await db.daily_challenges.find_one({"is_active": True}, {"_id": 0})
+    if not doc:
+        doc = await db.daily_challenges.find_one({"order": 0}, {"_id": 0}) or await db.daily_challenges.find_one({}, {"_id": 0})
+        if doc:
+            await db.daily_challenges.update_many({}, {"$set": {"is_active": False}})
+            await db.daily_challenges.update_one({"id": doc["id"]}, {"$set": {"is_active": True}})
     return doc or {}
 
 
@@ -506,7 +511,22 @@ async def streak_vote(payload: VoteReq):
         {"$set": {"current_streak": current, "highest_streak": highest, "mock_username": "You"}},
         upsert=True,
     )
-    return {"correct": correct, "current_streak": current, "highest_streak": highest, "correct_answer": ch["correct_answer"]}
+    # Rotate to the next challenge so the daily question always changes after a vote.
+    total = await db.daily_challenges.count_documents({})
+    next_challenge = None
+    if total > 1:
+        cur_order = ch.get("order", 0)
+        next_order = (cur_order + 1) % total
+        await db.daily_challenges.update_many({}, {"$set": {"is_active": False}})
+        await db.daily_challenges.update_one({"order": next_order}, {"$set": {"is_active": True}})
+        next_challenge = await db.daily_challenges.find_one({"order": next_order}, {"_id": 0})
+    return {
+        "correct": correct,
+        "current_streak": current,
+        "highest_streak": highest,
+        "correct_answer": ch["correct_answer"],
+        "next_challenge": next_challenge,
+    }
 
 
 @api_router.get("/stats")
@@ -567,7 +587,7 @@ async def seed_db():
             row["id"] = str(uuid.uuid4())
             row["created_at"] = ts.isoformat()
             pname = name_by_id.get(row["profile_id"], "")
-            row["external_link_url"] = f"https://www.google.com/search?q={quote_plus(pname + ' transfer news')}"
+            row["external_link_url"] = f"https://news.google.com/search?q={quote_plus(pname + ' calciomercato transfer')}"
             rows.append(row)
         await db.rumors.insert_many(rows)
         alerts = []
@@ -575,7 +595,7 @@ async def seed_db():
             row = dict(a)
             row["created_at"] = (now - timedelta(minutes=row.pop("age_min", 0))).isoformat()
             if not row.get("external_link_url"):
-                row["external_link_url"] = f"https://www.google.com/search?q={quote_plus(row['player_name'] + ' transfer ' + row.get('flagged_country',''))}"
+                row["external_link_url"] = f"https://news.google.com/search?q={quote_plus(row['player_name'] + ' calciomercato ' + row.get('flagged_country',''))}"
             alerts.append(row)
         await db.global_alerts.insert_many(alerts)
         pls = []

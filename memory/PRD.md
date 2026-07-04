@@ -65,3 +65,17 @@ High-performance B2B operational dashboard for football (soccer) transfer-rumor 
 1. Per-source real "Original Source" URLs (source_url on Rumor) instead of google search.
 2. Profile/source management UI; rumor & pipeline edit/delete; kanban drag-and-drop.
 3. Extract a useTransferMemory hook (App.js growing).
+
+## Implemented (2026-07-04) — v9/v10: Fantacalcio LIGHT redesign + Source Guarantee + expanded 2026/27 DB
+- **Full LIGHT theme** (Fantacalcio-inspired): off-white bg (#F1F5F9), white cards, brand green #05A845, Outfit/Figtree fonts. Removed dark navy + neon fuchsia. Toaster light.
+- **Graphic Thermometer** icon (Blue cold / Yellow warm / Red hot / Green official) replaces word temperature in timeline, TOP NEWS feed & Transfer Card. `Thermometer.jsx`, `stageTemp` in stages.js.
+- **Monogram avatars only** (no player photos): `PlayerAvatar.jsx` (initials). Crest = rounded monogram.
+- **Dashboard = "TOP NEWS"** with LIVE badge, no stat counters, hot cards + latest feed.
+- **AI Radar renamed "Last News"** (nav "Last News"/"Ultimissime") with a permanent pulsing red notification dot ("Live"). Alert cards = dashed-orange "Market Signals" with Verify Original Source links on all.
+- **Transfer Card generator** (`TransferCardDialog.jsx`): professional shareable dark card (player, club crest, current status, contract snapshot, evolutionary timeline of session rumors + sources). PNG export via `html-to-image` + copy-summary. Button in ProfileView.
+- **Source Guarantee** (anti news-theft, Romano pain point): RumorTimeline shows "First reported by X on <datetime>" banner + green SCOOP badge on the earliest rumor. All timeline rumors show Verify Original Source link.
+- **Sources cleaned**: removed "Anonymous ITK"; added David Ornstein (The Athletic); ALL sources verified (blue check); removed competitive ranking + numeric values/bars per user request.
+- **Rotating daily challenge**: `/streak/vote` now advances to the next challenge (cyclic via `order`); `/challenges/active` self-heals. 10 credible 2026/27 questions. App.js sets next_challenge from vote response.
+- **Expanded 2026/27 DB** (SEED_VERSION=10): 33 profiles (added Vlahović, Leão, Tonali, Chiesa, Koopmeiners, Comuzzo, Raspadori, Scalvini, Pohjanpalo, Adorante, Thiago Motta, Italiano), 49 rumors, 10 verified sources.
+- Verified: backend curl (stats 33/49/10, rotation ch-1→ch-2, sources list); frontend screenshots (dashboard, profile+scoop, Last News dashed cards, Sources, Transfer Card).
+- User choices: LIGHT theme, monograms (no photos), EN default, no "Here We Go" badge (sober/professional).

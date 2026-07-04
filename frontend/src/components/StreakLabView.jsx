@@ -11,7 +11,7 @@ const GoogleG = () => (
   </svg>
 );
 
-const medal = ["#FFD700", "#C0C0C0", "#CD7F32"];
+const medal = ["#F59E0B", "#94A3B8", "#B45309"];
 
 export const StreakLabView = ({ challenge, streak, leaderboard, onVote }) => {
   const { t } = useI18n();
@@ -22,10 +22,7 @@ export const StreakLabView = ({ challenge, streak, leaderboard, onVote }) => {
 
   const enter = () => {
     setConnecting(true);
-    setTimeout(() => {
-      setConnecting(false);
-      setEntered(true);
-    }, 1000);
+    setTimeout(() => { setConnecting(false); setEntered(true); }, 1000);
   };
 
   const vote = async (answer) => {
@@ -42,19 +39,19 @@ export const StreakLabView = ({ challenge, streak, leaderboard, onVote }) => {
   if (!entered) {
     return (
       <div className="flex min-h-[70vh] items-center justify-center" data-testid="streak-gateway">
-        <div className="tm-fade-up w-full max-w-md rounded-2xl border border-[#1E293B] bg-[#121620] p-8 text-center shadow-2xl sm:p-10">
-          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#FF007F]/15">
-            <Flame size={34} className="text-[#FF007F]" />
+        <div className="tm-fade-up w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-lg sm:p-10">
+          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-100">
+            <Flame size={34} className="text-orange-500" />
           </div>
-          <h2 className="font-heading text-3xl font-black uppercase tracking-tight text-white">{t.streakGateTitle}</h2>
-          <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-gray-400">{t.streakGateSub}</p>
+          <h2 className="font-heading text-3xl font-black uppercase tracking-tight text-slate-900">{t.streakGateTitle}</h2>
+          <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-slate-500">{t.streakGateSub}</p>
           <button
             data-testid="streak-google-login"
             onClick={enter}
             disabled={connecting}
-            className="mt-8 flex w-full items-center justify-center gap-3 rounded-lg bg-white py-3 font-heading text-sm font-bold text-gray-800 transition-all hover:bg-gray-100 disabled:opacity-70"
+            className="mt-8 flex w-full items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white py-3 font-heading text-sm font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-50 disabled:opacity-70"
           >
-            {connecting ? <Loader2 size={18} className="animate-spin text-gray-600" /> : <GoogleG />}
+            {connecting ? <Loader2 size={18} className="animate-spin text-slate-400" /> : <GoogleG />}
             {connecting ? t.connecting : t.signInPlay}
           </button>
         </div>
@@ -65,25 +62,25 @@ export const StreakLabView = ({ challenge, streak, leaderboard, onVote }) => {
   // STATE 2 — Daily Arena
   return (
     <div className="tm-fade-up mx-auto max-w-2xl" data-testid="streak-arena">
-      <div className="mb-6 flex items-center justify-center gap-6 rounded-xl border border-[#1E293B] bg-[#121620] px-6 py-4">
+      <div className="mb-6 flex items-center justify-center gap-6 rounded-xl border border-slate-200 bg-white px-6 py-4 shadow-sm">
         <div className="flex items-center gap-2" data-testid="current-streak">
-          <Flame size={22} className="text-[#FF007F]" />
-          <span className="font-heading text-2xl font-black text-white">{streak?.current_streak ?? 0}</span>
-          <span className="text-[11px] uppercase tracking-widest text-gray-500">{t.currentStreak}</span>
+          <Flame size={22} className="text-orange-500" />
+          <span className="font-heading text-2xl font-black text-slate-900">{streak?.current_streak ?? 0}</span>
+          <span className="text-[11px] uppercase tracking-widest text-slate-400">{t.currentStreak}</span>
         </div>
-        <div className="h-8 w-px bg-white/10" />
+        <div className="h-8 w-px bg-slate-200" />
         <div className="flex items-center gap-2">
-          <Trophy size={20} className="text-[#39FF14]" />
-          <span className="font-heading text-2xl font-black text-white">{streak?.highest_streak ?? 0}</span>
-          <span className="text-[11px] uppercase tracking-widest text-gray-500">{t.best}</span>
+          <Trophy size={20} className="text-[#05A845]" />
+          <span className="font-heading text-2xl font-black text-slate-900">{streak?.highest_streak ?? 0}</span>
+          <span className="text-[11px] uppercase tracking-widest text-slate-400">{t.best}</span>
         </div>
       </div>
 
-      <div className="rounded-xl border border-[#1E293B] bg-[#121620] p-6 sm:p-8">
-        <p className="mb-2 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-[#94A3B8]">{t.dailyChallenge}</p>
+      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <p className="mb-2 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">{t.dailyChallenge}</p>
         {challenge?.id ? (
           <>
-            <h3 className="mb-6 text-center font-heading text-2xl font-black leading-tight text-white" data-testid="challenge-question">
+            <h3 className="mb-6 text-center font-heading text-2xl font-black leading-tight text-slate-900" data-testid="challenge-question">
               {challenge.question_text}
             </h3>
             <div className="grid grid-cols-2 gap-4">
@@ -91,7 +88,7 @@ export const StreakLabView = ({ challenge, streak, leaderboard, onVote }) => {
                 data-testid="vote-yes"
                 onClick={() => vote("SI")}
                 disabled={voting}
-                className="flex items-center justify-center gap-2 rounded-xl bg-[#39FF14] py-6 font-heading text-2xl font-black uppercase text-black transition-all hover:brightness-110 disabled:opacity-60"
+                className="flex items-center justify-center gap-2 rounded-xl bg-[#05A845] py-6 font-heading text-2xl font-black uppercase text-white transition-all hover:bg-[#048B39] disabled:opacity-60"
               >
                 {voting ? <Loader2 size={22} className="animate-spin" /> : t.voteYes}
               </button>
@@ -99,28 +96,28 @@ export const StreakLabView = ({ challenge, streak, leaderboard, onVote }) => {
                 data-testid="vote-no"
                 onClick={() => vote("NO")}
                 disabled={voting}
-                className="flex items-center justify-center gap-2 rounded-xl bg-[#FF007F] py-6 font-heading text-2xl font-black uppercase text-white transition-all hover:brightness-110 disabled:opacity-60"
+                className="flex items-center justify-center gap-2 rounded-xl bg-red-500 py-6 font-heading text-2xl font-black uppercase text-white transition-all hover:bg-red-600 disabled:opacity-60"
               >
                 {voting ? <Loader2 size={22} className="animate-spin" /> : t.voteNo}
               </button>
             </div>
-            {voting && <p className="mt-4 text-center text-sm text-[#94A3B8]">{t.verifying}</p>}
+            {voting && <p className="mt-4 text-center text-sm text-slate-400">{t.verifying}</p>}
             {lastResult && (
-              <div className={`mt-4 flex items-center justify-center gap-2 text-sm font-bold ${lastResult === "correct" ? "text-[#39FF14]" : "text-[#FF007F]"}`}>
+              <div className={`mt-4 flex items-center justify-center gap-2 text-sm font-bold ${lastResult === "correct" ? "text-[#05A845]" : "text-red-500"}`}>
                 {lastResult === "correct" ? <Check size={16} /> : <X size={16} />}
                 {lastResult === "correct" ? t.correctToast : t.wrongToast}
               </div>
             )}
           </>
         ) : (
-          <p className="py-8 text-center text-sm text-gray-500">{t.noChallenge}</p>
+          <p className="py-8 text-center text-sm text-slate-400">{t.noChallenge}</p>
         )}
       </div>
 
-      <div className="mt-6 rounded-xl border border-[#1E293B] bg-[#121620] p-5" data-testid="leaderboard">
+      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm" data-testid="leaderboard">
         <div className="mb-4 flex items-center gap-2">
-          <Crown size={17} className="text-[#FFD700]" />
-          <h3 className="font-heading text-sm font-bold uppercase tracking-wider text-white">{t.topTipsters}</h3>
+          <Crown size={17} className="text-[#F59E0B]" />
+          <h3 className="font-heading text-sm font-bold uppercase tracking-wider text-slate-900">{t.topTipsters}</h3>
         </div>
         <div className="space-y-1.5">
           {leaderboard.map((u, i) => {
@@ -129,16 +126,16 @@ export const StreakLabView = ({ challenge, streak, leaderboard, onVote }) => {
               <div
                 key={u.id}
                 data-testid={`leaderboard-row-${i}`}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 ${isYou ? "border border-[#39FF14]/40 bg-[#39FF14]/10" : "bg-[#1B2432]"}`}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 ${isYou ? "border border-[#05A845]/40 bg-[#05A845]/10" : "bg-slate-50"}`}
               >
                 <span className="w-6 font-heading text-sm font-black" style={{ color: medal[i] || "#94A3B8" }}>
                   {i + 1}
                 </span>
-                <span className={`flex-1 text-sm font-bold ${isYou ? "text-[#39FF14]" : "text-white"}`}>
+                <span className={`flex-1 text-sm font-bold ${isYou ? "text-[#05A845]" : "text-slate-900"}`}>
                   {isYou ? t.you : u.mock_username}
                 </span>
-                <span className="flex items-center gap-1 font-mono text-sm font-bold text-white">
-                  <Flame size={13} className="text-[#FF007F]" /> {u.highest_streak}
+                <span className="flex items-center gap-1 font-mono text-sm font-bold text-slate-900">
+                  <Flame size={13} className="text-orange-500" /> {u.highest_streak}
                 </span>
               </div>
             );

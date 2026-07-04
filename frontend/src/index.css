@@ -2,15 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
 :root {
-  --tm-bg: #0D1B2A;
-  --tm-bg-2: #121620;
-  --tm-bg-3: #1B2432;
-  --tm-volt: #39FF14;
-  --tm-magenta: #FF007F;
-  --tm-cyan: #00E5FF;
+  --tm-bg: #F1F5F9;
+  --tm-surface: #FFFFFF;
+  --tm-border: #E2E8F0;
+  --tm-primary: #05A845;
+  --tm-primary-hover: #048B39;
+  --tm-text: #0F172A;
+  --tm-muted: #64748B;
 }
 
 * {
@@ -20,8 +21,8 @@
 body {
   margin: 0;
   background-color: var(--tm-bg);
-  color: #fff;
-  font-family: 'Manrope', sans-serif;
+  color: var(--tm-text);
+  font-family: 'Figtree', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -35,31 +36,31 @@ body {
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: #CBD5E1;
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: #94A3B8;
 }
 
 ::selection {
-  background: var(--tm-volt);
-  color: #000;
+  background: rgba(5, 168, 69, 0.2);
+  color: #052E16;
 }
 
-@keyframes tm-pulse-magenta {
-  0%, 100% { box-shadow: 0 0 0 rgba(255, 0, 127, 0); }
-  50% { box-shadow: 0 0 22px rgba(255, 0, 127, 0.45); }
+@keyframes tm-pulse-hot {
+  0%, 100% { box-shadow: 0 0 0 rgba(239, 68, 68, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12); }
 }
-.tm-pulse-magenta {
-  animation: tm-pulse-magenta 2s ease-in-out infinite;
+.tm-pulse-hot {
+  animation: tm-pulse-hot 2s ease-in-out infinite;
 }
 
 @keyframes tm-fade-up {
@@ -71,7 +72,15 @@ body {
 }
 
 .tm-grid-bg {
+  background-color: #F1F5F9;
   background-image:
-    radial-gradient(circle at 15% 0%, rgba(57, 255, 20, 0.06), transparent 40%),
-    radial-gradient(circle at 85% 10%, rgba(255, 0, 127, 0.07), transparent 40%);
+    radial-gradient(circle at 10% -8%, rgba(5, 168, 69, 0.09), transparent 42%),
+    radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.06), transparent 40%);
+}
+
+.tm-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }

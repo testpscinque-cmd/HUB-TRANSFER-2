@@ -17,36 +17,37 @@ export const LoginScreen = ({ onLogin }) => {
 
   const handle = () => {
     setLoading(true);
-    setTimeout(onLogin, 850); // simulated Google handshake
+    setTimeout(onLogin, 850);
   };
 
   return (
     <div className="tm-grid-bg flex min-h-screen items-center justify-center px-4">
-      <div className="tm-fade-up w-full max-w-md rounded-2xl border border-white/10 bg-[#121620] p-8 shadow-2xl sm:p-10" data-testid="login-screen">
+      <div className="tm-fade-up w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-xl sm:p-10" data-testid="login-screen">
         <div className="mb-6 flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#39FF14] shadow-[0_0_22px_rgba(57,255,20,0.5)]">
-            <Zap size={26} className="text-black" fill="black" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#05A845] shadow-[0_6px_18px_rgba(5,168,69,0.35)]">
+            <Zap size={26} className="text-white" fill="white" />
           </div>
           <div>
-            <h1 className="font-heading text-2xl font-black uppercase leading-none tracking-tight text-white">
-              Memory<span className="text-[#39FF14]">Transfer</span>
+            <h1 className="font-heading text-2xl font-black uppercase leading-none tracking-tight text-slate-900">
+              Memory<span className="text-[#05A845]">Transfer</span>
             </h1>
+            <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Transfer Intelligence</p>
           </div>
         </div>
 
-        <p className="mb-8 text-sm leading-relaxed text-gray-400">{t.loginSub}</p>
+        <p className="mb-8 text-sm leading-relaxed text-slate-500">{t.loginSub}</p>
 
         <button
           data-testid="google-login-btn"
           onClick={handle}
           disabled={loading}
-          className="flex w-full items-center justify-center gap-3 rounded-lg bg-white py-3 font-heading text-sm font-bold text-gray-800 transition-all hover:bg-gray-100 hover:shadow-[0_0_20px_rgba(255,255,255,0.15)] disabled:opacity-70"
+          className="flex w-full items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white py-3 font-heading text-sm font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-50 disabled:opacity-70"
         >
-          {loading ? <Loader2 size={18} className="animate-spin text-gray-600" /> : <GoogleG />}
+          {loading ? <Loader2 size={18} className="animate-spin text-slate-400" /> : <GoogleG />}
           {t.continueGoogle}
         </button>
 
-        <p className="mt-5 text-center text-[11px] leading-relaxed text-gray-600">{t.demoNote}</p>
+        <p className="mt-5 text-center text-[11px] leading-relaxed text-slate-400">{t.demoNote}</p>
       </div>
     </div>
   );
