@@ -2,85 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Figtree:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --tm-bg: #F1F5F9;
-  --tm-surface: #FFFFFF;
-  --tm-border: #E2E8F0;
-  --tm-primary: #05A845;
-  --tm-primary-hover: #048B39;
-  --tm-text: #0F172A;
-  --tm-muted: #64748B;
+  --bg: #07070B;
+  --surface: rgba(255, 255, 255, 0.045);
+  --border: rgba(255, 255, 255, 0.09);
+  --green: #24E07A;
+  --yellow: #F5C518;
+  --red: #FF4D4D;
+  --grey: #8B93A7;
+  --text: #F4F6FB;
+  --muted: #9AA3B5;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-body {
+html, body {
   margin: 0;
-  background-color: var(--tm-bg);
-  color: var(--tm-text);
+  background: var(--bg);
+  color: var(--text);
   font-family: 'Figtree', sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-.font-heading {
-  font-family: 'Outfit', sans-serif;
-}
-.font-mono {
-  font-family: 'JetBrains Mono', monospace;
-}
+.font-heading { font-family: 'Outfit', sans-serif; }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 9px;
-  height: 9px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
-  border-radius: 999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
-}
-
-::selection {
-  background: rgba(5, 168, 69, 0.2);
-  color: #052E16;
-}
-
-@keyframes tm-pulse-hot {
-  0%, 100% { box-shadow: 0 0 0 rgba(239, 68, 68, 0); }
-  50% { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12); }
-}
-.tm-pulse-hot {
-  animation: tm-pulse-hot 2s ease-in-out infinite;
-}
-
-@keyframes tm-fade-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.tm-fade-up {
-  animation: tm-fade-up 0.4s ease-out both;
-}
-
-.tm-grid-bg {
-  background-color: #F1F5F9;
+.app-bg {
+  background-color: #07070B;
   background-image:
-    radial-gradient(circle at 10% -8%, rgba(5, 168, 69, 0.09), transparent 42%),
-    radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.06), transparent 40%);
+    radial-gradient(circle at 15% -5%, rgba(36, 224, 122, 0.14), transparent 40%),
+    radial-gradient(circle at 90% 5%, rgba(59, 130, 246, 0.10), transparent 38%),
+    radial-gradient(circle at 50% 110%, rgba(36, 224, 122, 0.06), transparent 45%);
+  min-height: 100vh;
 }
 
-.tm-card {
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  border-radius: 0.75rem;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+.glass {
+  background: rgba(255, 255, 255, 0.045);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
 }
+.glass-strong {
+  background: rgba(18, 20, 28, 0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+}
+
+.glow-green { box-shadow: 0 0 18px rgba(36, 224, 122, 0.45); }
+.glow-yellow { box-shadow: 0 0 16px rgba(245, 197, 24, 0.4); }
+.text-green { color: var(--green); }
+.text-yellow { color: var(--yellow); }
+.text-red { color: var(--red); }
+
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 999px; }
+::selection { background: rgba(36,224,122,0.3); }
+
+@keyframes fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+.fade-up { animation: fade-up 0.35s ease-out both; }
+@keyframes pop-in { 0% { opacity: 0; transform: scale(0.94); } 100% { opacity: 1; transform: scale(1); } }
+.pop-in { animation: pop-in 0.28s cubic-bezier(0.22,1,0.36,1) both; }
+@keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+.pulse-dot { animation: pulse-dot 1.4s ease-in-out infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 0.8s linear infinite; }

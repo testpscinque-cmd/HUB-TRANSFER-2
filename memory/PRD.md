@@ -1,81 +1,41 @@
-# TransferMemory — L'Anagrafe del Calciomercato
+# TransferHub — Serie A Edition (PRD)
 
-## Original Problem Statement
-High-performance B2B operational dashboard for football (soccer) transfer-rumor journalists, agents and media operators. A centralized "second brain" replacing chaotic WhatsApp chats / Excel: preserves historical memory, contractual details and timeline coherence of transfer sagas. Built for the Fabrizio Romano x Emergent Challenge.
+## Prodotto
+App operativa calciomercato **mobile-first**, dark/glass, feel "FIFA/Football Manager". Perimetro dati: **SOLO Serie A** (20 squadre, ~96 giocatori curati, 20 allenatori). Lingua: Italiano.
+Rebrand da "MemoryTransfer" (tema chiaro Fantacalcio, ora archiviato) deciso dall'utente il 2026-07-21.
 
-## User Choices
-- No authentication (direct dashboard access)
-- AI-powered Consistency Checker (Claude Sonnet 4.6 via Emergent LLM key)
-- Preloaded realistic demo data
-- Bilingual interface (English + Italian) with a language toggle
-- Design agent full creative freedom → "Italian Sports Pop" dark theme (Navy #0D1B2A, Volt #39FF14, Magenta #FF007F)
+## Stack & Architettura
+- Backend FastAPI + MongoDB. NESSUN LLM (matchmaker e dossier deterministici → zero crediti).
+- Frontend React (CRA), Tailwind, dark theme (`index.css` app-bg + .glass), bottom nav.
+- Seed curato in `backend/seed_data.py` (SEED_VERSION per re-seed). Bump versione per aggiornare i dati.
 
-## Architecture
-- **Backend** FastAPI + MongoDB (motor). Collections: `profiles`, `rumors`, `sources`. UUID string IDs.
-  - Endpoints: `/api/profiles`, `/api/profiles/{id}`, `/api/profiles/{id}/rumors`, `POST /api/rumors`, `/api/sources`, `POST /api/sources`, `POST /api/profiles`, `/api/stats`, `POST /api/consistency-check`.
-  - Auto-seeds 5 profiles, 6 sources, 12 rumors on startup (idempotent).
-  - AI consistency check uses `emergentintegrations` LlmChat → anthropic `claude-sonnet-4-6`, returns strict JSON (has_contradiction, severity, bilingual message + advice). Graceful fallback if LLM unavailable.
-- **Frontend** React 19 + Tailwind + lucide-react + sonner. 3-panel command center.
-  - `App.js` orchestrates state. `lib/i18n.js` (EN/IT), `lib/api.js`, `lib/stages.js`.
-  - Components: Header, PanelA (search + ContractCard + roster + new-rumor btn), Timeline (Panel B), PanelC (ConsistencyWidget + SourceDirectory), NewRumorDialog.
+## Dati (fasce a 3 livelli, non numeriche)
+- Squadre: `wealth_tier` = Budget Alto | Bilanciato | Autofinanziamento (+ budget_m, wage_space_m)
+- Giocatori: `value_tier` = Top | Media | Accessibile (+ salary, market_value, extracomunitario)
+- Matchmaker output: Alta (verde) | Media (giallo) | Bassa (rosso)
+- Colori status notizie: grigio=rumor, giallo=trattativa, verde=ufficiale.
 
-## Implemented (2026-07-02)
-- 3-panel dashboard: predictive search, contract card, vertical color-coded rumor timeline, source directory with reliability bars.
-- New Rumor dialog with AI consistency audit + persistence.
-- AI contradiction detection verified (e.g. free-transfer claim vs active contract → HIGH severity + advice).
-- Bilingual EN/IT toggle across all labels.
-- Backend: 12/12 pytest passed. Frontend core flows verified via UI.
+## Endpoint backend
+- GET /api/teams, /api/players (q,team,role,tier), /api/coaches, /api/profile/{id} (player o coach + team_info + timeline)
+- POST /api/matchmaker {player_query, team_query} → feasibility + db_status (fonti collegate/verificate)
+- GET /api/news/live?q=&limit= → **Google News RSS reale** (gratis), con flag verified Tier1 + stage/colore da titolo
+- GET /api/news/videos → video MOCK (YouTube-style)
+- Tier1 auto-verificate: Fabrizio Romano, Sky Sport, Gianluca Di Marzio, Gazzetta.
 
-## Core Requirements (static)
-- Preserve transfer saga history chronologically per profile.
-- Flag rumors that contradict verified contract data.
-- Show source reliability to weigh tips.
+## Frontend (implementato 2026-07-21, verificato con screenshot, 0 errori runtime)
+- **BottomNav**: Dashboard | Profili | Workspace.
+- **Dashboard**: Matchmaker sticky (2 input + MATCH SCOOP → modale fattibilità con micro-loading 0.5s + stato DB) · ricerca notizie per qualunque keyword/fonte · pill ALL/POST/VIDEO · feed live (post Google News reali + video mock) · fonte ben visibile + spunta verde Tier1 + status bar + "Vai a".
+- **Profili**: tab Giocatori/Allenatori, ricerca + filtro squadra, card con cutout stilizzato + fascia valore.
+- **ProfileScreen**: split view (cutout + anagrafica, --- se manca dato) + badge fascia/extracom + **Linea Evolutiva** (stepper cronologico con fonti verificate) + bottone Salva (watchlist).
+- **Workspace**: scelta ruolo persistente (localStorage) → **Direttore Sportivo** (budget/ingaggi editabili, acquisto/cessione, alert deficit rosso, rosa a cassetti per ruolo, "Vedi Rosa Finale") · **Giornalista** (watchlist colonne da localStorage + "Esporta Dossier" testo copiabile con anagrafiche + news verificate).
 
-## Backlog / Remaining
-- P1: Editable profiles/sources UI (CRUD forms) — currently seed + add-rumor only.
-- P1: Delete/edit rumors; timeline node editing.
-- P2: Filter/sort timeline by stage or source; export saga to PDF/markdown.
-- P2: Pagination on profiles/rumors endpoints.
-- P2: Dashboard analytics (deals by stage, source accuracy over time).
+## Backlog / P1 (prossimi passi)
+- VIDEO scanner reale (serve chiave YouTube Data API — chiedere all'utente).
+- Ampliare rose (tutti i ~500 giocatori) e dati contrattuali reali (API-Football se chiave disponibile).
+- Cutout PNG reali dei giocatori (ora avatar monogramma stilizzati, come concordato).
+- Watchlist: creazione colonne custom + bookmark diretto delle news dal feed (ora si salvano i profili).
+- Legare la timeline profilo alle news live per keyword (ora usa UPDATES seed per le saghe principali).
 
-## Implemented (2026-07-02) — v3 Restructure + AI Radar
-- Multi-view app: left Sidebar nav (Dashboard / AI Radar / Profiles / Log Rumor / Sources / Logout) + top global search + language toggle.
-- Dashboard = "Latest News" feed (recent rumors across all profiles) + stats + Hot cards.
-- Profiles view: grid with Player/Coach role tabs + club filter; distinct coach (cyan) vs player styling.
-- Profile detail: header w/ crest, tabs Timeline (cronologia) + Career (career path with club monogram crests & years), Contract Data aside. Back button.
-- Club crests = text monograms (colored, no real logos) via lib/clubs.js.
-- NEW AI Radar module (simulated global media scanner): Radar Feed (anomaly alerts, Investigate/Dismiss, LIVE Claude "Simulate Scan"), Working Pipeline kanban (Contatti Avviati→Trattativa→Fonti Verificate→Here We Go) with stage moves, Verification Checklist with toggleable tasks. Backend: global_alerts / pipeline / verification_tasks collections; investigate auto-creates pipeline + tasks.
-- Seed bumped to v3: 12 profiles (8 players + 4 coaches w/ career_history), 9 sources, 28 rumors, 5 alerts, 4 pipeline, 5 tasks. Idempotent via seed_version meta.
-- Verified: 34/34 backend tests + all frontend flows pass (iteration_2).
-
-## Implemented (2026-07-02) — v4 Rename + Article Export + Fake Google Login
-- Renamed brand TransferMemory → **MemoryTransfer** (sidebar, login, page title, API root).
-- **AI Article Draft export**: POST /api/profiles/{id}/article-draft?lang= — Claude turns a profile's rumor timeline into a publication-ready draft (title + body), shown in a modal with Copy (ArticleDraftDialog.jsx, "Export Draft" button in ProfileView). EN/IT aware.
-- **Simulated Google login** (LoginScreen.jsx): client-side only, NO real auth/OAuth/backend — "Continue with Google" gates the app; Logout returns to it. Persisted via localStorage `mt_authed`.
-
-## Implemented (2026-07-04) — v8 Directive: Fonte Zero, Consistency Badge, Trust Audit, Streak Lab
-- **Fonte Zero AI Radar**: alert cards show metadata only + green "🔗 Verify Original Source" link (external_link_url, target=_blank). No article text scraped.
-- **Contract Mismatch badge** (fuchsia, tooltip) on Dashboard & Profile timeline when a Player's rumor implies a free transfer but contract year > current year (lib/consistency.js, Player-scoped).
-- **Sources Trust Audit**: blue verified check for score>85 + "Apply for Verification" mock modal.
-- **Streak Lab** (isolated view, sidebar 🔥): mock Google gateway → arena (current/best streak, active daily challenge, SÌ/NO vote with correct++/wrong-reset + toasts) → Top Tipsters leaderboard. Endpoints: /api/challenges/active, /api/streak/me, /api/streak/leaderboard, POST /api/streak/vote.
-- Data expanded: 21 profiles (Serie A/B/C + estero, verified_status), 32 rumors, 7 alerts, 6 tipsters, 3 challenges. Twitter-style timestamps everywhere. SEED_VERSION=8.
-- Verified: 45/45 backend tests + all frontend flows pass (iteration_3). AI (Claude) live, no mocks.
-
-## Next Tasks
-1. Per-source real "Original Source" URLs (source_url on Rumor) instead of google search.
-2. Profile/source management UI; rumor & pipeline edit/delete; kanban drag-and-drop.
-3. Extract a useTransferMemory hook (App.js growing).
-
-## Implemented (2026-07-04) — v9/v10: Fantacalcio LIGHT redesign + Source Guarantee + expanded 2026/27 DB
-- **Full LIGHT theme** (Fantacalcio-inspired): off-white bg (#F1F5F9), white cards, brand green #05A845, Outfit/Figtree fonts. Removed dark navy + neon fuchsia. Toaster light.
-- **Graphic Thermometer** icon (Blue cold / Yellow warm / Red hot / Green official) replaces word temperature in timeline, TOP NEWS feed & Transfer Card. `Thermometer.jsx`, `stageTemp` in stages.js.
-- **Monogram avatars only** (no player photos): `PlayerAvatar.jsx` (initials). Crest = rounded monogram.
-- **Dashboard = "TOP NEWS"** with LIVE badge, no stat counters, hot cards + latest feed.
-- **AI Radar renamed "Last News"** (nav "Last News"/"Ultimissime") with a permanent pulsing red notification dot ("Live"). Alert cards = dashed-orange "Market Signals" with Verify Original Source links on all.
-- **Transfer Card generator** (`TransferCardDialog.jsx`): professional shareable dark card (player, club crest, current status, contract snapshot, evolutionary timeline of session rumors + sources). PNG export via `html-to-image` + copy-summary. Button in ProfileView.
-- **Source Guarantee** (anti news-theft, Romano pain point): RumorTimeline shows "First reported by X on <datetime>" banner + green SCOOP badge on the earliest rumor. All timeline rumors show Verify Original Source link.
-- **Sources cleaned**: removed "Anonymous ITK"; added David Ornstein (The Athletic); ALL sources verified (blue check); removed competitive ranking + numeric values/bars per user request.
-- **Rotating daily challenge**: `/streak/vote` now advances to the next challenge (cyclic via `order`); `/challenges/active` self-heals. 10 credible 2026/27 questions. App.js sets next_challenge from vote response.
-- **Expanded 2026/27 DB** (SEED_VERSION=10): 33 profiles (added Vlahović, Leão, Tonali, Chiesa, Koopmeiners, Comuzzo, Raspadori, Scalvini, Pohjanpalo, Adorante, Thiago Motta, Italiano), 49 rumors, 10 verified sources.
-- Verified: backend curl (stats 33/49/10, rotation ch-1→ch-2, sources list); frontend screenshots (dashboard, profile+scoop, Last News dashed cards, Sources, Transfer Card).
-- User choices: LIGHT theme, monograms (no photos), EN default, no "Here We Go" badge (sober/professional).
+## Note
+- App già in PRODUZIONE (redeploy necessario per pubblicare le modifiche). Preview = ambiente di sviluppo.
+- Nessuna autenticazione (rimossa nel pivot). Nessuna chiave richiesta finché i video restano mock.
