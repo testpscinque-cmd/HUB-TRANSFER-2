@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
-import { Briefcase, PenTool, ChevronDown, TrendingDown, TrendingUp, X, FileText, Copy, Trash2, Search, Plus } from "lucide-react";
+import { Briefcase, PenTool, ChevronDown, TrendingDown, TrendingUp, X, FileText, Copy, Trash2, Search, Plus, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import * as api from "@/lib/api";
 import { PlayerCutout, TeamBadge, TierBadge } from "@/components/bits";
 
 const ROLES = [["POR", "Portieri"], ["DIF", "Difensori"], ["CEN", "Centrocampisti"], ["ATT", "Attaccanti"]];
+const ROLE_FLAG = { POR: "#F5C518", DIF: "#8B93A7", CEN: "#2BE07A", ATT: "#FF7A00" };
+const RoleFlag = ({ code }) => code ? (
+  <span className="rounded px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider"
+    style={{ color: ROLE_FLAG[code] || "#8B93A7", background: `${ROLE_FLAG[code] || "#8B93A7"}1f`, border: `1px solid ${ROLE_FLAG[code] || "#8B93A7"}55` }}>{code}</span>
+) : null;
 const parseM = (s) => { const m = String(s || "").match(/([\d.]+)/); return m ? parseFloat(m[1]) : 0; };
 
 /* ---------------- Direttore Sportivo ---------------- */
@@ -203,29 +208,39 @@ const Giornalista = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) => {
     <div className="fade-up space-y-4">
       <p className="text-sm text-white/60">Cerca e salva giocatori nelle tue liste, poi genera un dossier pronto da pubblicare.</p>
 
-      <div className="glass rounded-2xl p-3">
-        <div className="mb-2 flex items-center gap-2">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-white/40">Aggiungi a</span>
+      <div className="glass rounded-2xl p-4">
+        <div className="relative mb-3">
+          <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/35" />
+          <input data-testid="jrn-search" value={jq} onChange={(e) => setJq(e.target.value)} placeholder="Cerca un giocatore da salvare..."
+            className="w-full rounded-xl border border-white/10 bg-white/5 py-3 pl-10 pr-3 text-sm text-white placeholder:text-white/40 focus:border-[#2BE07A]/50 focus:outline-none" />
+        </div>
+        {results.length > 0 && (
+          <div className="mb-3 space-y-2">
+            {results.map((p) => (
+              <div key={p.id} className="flex items-center gap-2.5 rounded-xl bg-white/5 p-2.5 hover-lift">
+                <PlayerCutout name={p.name} size={32} />
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-bold text-white">{p.name}</div>
+                  <div className="mt-1 flex items-center gap-1.5">
+                    {p.team && <TeamBadge team={p.team} size={16} />}
+                    <RoleFlag code={p.position} />
+                  </div>
+                </div>
+                <button data-testid={`jrn-add-${p.id}`} onClick={() => add(p)} className="flex items-center gap-1 rounded-lg bg-white px-2.5 py-1.5 text-xs font-black text-[#0A0E17] active:scale-95"><Plus size={12} /> Aggiungi</button>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="flex flex-wrap items-center gap-2 border-t border-white/10 pt-3">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-white/40">Salva in lista</span>
           <select data-testid="jrn-target" value={target} onChange={(e) => setTarget(e.target.value)}
-            className="rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-xs text-white focus:outline-none">
+            className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs text-white focus:outline-none">
             {[...new Set([...columns, target])].filter(Boolean).map((c) => <option key={c} value={c} className="bg-[#141A28]">{c}</option>)}
           </select>
           <input value={newCol} onChange={(e) => setNewCol(e.target.value)} placeholder="+ nuova lista"
-            className="w-24 rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-xs text-white placeholder:text-white/35 focus:outline-none" />
-          <button data-testid="jrn-newcol" onClick={createCol} className="rounded-lg bg-white/10 px-2 py-1 text-xs font-bold text-white">Crea</button>
+            className="w-28 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs text-white placeholder:text-white/35 focus:outline-none" />
+          <button data-testid="jrn-newcol" onClick={createCol} className="rounded-lg bg-white/10 px-2.5 py-1.5 text-xs font-bold text-white active:scale-95">Crea</button>
         </div>
-        <div className="relative">
-          <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/35" />
-          <input data-testid="jrn-search" value={jq} onChange={(e) => setJq(e.target.value)} placeholder="Cerca un giocatore da salvare..."
-            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/35 focus:border-[#E9EEF7] focus:outline-none" />
-        </div>
-        {results.map((p) => (
-          <div key={p.id} className="mt-2 flex items-center gap-2 rounded-lg bg-white/5 p-2">
-            <PlayerCutout name={p.name} size={28} />
-            <span className="flex-1 text-sm text-white">{p.name} <span className="text-white/40">· {p.team}</span></span>
-            <button data-testid={`jrn-add-${p.id}`} onClick={() => add(p)} className="flex items-center gap-1 rounded-lg bg-white px-2.5 py-1 text-xs font-black text-[#0A0E17]"><Plus size={12} /> Aggiungi</button>
-          </div>
-        ))}
       </div>
 
       {columns.map((col) => (
@@ -242,9 +257,18 @@ const Giornalista = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) => {
           ) : (
             <div className="space-y-2">
               {(watchlist[col] || []).map((i) => (
-                <div key={i.id} className="flex items-center gap-2 rounded-lg bg-white/5 p-2">
-                  <PlayerCutout name={i.name} size={28} />
-                  <button onClick={() => onOpenProfile(i.id)} className="flex-1 text-left text-sm font-bold text-white hover:opacity-80">{i.name} <span className="text-white/40">· {i.team}</span></button>
+                <div key={i.id} className="flex items-center gap-2.5 rounded-xl bg-white/5 p-2.5 hover-lift">
+                  <PlayerCutout name={i.name} size={32} />
+                  <button onClick={() => (/^(p|c)-/.test(i.id) ? onOpenProfile(i.id) : (i.link && window.open(i.link, "_blank")))} className="min-w-0 flex-1 text-left hover:opacity-80">
+                    <div className="truncate text-sm font-bold text-white">{i.name}</div>
+                    <div className="mt-1 flex items-center gap-1.5">
+                      {i.team && <TeamBadge team={i.team} size={16} />}
+                      {i.position
+                        ? <RoleFlag code={i.position} />
+                        : <span className="rounded px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-[#2BE07A]" style={{ background: "rgba(43,224,122,0.14)", border: "1px solid rgba(43,224,122,0.4)" }}>Scoop</span>}
+                    </div>
+                  </button>
+                  {i.link && <a href={i.link} target="_blank" rel="noreferrer" className="text-white/40 hover:text-[#2BE07A]"><ExternalLink size={14} /></a>}
                   <button onClick={() => removeWatch(col, i.id)} className="text-white/40 hover:text-red"><Trash2 size={15} /></button>
                 </div>
               ))}
@@ -300,9 +324,14 @@ export const Workspace = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) 
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between gap-3">
         <h1 className="font-heading text-2xl font-black uppercase text-white">{role === "ds" ? "Direttore Sportivo" : "Giornalista"}</h1>
-        <button data-testid="role-switch" onClick={() => setR(role === "ds" ? "journalist" : "ds")} className="rounded-xl glass px-3 py-2 text-xs font-bold text-white/70">Cambia ruolo</button>
+        <div className="flex rounded-xl glass p-1">
+          <button data-testid="role-toggle-ds" onClick={() => setR("ds")}
+            className={`rounded-lg px-3.5 py-1.5 text-xs font-black uppercase tracking-wide transition-all ${role === "ds" ? "bg-white text-black" : "text-white/55 hover:text-white/80"}`}>DS</button>
+          <button data-testid="role-toggle-journalist" onClick={() => setR("journalist")}
+            className={`rounded-lg px-3.5 py-1.5 text-xs font-black uppercase tracking-wide transition-all ${role === "journalist" ? "bg-white text-black" : "text-white/55 hover:text-white/80"}`}>Giornalista</button>
+        </div>
       </div>
       {role === "ds" ? <DirettoreSportivo /> : <Giornalista watchlist={watchlist} removeWatch={removeWatch} saveWatch={saveWatch} onOpenProfile={onOpenProfile} />}
     </div>

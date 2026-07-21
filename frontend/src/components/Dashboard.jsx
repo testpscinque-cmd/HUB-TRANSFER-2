@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { Search, Zap, X, ExternalLink, Play, Newspaper, Bookmark } from "lucide-react";
+import { Search, Zap, X, ExternalLink, Play, Newspaper, Bookmark, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import * as api from "@/lib/api";
 import { TeamBadge, PlayerCutout, StatusBar, VerifiedTick, TierBadge, timeAgo } from "@/components/bits";
@@ -8,20 +8,25 @@ const slug = (s = "") => "p-" + s.toLowerCase().normalize("NFD").replace(/[\u030
 const STAGE_LABEL = { rumor: "Rumor", trattativa: "Trattativa", ufficiale: "Ufficiale" };
 
 const NewsCard = ({ n, onSave }) => (
-  <div data-testid={`post-${n.id}`} className="glass fade-up flex flex-col gap-2 rounded-2xl p-4">
+  <div data-testid={`post-${n.id}`} className="glass hover-lift fade-up relative flex flex-col gap-2 overflow-hidden rounded-2xl p-4"
+    style={{ borderLeft: `3px solid ${n.color}` }}>
     <div className="flex items-center gap-2">
       <Newspaper size={14} className="text-white/40" />
       <span className="flex items-center gap-1 text-xs font-bold text-white/80">
         {n.source} {n.verified && <VerifiedTick size={13} />}
       </span>
+      <span className="rounded-md px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider"
+        style={{ color: n.color, background: `${n.color}1f`, border: `1px solid ${n.color}55` }}>
+        {STAGE_LABEL[n.stage]}
+      </span>
       <span className="ml-auto text-[11px] text-white/40">{timeAgo(n.published)}</span>
       <button data-testid={`save-post-${n.id}`} onClick={() => onSave({ id: `post-${n.id}`, name: n.title, team: n.source, link: n.link })}
-        title="Salva scoop" className="text-white/50 transition-colors hover:text-green active:scale-90"><Bookmark size={15} /></button>
+        title="Salva scoop" className="text-white/50 transition-colors hover:text-[#2BE07A] active:scale-90"><Bookmark size={15} /></button>
     </div>
     <p className="font-heading text-[15px] font-bold leading-snug text-white">{n.title}</p>
     <div className="flex items-center justify-between">
       <StatusBar color={n.color} label={STAGE_LABEL[n.stage]} />
-      <a href={n.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[11px] font-bold text-green active:scale-95"><ExternalLink size={12} /> Vai a</a>
+      <a href={n.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[11px] font-bold text-[#2BE07A] active:scale-95"><ExternalLink size={12} /> Vai a</a>
     </div>
   </div>
 );
@@ -116,6 +121,7 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [video, setVideo] = useState(null);
+  const [pending, setPending] = useState(null);
 
   useEffect(() => {
     api.getPlayers().then((p) => setNames(p.map((x) => x.name))).catch(() => {});
@@ -130,6 +136,25 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
       .finally(() => setLoading(false));
   };
   useEffect(() => { loadFeed("Serie A"); }, []);
+
+  // Auto-refresh: ogni 60s controlla nuove notizie senza sostituire il feed
+  useEffect(() => {
+    const iv = setInterval(async () => {
+      try {
+        const fresh = await api.getLiveNews(query, 30);
+        const ids = new Set(news.map((n) => n.id));
+        const freshNew = fresh.filter((n) => !ids.has(n.id));
+        if (freshNew.length) setPending({ news: fresh, count: freshNew.length });
+      } catch { /* silenzioso */ }
+    }, 60000);
+    return () => clearInterval(iv);
+  }, [query, news]);
+
+  const applyPending = () => {
+    setNews(pending.news); setPending(null);
+    toast.success(`${pending.count} nuove notizie caricate`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const runMatch = async () => {
     if (!pName || !pTeam) { toast.error("Compila giocatore e squadra"); return; }
@@ -152,11 +177,29 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
 
   return (
     <div className="fade-up">
-      {/* Header (non fisso) */}
-      <div className="mb-4 flex items-center gap-2">
-        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2BE07A]"><Zap size={19} className="text-black" fill="black" /></span>
-        <h1 className="font-heading text-2xl font-black uppercase tracking-tight text-white">Transfer<span style={{ color: "#2BE07A" }}>Hub</span></h1>
-        <span className="ml-auto rounded-full bg-white/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-white/60">Serie A</span>
+      {/* Hero FIFA/EA */}
+      <div className="relative mb-5 overflow-hidden rounded-3xl border border-white/10 p-5 lg:hidden" data-testid="dash-hero">
+        <div className="absolute inset-0" style={{ background: "linear-gradient(115deg, rgba(43,224,122,0.24), transparent 58%), #0c1320" }} />
+        <div className="absolute -right-10 -top-12 h-44 w-44 rounded-full" style={{ background: "radial-gradient(circle, rgba(43,224,122,0.40), transparent 70%)" }} />
+        <div className="fifa-grid absolute inset-0 opacity-[0.05]" />
+        <div className="relative">
+          <div className="flex items-center gap-2">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2BE07A]" style={{ boxShadow: "0 0 22px rgba(43,224,122,0.6)" }}><Zap size={21} className="text-black" fill="black" /></span>
+            <h1 className="font-heading text-3xl font-black uppercase tracking-tight text-white">Transfer<span style={{ color: "#2BE07A" }}>Hub</span></h1>
+            <span className="ml-auto flex items-center gap-1.5 rounded-full bg-black/30 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-[#2BE07A]">
+              <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[#2BE07A]" /> Live
+            </span>
+          </div>
+          <p className="mt-2.5 text-sm text-white/60">Il terminale del calciomercato di Serie A — scoop, indice di fattibilità e dossier pronti da pubblicare.</p>
+        </div>
+      </div>
+
+      {/* Header desktop */}
+      <div className="mb-5 hidden items-center gap-2 lg:flex">
+        <h1 className="font-heading text-3xl font-black uppercase tracking-tight text-white">Dashboard</h1>
+        <span className="ml-auto flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-[#2BE07A]">
+          <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[#2BE07A]" /> Serie A · Live
+        </span>
       </div>
 
       {/* Matchmaker */}
@@ -198,6 +241,13 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
         ))}
         <span className="ml-auto self-center text-[11px] text-white/40">“{query}”</span>
       </div>
+
+      {pending && (
+        <button data-testid="new-news-badge" onClick={applyPending}
+          className="slide-down mb-3 flex w-full items-center justify-center gap-2 rounded-xl border border-[#2BE07A]/40 bg-[#2BE07A]/10 py-2.5 font-heading text-xs font-black uppercase tracking-wider text-[#2BE07A] active:scale-[0.98]">
+          <RefreshCw size={14} /> {pending.count} nuove notizie · tocca per aggiornare
+        </button>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-16"><span className="h-8 w-8 rounded-full border-2 border-white/20 border-t-white spin" /></div>

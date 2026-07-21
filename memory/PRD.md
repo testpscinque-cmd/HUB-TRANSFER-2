@@ -37,6 +37,12 @@ Rebrand da "MemoryTransfer" (tema chiaro Fantacalcio, ora archiviato) deciso dal
 - Legare la timeline profilo alle news live per keyword (ora usa UPDATES seed per le saghe principali).
 
 ## Note
+- Update 2026-07-21 (batch UI/FIFA):
+  - **Sidebar desktop** (`SideNav.jsx`, visibile da `lg:`) con logo + nav verticale; bottom nav resta su mobile (`lg:hidden`). Contenuto shiftato con `lg:pl-60`.
+  - **Dashboard FIFA/EA**: hero con gradient verde neon + griglia campo + badge LIVE pulsante; news card con accento colorato a sinistra per stato + flag pill (Rumor/Trattativa/Ufficiale) + hover-lift.
+  - **Auto-refresh feed**: polling 60s, badge "N nuove notizie · tocca per aggiornare" che carica il feed fresco senza sostituirlo automaticamente (`new-news-badge`).
+  - **Workspace**: sostituito "Cambia ruolo" con toggle segmentato **DS | Giornalista** (`role-toggle-ds`/`role-toggle-journalist`).
+  - **Giornalista**: barra di ricerca rifatta (full-width prominente, riga "Salva in lista" separata) + **flag** (badge squadra + chip ruolo colorato POR/DIF/CEN/ATT; chip "Scoop" per news salvate) su risultati e watchlist.
 - Fix 2026-07-21: "Esporta Dossier" (Giornalista) — mancava il modale che mostra il testo generato; aggiunto modale con textarea + "Copia negli appunti" (fallback execCommand per iframe). Verificato con screenshot e2e. Icona ruolo Giornalista resa neutra (niente blu).
-- App già in PRODUZIONE (redeploy necessario per pubblicare le modifiche). Preview = ambiente di sviluppo.
+- App già in PRODUZIONE (redeploy necessario per pubblicare le modifiche + aggiornare la thumbnail in griglia). Preview = ambiente di sviluppo.
 - Nessuna autenticazione (rimossa nel pivot). Nessuna chiave richiesta finché i video restano mock.
