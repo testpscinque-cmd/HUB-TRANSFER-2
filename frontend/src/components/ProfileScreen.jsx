@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import * as api from "@/lib/api";
 import { PlayerCutout, TeamBadge, TierBadge, VerifiedTick, StatusBar, dateFull } from "@/components/bits";
 
-const STAGE = { rumor: { c: "#8B93A7", l: "Rumor" }, trattativa: { c: "#F5C518", l: "Trattativa" }, ufficiale: { c: "#24E07A", l: "Ufficiale" } };
+const STAGE = { rumor: { c: "#8B93A7", l: "Rumor" }, trattativa: { c: "#F5C518", l: "Trattativa" }, ufficiale: { c: "#22C55E", l: "Ufficiale" } };
 const V = (x) => (x === undefined || x === null || x === "" ? "---" : x);
 
 const Data = ({ icon: Icon, label, value, accent }) => (
@@ -23,7 +23,7 @@ export const ProfileScreen = ({ id, onBack, saveWatch }) => {
     api.getProfile(id).then(setP).catch(() => toast.error("Profilo non trovato")).finally(() => setLoading(false));
   }, [id]);
 
-  if (loading) return <div className="flex justify-center py-20"><span className="h-8 w-8 rounded-full border-2 border-white/20 border-t-[#24E07A] spin" /></div>;
+  if (loading) return <div className="flex justify-center py-20"><span className="h-8 w-8 rounded-full border-2 border-white/20 border-t-[#2E7DF6] spin" /></div>;
   if (!p) return null;
 
   const isCoach = p.kind === "coach";
@@ -38,7 +38,7 @@ export const ProfileScreen = ({ id, onBack, saveWatch }) => {
 
       {/* Top — anagrafica */}
       <div className="glass relative overflow-hidden rounded-3xl p-5">
-        <div className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full" style={{ background: `radial-gradient(circle, ${p.team_info?.color || "#24E07A"}44, transparent 70%)` }} />
+        <div className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full" style={{ background: `radial-gradient(circle, ${p.team_info?.color || "#2E7DF6"}44, transparent 70%)` }} />
         <div className="relative flex items-center gap-4">
           <PlayerCutout name={p.name} size={92} color={p.team_info?.color} />
           <div className="min-w-0 flex-1">
@@ -54,7 +54,7 @@ export const ProfileScreen = ({ id, onBack, saveWatch }) => {
         <div className="relative mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
           <Data icon={Flag} label="Età" value={V(p.age)} />
           <Data icon={Radio} label="Ruolo" value={V(p.position || p.role)} />
-          <Data icon={CalendarClock} label="Scadenza" value={V(p.contract_expiry)} accent={Number(p.contract_expiry) <= 2026 ? "#FF4D4D" : "#24E07A"} />
+          <Data icon={CalendarClock} label="Scadenza" value={V(p.contract_expiry)} accent={Number(p.contract_expiry) <= 2026 ? "#FF4D4D" : "#2E7DF6"} />
           {!isCoach && <Data icon={Wallet} label="Ingaggio" value={V(p.salary)} />}
           {!isCoach && <Data icon={TrendingUp} label="Valore" value={V(p.market_value)} />}
           <Data icon={Flag} label="Nazione" value={V(p.nationality)} />

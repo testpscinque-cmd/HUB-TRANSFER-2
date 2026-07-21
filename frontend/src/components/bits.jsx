@@ -1,6 +1,6 @@
 // Shared visual bits for TransferHub (dark/glass).
 
-const PALETTE = ["#24E07A", "#3B82F6", "#A855F7", "#F5C518", "#FF7A00", "#06B6D4", "#EC4899", "#64748B"];
+const PALETTE = ["#2E7DF6", "#3B82F6", "#A855F7", "#F5C518", "#FF7A00", "#06B6D4", "#EC4899", "#64748B"];
 function hash(s = "") { let h = 0; for (let i = 0; i < s.length; i++) h = s.charCodeAt(i) + ((h << 5) - h); return Math.abs(h); }
 function initials(name = "") {
   const p = name.trim().split(/\s+/).filter(Boolean);
@@ -52,9 +52,9 @@ export const StatusBar = ({ color = "#8B93A7", label }) => (
 );
 
 const TIER_STYLE = {
-  Top: { c: "#24E07A" }, Media: { c: "#F5C518" }, Accessibile: { c: "#8B93A7" },
-  "Budget Alto": { c: "#24E07A" }, Bilanciato: { c: "#F5C518" }, Autofinanziamento: { c: "#8B93A7" },
-  Alta: { c: "#24E07A" }, Bassa: { c: "#FF4D4D" },
+  Top: { c: "#2E7DF6" }, Media: { c: "#F5C518" }, Accessibile: { c: "#8B93A7" },
+  "Budget Alto": { c: "#2E7DF6" }, Bilanciato: { c: "#F5C518" }, Autofinanziamento: { c: "#8B93A7" },
+  Alta: { c: "#2E7DF6" }, Bassa: { c: "#FF4D4D" },
 };
 export const TierBadge = ({ tier }) => {
   const s = TIER_STYLE[tier] || { c: "#8B93A7" };
@@ -68,7 +68,7 @@ export const TierBadge = ({ tier }) => {
 
 export const VerifiedTick = ({ size = 14 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" title="Fonte verificata">
-    <circle cx="12" cy="12" r="11" fill="#24E07A" />
+    <circle cx="12" cy="12" r="11" fill="#2E7DF6" />
     <path d="M7 12.5l3 3 7-7" stroke="#07070B" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );

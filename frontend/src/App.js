@@ -42,7 +42,7 @@ export default function App() {
         ) : (
           <>
             {tab === "dashboard" && <Dashboard onOpenProfile={openProfile} saveWatch={saveWatch} />}
-            {tab === "profili" && <Profili onOpenProfile={openProfile} />}
+            {tab === "profili" && <Profili onOpenProfile={openProfile} saveWatch={saveWatch} />}
             {tab === "workspace" && <Workspace watchlist={watchlist} saveWatch={saveWatch} removeWatch={removeWatch} onOpenProfile={openProfile} />}
           </>
         )}

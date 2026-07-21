@@ -19,8 +19,8 @@ export const BottomNav = ({ tab, onNav }) => (
             className="relative flex flex-1 flex-col items-center gap-1 rounded-xl py-2 transition-all"
             style={active ? { background: "rgba(36,224,122,0.12)" } : {}}
           >
-            <it.icon size={21} style={{ color: active ? "#24E07A" : "#9AA3B5" }} strokeWidth={active ? 2.5 : 2} />
-            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: active ? "#24E07A" : "#9AA3B5" }}>
+            <it.icon size={21} style={{ color: active ? "#2E7DF6" : "#9AA3B5" }} strokeWidth={active ? 2.5 : 2} />
+            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: active ? "#2E7DF6" : "#9AA3B5" }}>
               {it.label}
             </span>
           </button>

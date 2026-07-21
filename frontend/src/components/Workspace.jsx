@@ -14,7 +14,7 @@ const DirettoreSportivo = () => {
   const [roster, setRoster] = useState([]);
   const [budget, setBudget] = useState(0);
   const [wages, setWages] = useState(0);
-  const [open, setOpen] = useState({ POR: true, DIF: false, CEN: false, ATT: false });
+  const [open, setOpen] = useState({ POR: true, DIF: true, CEN: true, ATT: true });
   const [allPlayers, setAllPlayers] = useState([]);
   const [buyQ, setBuyQ] = useState("");
   const [report, setReport] = useState(false);
@@ -73,12 +73,12 @@ const DirettoreSportivo = () => {
         <label className="block">
           <span className="text-[10px] font-bold uppercase tracking-wider text-white/40">Budget Trasferimenti (M€)</span>
           <input data-testid="ds-budget" type="number" value={budget} onChange={(e) => setBudget(+e.target.value)}
-            className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 font-heading text-xl font-black focus:outline-none" style={{ color: budget < 0 ? "#FF4D4D" : "#24E07A" }} />
+            className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 font-heading text-xl font-black focus:outline-none" style={{ color: budget < 0 ? "#FF4D4D" : "#2E7DF6" }} />
         </label>
         <label className="block">
           <span className="text-[10px] font-bold uppercase tracking-wider text-white/40">Spazio Monte Ingaggi (M€)</span>
           <input data-testid="ds-wages" type="number" value={wages} onChange={(e) => setWages(+e.target.value)}
-            className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 font-heading text-xl font-black focus:outline-none" style={{ color: wages < 0 ? "#FF4D4D" : "#24E07A" }} />
+            className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 font-heading text-xl font-black focus:outline-none" style={{ color: wages < 0 ? "#FF4D4D" : "#2E7DF6" }} />
         </label>
         {deficit && <div className="col-span-2 flex items-center gap-2 rounded-lg bg-red-500/15 px-3 py-2 text-xs font-bold text-red"><TrendingDown size={14} /> Deficit di bilancio! Rientra prima di chiudere.</div>}
       </div>
@@ -88,12 +88,12 @@ const DirettoreSportivo = () => {
         <div className="relative">
           <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/35" />
           <input data-testid="ds-buy-search" value={buyQ} onChange={(e) => setBuyQ(e.target.value)} placeholder="Simula acquisto: cerca un giocatore..."
-            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/35 focus:border-[#24E07A] focus:outline-none" />
+            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/35 focus:border-[#2E7DF6] focus:outline-none" />
         </div>
         {buyResults.map((p) => (
           <div key={p.id} className="mt-2 flex items-center gap-2 rounded-lg bg-white/5 p-2">
             <PlayerCutout name={p.name} size={30} /><span className="flex-1 text-sm text-white">{p.name} <span className="text-white/40">· {p.team} · {p.market_value}</span></span>
-            <button data-testid={`ds-buy-${p.id}`} onClick={() => buy(p)} className="rounded-lg bg-[#24E07A] px-2.5 py-1 text-xs font-black text-black">Acquista</button>
+            <button data-testid={`ds-buy-${p.id}`} onClick={() => buy(p)} className="rounded-lg bg-[#2E7DF6] px-2.5 py-1 text-xs font-black text-black">Acquista</button>
           </div>
         ))}
       </div>
@@ -124,7 +124,7 @@ const DirettoreSportivo = () => {
         );
       })}
 
-      <button data-testid="ds-report-btn" onClick={() => setReport(true)} className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#24E07A] py-3 font-heading text-sm font-black uppercase tracking-wider text-black active:scale-[0.98]">
+      <button data-testid="ds-report-btn" onClick={() => setReport(true)} className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#2E7DF6] py-3 font-heading text-sm font-black uppercase tracking-wider text-black active:scale-[0.98]">
         Vedi Rosa Finale
       </button>
 
@@ -135,8 +135,8 @@ const DirettoreSportivo = () => {
             <button onClick={() => setReport(false)} className="absolute right-4 top-4 text-white/50"><X size={20} /></button>
             <h3 className="mb-3 font-heading text-xl font-black text-white">{team.name} — Rosa Finale</h3>
             <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-xl bg-white/5 p-3"><div className="text-[10px] uppercase text-white/40">Budget</div><div className="font-heading text-2xl font-black" style={{ color: budget < 0 ? "#FF4D4D" : "#24E07A" }}>{budget}M</div></div>
-              <div className="rounded-xl bg-white/5 p-3"><div className="text-[10px] uppercase text-white/40">Monte Ingaggi</div><div className="font-heading text-2xl font-black" style={{ color: wages < 0 ? "#FF4D4D" : "#24E07A" }}>{wages}M</div></div>
+              <div className="rounded-xl bg-white/5 p-3"><div className="text-[10px] uppercase text-white/40">Budget</div><div className="font-heading text-2xl font-black" style={{ color: budget < 0 ? "#FF4D4D" : "#2E7DF6" }}>{budget}M</div></div>
+              <div className="rounded-xl bg-white/5 p-3"><div className="text-[10px] uppercase text-white/40">Monte Ingaggi</div><div className="font-heading text-2xl font-black" style={{ color: wages < 0 ? "#FF4D4D" : "#2E7DF6" }}>{wages}M</div></div>
             </div>
             <p className="mt-4 flex items-center gap-1 text-xs font-bold uppercase text-green"><TrendingUp size={13} /> Acquisti ({moves.in.length})</p>
             {moves.in.map((p) => <div key={p.id} className="text-sm text-white/80">+ {p.name} <span className="text-white/40">({p.market_value})</span></div>)}
@@ -151,9 +151,19 @@ const DirettoreSportivo = () => {
 };
 
 /* ---------------- Giornalista ---------------- */
-const Giornalista = ({ watchlist, removeWatch, onOpenProfile }) => {
+const Giornalista = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) => {
   const columns = Object.keys(watchlist).length ? Object.keys(watchlist) : ["Radar"];
   const [busy, setBusy] = useState(false);
+  const [allPlayers, setAllPlayers] = useState([]);
+  const [jq, setJq] = useState("");
+  const [target, setTarget] = useState(columns[0] || "Radar");
+  const [newCol, setNewCol] = useState("");
+
+  useEffect(() => { api.getPlayers().then(setAllPlayers).catch(() => {}); }, []);
+
+  const results = jq.length >= 2 ? allPlayers.filter((p) => p.name.toLowerCase().includes(jq.toLowerCase())).slice(0, 6) : [];
+  const add = (p) => { saveWatch(target || "Radar", { id: p.id, name: p.name, team: p.team, position: p.position }); toast.success(`${p.name} aggiunto a ${target}`); setJq(""); };
+  const createCol = () => { if (!newCol.trim()) return; setTarget(newCol.trim()); toast.success(`Colonna "${newCol.trim()}" pronta — aggiungi un giocatore`); };
 
   const dossier = async (col) => {
     const items = watchlist[col] || [];
@@ -176,13 +186,39 @@ const Giornalista = ({ watchlist, removeWatch, onOpenProfile }) => {
 
   return (
     <div className="fade-up space-y-4">
-      <p className="text-sm text-white/60">Salva le notizie e i profili dal feed (icona segnalibro), poi genera un dossier pronto da pubblicare.</p>
+      <p className="text-sm text-white/60">Cerca e salva giocatori nelle tue liste, poi genera un dossier pronto da pubblicare.</p>
+
+      <div className="glass rounded-2xl p-3">
+        <div className="mb-2 flex items-center gap-2">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-white/40">Aggiungi a</span>
+          <select data-testid="jrn-target" value={target} onChange={(e) => setTarget(e.target.value)}
+            className="rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-xs text-white focus:outline-none">
+            {[...new Set([...columns, target])].filter(Boolean).map((c) => <option key={c} value={c} className="bg-[#141A28]">{c}</option>)}
+          </select>
+          <input value={newCol} onChange={(e) => setNewCol(e.target.value)} placeholder="+ nuova lista"
+            className="w-24 rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-xs text-white placeholder:text-white/35 focus:outline-none" />
+          <button data-testid="jrn-newcol" onClick={createCol} className="rounded-lg bg-white/10 px-2 py-1 text-xs font-bold text-white">Crea</button>
+        </div>
+        <div className="relative">
+          <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/35" />
+          <input data-testid="jrn-search" value={jq} onChange={(e) => setJq(e.target.value)} placeholder="Cerca un giocatore da salvare..."
+            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/35 focus:border-[#2E7DF6] focus:outline-none" />
+        </div>
+        {results.map((p) => (
+          <div key={p.id} className="mt-2 flex items-center gap-2 rounded-lg bg-white/5 p-2">
+            <PlayerCutout name={p.name} size={28} />
+            <span className="flex-1 text-sm text-white">{p.name} <span className="text-white/40">· {p.team}</span></span>
+            <button data-testid={`jrn-add-${p.id}`} onClick={() => add(p)} className="flex items-center gap-1 rounded-lg bg-[#2E7DF6] px-2.5 py-1 text-xs font-black text-white"><Plus size={12} /> Aggiungi</button>
+          </div>
+        ))}
+      </div>
+
       {columns.map((col) => (
         <div key={col} className="glass rounded-2xl p-4">
           <div className="mb-3 flex items-center gap-2">
             <span className="font-heading text-sm font-bold uppercase tracking-wider text-white">{col}</span>
             <span className="text-xs text-white/40">({(watchlist[col] || []).length})</span>
-            <button data-testid={`dossier-${col}`} onClick={() => dossier(col)} disabled={busy} className="ml-auto flex items-center gap-1.5 rounded-lg bg-[#24E07A] px-3 py-1.5 text-xs font-black uppercase text-black active:scale-95 disabled:opacity-60">
+            <button data-testid={`dossier-${col}`} onClick={() => dossier(col)} disabled={busy} className="ml-auto flex items-center gap-1.5 rounded-lg bg-[#2E7DF6] px-3 py-1.5 text-xs font-black uppercase text-black active:scale-95 disabled:opacity-60">
               <FileText size={13} /> Esporta Dossier
             </button>
           </div>
@@ -193,7 +229,7 @@ const Giornalista = ({ watchlist, removeWatch, onOpenProfile }) => {
               {(watchlist[col] || []).map((i) => (
                 <div key={i.id} className="flex items-center gap-2 rounded-lg bg-white/5 p-2">
                   <PlayerCutout name={i.name} size={28} />
-                  <button onClick={() => onOpenProfile(i.id)} className="flex-1 text-left text-sm font-bold text-white hover:text-green">{i.name} <span className="text-white/40">· {i.team}</span></button>
+                  <button onClick={() => onOpenProfile(i.id)} className="flex-1 text-left text-sm font-bold text-white hover:opacity-80">{i.name} <span className="text-white/40">· {i.team}</span></button>
                   <button onClick={() => removeWatch(col, i.id)} className="text-white/40 hover:text-red"><Trash2 size={15} /></button>
                 </div>
               ))}
@@ -206,7 +242,7 @@ const Giornalista = ({ watchlist, removeWatch, onOpenProfile }) => {
 };
 
 /* ---------------- Workspace shell ---------------- */
-export const Workspace = ({ watchlist, removeWatch, onOpenProfile }) => {
+export const Workspace = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) => {
   const [role, setRole] = useState(() => localStorage.getItem("th_role") || "");
   const setR = (r) => { setRole(r); localStorage.setItem("th_role", r); };
 
@@ -217,7 +253,7 @@ export const Workspace = ({ watchlist, removeWatch, onOpenProfile }) => {
         <p className="mb-8 text-center text-sm text-white/50">Scegli il tuo ruolo. Potrai cambiarlo in seguito.</p>
         <div className="grid gap-4 sm:grid-cols-2">
           <button data-testid="role-ds" onClick={() => setR("ds")} className="glass flex flex-col items-center gap-3 rounded-3xl p-8 active:scale-[0.97]">
-            <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#24E07A]/15"><Briefcase size={30} className="text-green" /></span>
+            <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#2E7DF6]/15"><Briefcase size={30} className="text-green" /></span>
             <span className="font-heading text-lg font-black text-white">Direttore Sportivo</span>
             <span className="text-center text-xs text-white/50">Simula il mercato: budget, cessioni e acquisti.</span>
           </button>
@@ -237,7 +273,7 @@ export const Workspace = ({ watchlist, removeWatch, onOpenProfile }) => {
         <h1 className="font-heading text-2xl font-black uppercase text-white">{role === "ds" ? "Direttore Sportivo" : "Giornalista"}</h1>
         <button data-testid="role-switch" onClick={() => setR(role === "ds" ? "journalist" : "ds")} className="rounded-xl glass px-3 py-2 text-xs font-bold text-white/70">Cambia ruolo</button>
       </div>
-      {role === "ds" ? <DirettoreSportivo /> : <Giornalista watchlist={watchlist} removeWatch={removeWatch} onOpenProfile={onOpenProfile} />}
+      {role === "ds" ? <DirettoreSportivo /> : <Giornalista watchlist={watchlist} removeWatch={removeWatch} saveWatch={saveWatch} onOpenProfile={onOpenProfile} />}
     </div>
   );
 };
