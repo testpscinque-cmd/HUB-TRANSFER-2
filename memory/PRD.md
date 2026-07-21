@@ -37,6 +37,10 @@ Rebrand da "MemoryTransfer" (tema chiaro Fantacalcio, ora archiviato) deciso dal
 - Legare la timeline profilo alle news live per keyword (ora usa UPDATES seed per le saghe principali).
 
 ## Note
+- Update 2026-07-21 (rose + ciliegina):
+  - **Rose DS ampliate**: DB da 96 → **212 giocatori** (8-15 per squadra, tutte le 20 rose piene con titolari + riserve principali). SEED_VERSION 30 → **31** (re-seed Mongo automatico allo start del backend).
+  - **Ciliegina "Here we go!"**: badge verde pulsante alla Fabrizio Romano sulle news con stato **Ufficiale + fonte verificata** (`herewego-*`).
+  - **Layout desktop**: sezioni allineate a sinistra (`lg:mx-0 lg:pl-10`, non più centrate).
 - Update 2026-07-21 (batch UI/FIFA):
   - **Sidebar desktop** (`SideNav.jsx`, visibile da `lg:`) con logo + nav verticale; bottom nav resta su mobile (`lg:hidden`). Contenuto shiftato con `lg:pl-60`.
   - **Dashboard FIFA/EA**: hero con gradient verde neon + griglia campo + badge LIVE pulsante; news card con accento colorato a sinistra per stato + flag pill (Rumor/Trattativa/Ufficiale) + hover-lift.

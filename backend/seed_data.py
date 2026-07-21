@@ -1,7 +1,7 @@
 """TransferHub — Serie A Edition. Curated realistic 2025/26 Serie A database."""
 import re
 
-SEED_VERSION = 30
+SEED_VERSION = 31
 
 
 def _slug(s):
@@ -166,6 +166,144 @@ PLAYERS = [
     _pl("Matteo Bianchetti", "Cremonese", "DIF", 32, "2027", "Italia", "Accessibile", "€0.4M", "€2M"),
     _pl("Michele Castagnetti", "Cremonese", "CEN", 36, "2026", "Italia", "Accessibile", "€0.3M", "€1M"),
     _pl("Franco Vázquez", "Cremonese", "ATT", 37, "2026", "Argentina", "Accessibile", "€0.5M", "€2M", True),
+    # ---- Rose ampliate (titolari + riserve principali) ----
+    # Inter
+    _pl("Josep Martínez", "Inter", "POR", 27, "2028", "Spagna", "Accessibile", "€1.5M", "€10M"),
+    _pl("Denzel Dumfries", "Inter", "DIF", 30, "2028", "Olanda", "Media", "€4M", "€30M"),
+    _pl("Federico Dimarco", "Inter", "DIF", 28, "2027", "Italia", "Top", "€4M", "€45M"),
+    _pl("Yann Bisseck", "Inter", "DIF", 25, "2028", "Germania", "Media", "€2M", "€28M"),
+    _pl("Francesco Acerbi", "Inter", "DIF", 38, "2026", "Italia", "Accessibile", "€2.5M", "€3M"),
+    _pl("Henrikh Mkhitaryan", "Inter", "CEN", 37, "2026", "Armenia", "Media", "€3.5M", "€4M", True),
+    _pl("Davide Frattesi", "Inter", "CEN", 26, "2028", "Italia", "Media", "€3M", "€35M"),
+    _pl("Piotr Zieliński", "Inter", "CEN", 32, "2028", "Polonia", "Media", "€4M", "€15M"),
+    _pl("Mehdi Taremi", "Inter", "ATT", 33, "2027", "Iran", "Accessibile", "€3M", "€8M", True),
+    # Milan
+    _pl("Fikayo Tomori", "Milan", "DIF", 28, "2027", "Inghilterra", "Media", "€3.5M", "€28M"),
+    _pl("Strahinja Pavlović", "Milan", "DIF", 25, "2029", "Serbia", "Media", "€2M", "€25M", True),
+    _pl("Malick Thiaw", "Milan", "DIF", 24, "2028", "Germania", "Media", "€1.8M", "€25M"),
+    _pl("Youssouf Fofana", "Milan", "CEN", 27, "2028", "Francia", "Media", "€2.5M", "€30M"),
+    _pl("Ruben Loftus-Cheek", "Milan", "CEN", 30, "2027", "Inghilterra", "Media", "€4M", "€18M"),
+    _pl("Samuel Chukwueze", "Milan", "ATT", 26, "2028", "Nigeria", "Media", "€3M", "€22M", True),
+    _pl("Santiago Giménez", "Milan", "ATT", 25, "2029", "Messico", "Media", "€3.5M", "€35M", True),
+    _pl("Christopher Nkunku", "Milan", "ATT", 28, "2030", "Francia", "Top", "€5M", "€40M"),
+    # Juventus
+    _pl("Mattia Perin", "Juventus", "POR", 33, "2027", "Italia", "Accessibile", "€2M", "€3M"),
+    _pl("Federico Gatti", "Juventus", "DIF", 28, "2028", "Italia", "Media", "€2.5M", "€28M"),
+    _pl("Pierre Kalulu", "Juventus", "DIF", 25, "2028", "Francia", "Media", "€2.5M", "€28M"),
+    _pl("Andrea Cambiaso", "Juventus", "DIF", 26, "2029", "Italia", "Media", "€2.5M", "€45M"),
+    _pl("Khéphren Thuram", "Juventus", "CEN", 25, "2029", "Francia", "Media", "€3M", "€40M"),
+    _pl("Weston McKennie", "Juventus", "CEN", 27, "2026", "USA", "Media", "€2.5M", "€25M", True),
+    _pl("Francisco Conceição", "Juventus", "ATT", 23, "2030", "Portogallo", "Media", "€2.5M", "€30M"),
+    _pl("Jonathan David", "Juventus", "ATT", 26, "2030", "Canada", "Top", "€6M", "€45M", True),
+    # Napoli
+    _pl("Giovanni Di Lorenzo", "Napoli", "DIF", 32, "2028", "Italia", "Media", "€3.5M", "€15M"),
+    _pl("Leonardo Spinazzola", "Napoli", "DIF", 33, "2027", "Italia", "Accessibile", "€2.5M", "€6M"),
+    _pl("Juan Jesus", "Napoli", "DIF", 34, "2026", "Brasile", "Accessibile", "€1.5M", "€2M", True),
+    _pl("André-Frank Zambo Anguissa", "Napoli", "CEN", 30, "2027", "Camerun", "Media", "€4M", "€30M", True),
+    _pl("Billy Gilmour", "Napoli", "CEN", 24, "2028", "Scozia", "Accessibile", "€2M", "€22M", True),
+    _pl("Matteo Politano", "Napoli", "ATT", 32, "2027", "Italia", "Media", "€3M", "€14M"),
+    _pl("David Neres", "Napoli", "ATT", 28, "2028", "Brasile", "Media", "€3M", "€35M", True),
+    _pl("Rasmus Højlund", "Napoli", "ATT", 22, "2030", "Danimarca", "Top", "€4.5M", "€40M"),
+    # Roma
+    _pl("Zeki Çelik", "Roma", "DIF", 28, "2027", "Turchia", "Accessibile", "€2M", "€8M", True),
+    _pl("Evan Ndicka", "Roma", "DIF", 26, "2028", "Costa d'Avorio", "Media", "€3M", "€35M", True),
+    _pl("Angeliño", "Roma", "DIF", 29, "2028", "Spagna", "Media", "€2.5M", "€18M"),
+    _pl("Bryan Cristante", "Roma", "CEN", 31, "2027", "Italia", "Media", "€3M", "€14M"),
+    _pl("Manu Koné", "Roma", "CEN", 24, "2029", "Francia", "Media", "€2.5M", "€35M"),
+    _pl("Stephan El Shaarawy", "Roma", "ATT", 33, "2026", "Italia", "Accessibile", "€3M", "€5M"),
+    _pl("Evan Ferguson", "Roma", "ATT", 21, "2030", "Irlanda", "Media", "€2M", "€25M", True),
+    # Atalanta
+    _pl("Berat Djimsiti", "Atalanta", "DIF", 32, "2027", "Albania", "Accessibile", "€2M", "€8M", True),
+    _pl("Isak Hien", "Atalanta", "DIF", 26, "2028", "Svezia", "Media", "€1.8M", "€30M"),
+    _pl("Odilon Kossounou", "Atalanta", "DIF", 24, "2029", "Costa d'Avorio", "Media", "€2M", "€25M", True),
+    _pl("Marten de Roon", "Atalanta", "CEN", 34, "2026", "Olanda", "Accessibile", "€2.5M", "€4M"),
+    _pl("Mario Pašalić", "Atalanta", "CEN", 30, "2027", "Croazia", "Media", "€2.5M", "€18M"),
+    _pl("Lazar Samardžić", "Atalanta", "CEN", 24, "2028", "Serbia", "Media", "€1.8M", "€25M"),
+    _pl("Daniel Maldini", "Atalanta", "ATT", 24, "2029", "Italia", "Media", "€1.5M", "€22M"),
+    # Lazio
+    _pl("Mario Gila", "Lazio", "DIF", 25, "2028", "Spagna", "Media", "€1.8M", "€25M"),
+    _pl("Manuel Lazzari", "Lazio", "DIF", 32, "2027", "Italia", "Accessibile", "€2M", "€5M"),
+    _pl("Matteo Guendouzi", "Lazio", "CEN", 27, "2029", "Francia", "Media", "€3M", "€28M"),
+    _pl("Danilo Cataldi", "Lazio", "CEN", 31, "2028", "Italia", "Accessibile", "€1.8M", "€8M"),
+    _pl("Gustav Isaksen", "Lazio", "ATT", 25, "2029", "Danimarca", "Accessibile", "€1.5M", "€18M"),
+    _pl("Valentín Castellanos", "Lazio", "ATT", 27, "2028", "Argentina", "Media", "€2.5M", "€22M", True),
+    _pl("Pedro", "Lazio", "ATT", 38, "2026", "Spagna", "Accessibile", "€2M", "€2M"),
+    # Fiorentina
+    _pl("Dodô", "Fiorentina", "DIF", 27, "2027", "Brasile", "Media", "€2M", "€22M", True),
+    _pl("Luca Ranieri", "Fiorentina", "DIF", 27, "2028", "Italia", "Accessibile", "€1.2M", "€12M"),
+    _pl("Robin Gosens", "Fiorentina", "DIF", 31, "2028", "Germania", "Accessibile", "€2M", "€10M"),
+    _pl("Cher Ndour", "Fiorentina", "CEN", 21, "2029", "Italia", "Accessibile", "€1M", "€10M"),
+    _pl("Edoardo Bove", "Fiorentina", "CEN", 24, "2029", "Italia", "Media", "€1.2M", "€18M"),
+    _pl("Nicolò Fagioli", "Fiorentina", "CEN", 25, "2028", "Italia", "Media", "€1.5M", "€20M"),
+    # Bologna
+    _pl("Federico Ravaglia", "Bologna", "POR", 26, "2027", "Italia", "Accessibile", "€0.6M", "€4M"),
+    _pl("Juan Miranda", "Bologna", "DIF", 26, "2028", "Spagna", "Accessibile", "€1M", "€10M"),
+    _pl("Nikola Moro", "Bologna", "CEN", 28, "2027", "Croazia", "Accessibile", "€1M", "€8M", True),
+    _pl("Remo Freuler", "Bologna", "CEN", 34, "2027", "Svizzera", "Accessibile", "€1.8M", "€6M", True),
+    _pl("Dan Ndoye", "Bologna", "ATT", 25, "2028", "Svizzera", "Media", "€1.5M", "€30M", True),
+    _pl("Thijs Dallinga", "Bologna", "ATT", 25, "2029", "Olanda", "Accessibile", "€1M", "€15M"),
+    # Torino
+    _pl("Guillermo Maripán", "Torino", "DIF", 31, "2028", "Cile", "Accessibile", "€1.5M", "€8M", True),
+    _pl("Adam Masina", "Torino", "DIF", 32, "2027", "Marocco", "Accessibile", "€1M", "€3M", True),
+    _pl("Ivan Ilić", "Torino", "CEN", 25, "2028", "Serbia", "Accessibile", "€1.2M", "€14M", True),
+    _pl("Cyril Ngonge", "Torino", "ATT", 25, "2028", "Belgio", "Accessibile", "€1M", "€12M"),
+    _pl("Duván Zapata", "Torino", "ATT", 35, "2027", "Colombia", "Accessibile", "€3M", "€4M", True),
+    # Como
+    _pl("Marc-Oliver Kempf", "Como", "DIF", 31, "2027", "Germania", "Accessibile", "€1.2M", "€4M"),
+    _pl("Maximo Perrone", "Como", "CEN", 23, "2029", "Argentina", "Accessibile", "€1M", "€14M", True),
+    _pl("Sergi Roberto", "Como", "CEN", 34, "2026", "Spagna", "Accessibile", "€1.5M", "€3M"),
+    _pl("Gabriel Strefezza", "Como", "ATT", 29, "2028", "Brasile", "Accessibile", "€1M", "€10M", True),
+    _pl("Alieu Fadera", "Como", "ATT", 24, "2029", "Gambia", "Accessibile", "€0.8M", "€10M", True),
+    # Udinese
+    _pl("Jaka Bijol", "Udinese", "DIF", 26, "2028", "Slovenia", "Media", "€1.2M", "€18M", True),
+    _pl("Christian Kabasele", "Udinese", "DIF", 34, "2026", "Belgio", "Accessibile", "€0.8M", "€2M"),
+    _pl("Sandi Lovrić", "Udinese", "CEN", 27, "2028", "Slovenia", "Accessibile", "€1M", "€14M"),
+    _pl("Florian Thauvin", "Udinese", "ATT", 33, "2027", "Francia", "Accessibile", "€1.5M", "€6M"),
+    _pl("Keinan Davis", "Udinese", "ATT", 28, "2028", "Inghilterra", "Accessibile", "€0.9M", "€8M"),
+    # Genoa
+    _pl("Alessandro Vogliacco", "Genoa", "DIF", 27, "2028", "Italia", "Accessibile", "€0.7M", "€8M"),
+    _pl("Johan Vásquez", "Genoa", "DIF", 27, "2028", "Messico", "Accessibile", "€0.9M", "€12M", True),
+    _pl("Milan Badelj", "Genoa", "CEN", 37, "2026", "Croazia", "Accessibile", "€0.8M", "€1M", True),
+    _pl("Ruslan Malinovskyi", "Genoa", "CEN", 32, "2027", "Ucraina", "Accessibile", "€1.2M", "€8M", True),
+    _pl("Vitinha", "Genoa", "ATT", 25, "2028", "Portogallo", "Accessibile", "€1M", "€12M"),
+    # Cagliari
+    _pl("Sebastiano Luperto", "Cagliari", "DIF", 29, "2027", "Italia", "Accessibile", "€0.8M", "€6M"),
+    _pl("Michel Adopo", "Cagliari", "CEN", 25, "2028", "Francia", "Accessibile", "€0.5M", "€5M", True),
+    _pl("Razvan Marin", "Cagliari", "CEN", 29, "2027", "Romania", "Accessibile", "€0.8M", "€6M", True),
+    _pl("Gianluca Gaetano", "Cagliari", "CEN", 26, "2028", "Italia", "Accessibile", "€0.8M", "€10M"),
+    _pl("Leonardo Pavoletti", "Cagliari", "ATT", 37, "2026", "Italia", "Accessibile", "€0.6M", "€1M"),
+    # Verona
+    _pl("Martin Frese", "Verona", "DIF", 24, "2029", "Danimarca", "Accessibile", "€0.4M", "€5M"),
+    _pl("Unai Núñez", "Verona", "DIF", 29, "2027", "Spagna", "Accessibile", "€0.6M", "€6M"),
+    _pl("Reda Belahyane", "Verona", "CEN", 22, "2029", "Marocco", "Accessibile", "€0.4M", "€6M", True),
+    _pl("Daniel Mosquera", "Verona", "ATT", 25, "2029", "Colombia", "Accessibile", "€0.5M", "€6M", True),
+    # Lecce
+    _pl("Kialonda Gaspar", "Lecce", "DIF", 24, "2028", "Angola", "Accessibile", "€0.4M", "€5M", True),
+    _pl("Balthazar Pierret", "Lecce", "CEN", 24, "2029", "Francia", "Accessibile", "€0.3M", "€4M"),
+    _pl("Lassana Coulibaly", "Lecce", "CEN", 29, "2027", "Mali", "Accessibile", "€0.4M", "€4M", True),
+    _pl("Santiago Pierotti", "Lecce", "ATT", 24, "2028", "Argentina", "Accessibile", "€0.3M", "€6M", True),
+    # Parma
+    _pl("Enrico Delprato", "Parma", "DIF", 26, "2028", "Italia", "Accessibile", "€0.5M", "€8M"),
+    _pl("Nahuel Estévez", "Parma", "CEN", 25, "2028", "Argentina", "Accessibile", "€0.4M", "€6M", True),
+    _pl("Hernani", "Parma", "CEN", 31, "2027", "Brasile", "Accessibile", "€0.5M", "€4M", True),
+    _pl("Mateo Pellegrino", "Parma", "ATT", 24, "2029", "Argentina", "Accessibile", "€0.4M", "€8M", True),
+    _pl("Pontus Almqvist", "Parma", "ATT", 26, "2028", "Svezia", "Accessibile", "€0.4M", "€6M"),
+    # Sassuolo
+    _pl("Tarik Muharemović", "Sassuolo", "DIF", 22, "2029", "Bosnia", "Accessibile", "€0.4M", "€6M", True),
+    _pl("Daniel Boloca", "Sassuolo", "CEN", 27, "2028", "Romania", "Accessibile", "€0.5M", "€8M"),
+    _pl("Domenico Berardi", "Sassuolo", "ATT", 31, "2027", "Italia", "Media", "€2.5M", "€14M"),
+    _pl("Cristian Volpato", "Sassuolo", "ATT", 22, "2028", "Italia", "Accessibile", "€0.6M", "€10M"),
+    # Pisa
+    _pl("Simone Canestrelli", "Pisa", "DIF", 25, "2028", "Italia", "Accessibile", "€0.5M", "€8M"),
+    _pl("Idrissa Touré", "Pisa", "DIF", 27, "2027", "Germania", "Accessibile", "€0.3M", "€4M"),
+    _pl("Samuele Angori", "Pisa", "DIF", 22, "2029", "Italia", "Accessibile", "€0.2M", "€4M"),
+    _pl("M'Bala Nzola", "Pisa", "ATT", 29, "2027", "Angola", "Accessibile", "€0.6M", "€6M", True),
+    # Cremonese
+    _pl("Emanuele Zuelli", "Cremonese", "CEN", 24, "2028", "Italia", "Accessibile", "€0.3M", "€3M"),
+    _pl("Warren Bondo", "Cremonese", "CEN", 22, "2029", "Francia", "Accessibile", "€0.3M", "€5M"),
+    _pl("Federico Bonazzoli", "Cremonese", "ATT", 29, "2027", "Italia", "Accessibile", "€0.6M", "€5M"),
+    _pl("Jamie Vardy", "Cremonese", "ATT", 39, "2026", "Inghilterra", "Accessibile", "€1M", "€2M"),
+
 ]
 
 

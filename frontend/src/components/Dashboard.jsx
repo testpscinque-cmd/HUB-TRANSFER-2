@@ -23,6 +23,12 @@ const NewsCard = ({ n, onSave }) => (
       <button data-testid={`save-post-${n.id}`} onClick={() => onSave({ id: `post-${n.id}`, name: n.title, team: n.source, link: n.link })}
         title="Salva scoop" className="text-white/50 transition-colors hover:text-[#2BE07A] active:scale-90"><Bookmark size={15} /></button>
     </div>
+    {n.stage === "ufficiale" && n.verified && (
+      <div data-testid={`herewego-${n.id}`} className="flex items-center gap-1.5 self-start rounded-lg px-2 py-1 text-[10px] font-black uppercase tracking-wider text-[#2BE07A]"
+        style={{ background: "rgba(43,224,122,0.14)", border: "1px solid rgba(43,224,122,0.45)", boxShadow: "0 0 14px rgba(43,224,122,0.35)" }}>
+        <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[#2BE07A]" /> Here we go!
+      </div>
+    )}
     <p className="font-heading text-[15px] font-bold leading-snug text-white">{n.title}</p>
     <div className="flex items-center justify-between">
       <StatusBar color={n.color} label={STAGE_LABEL[n.stage]} />
