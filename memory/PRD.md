@@ -37,5 +37,6 @@ Rebrand da "MemoryTransfer" (tema chiaro Fantacalcio, ora archiviato) deciso dal
 - Legare la timeline profilo alle news live per keyword (ora usa UPDATES seed per le saghe principali).
 
 ## Note
+- Fix 2026-07-21: "Esporta Dossier" (Giornalista) — mancava il modale che mostra il testo generato; aggiunto modale con textarea + "Copia negli appunti" (fallback execCommand per iframe). Verificato con screenshot e2e. Icona ruolo Giornalista resa neutra (niente blu).
 - App già in PRODUZIONE (redeploy necessario per pubblicare le modifiche). Preview = ambiente di sviluppo.
 - Nessuna autenticazione (rimossa nel pivot). Nessuna chiave richiesta finché i video restano mock.

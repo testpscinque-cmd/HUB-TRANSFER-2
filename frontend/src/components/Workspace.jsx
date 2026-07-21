@@ -252,6 +252,22 @@ const Giornalista = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) => {
           )}
         </div>
       ))}
+
+      {dossierText && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setDossierText(null)} />
+          <div className="glass-strong pop-in relative z-10 max-h-[85vh] w-full max-w-md overflow-hidden rounded-3xl p-5" data-testid="dossier-modal">
+            <button onClick={() => setDossierText(null)} className="absolute right-4 top-4 text-white/50"><X size={20} /></button>
+            <h3 className="mb-3 flex items-center gap-2 font-heading text-xl font-black text-white"><FileText size={18} /> Dossier</h3>
+            <textarea data-testid="dossier-text" readOnly value={dossierText}
+              className="h-64 w-full resize-none rounded-xl border border-white/10 bg-white/5 p-3 font-mono text-xs leading-relaxed text-white/90 focus:outline-none" />
+            <button data-testid="dossier-copy" onClick={copyDossier}
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#E9EEF7] py-3 font-heading text-sm font-black uppercase tracking-wider text-black active:scale-[0.98]">
+              <Copy size={15} /> Copia negli appunti
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -273,7 +289,7 @@ export const Workspace = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) 
             <span className="text-center text-xs text-white/50">Simula il mercato: budget, cessioni e acquisti.</span>
           </button>
           <button data-testid="role-journalist" onClick={() => setR("journalist")} className="glass flex flex-col items-center gap-3 rounded-3xl p-8 active:scale-[0.97]">
-            <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-500/15"><PenTool size={30} className="text-blue-400" /></span>
+            <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10"><PenTool size={30} className="text-white/80" /></span>
             <span className="font-heading text-lg font-black text-white">Giornalista</span>
             <span className="text-center text-xs text-white/50">Watchlist, archivio e generatore di dossier.</span>
           </button>
