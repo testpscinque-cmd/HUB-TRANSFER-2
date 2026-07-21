@@ -38,7 +38,7 @@ export default function App() {
   return (
     <div className="app-bg min-h-screen lg:pl-60">
       <SideNav tab={profileId ? "" : tab} onNav={go} />
-      <div className="mx-auto min-h-screen w-full max-w-2xl px-4 pb-24 pt-4 sm:px-5 lg:pb-8 lg:pt-8">
+      <div className="mx-auto min-h-screen w-full max-w-2xl px-4 pb-24 pt-4 sm:px-5 lg:mx-0 lg:max-w-3xl lg:pl-10 lg:pb-8 lg:pt-8">
         {profileId ? (
           <ProfileScreen id={profileId} onBack={closeProfile} onOpenProfile={openProfile} saveWatch={saveWatch} />
         ) : (
