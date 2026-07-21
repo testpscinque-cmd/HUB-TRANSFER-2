@@ -191,7 +191,7 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
         <div className="relative">
           <div className="flex items-center gap-2">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2BE07A]" style={{ boxShadow: "0 0 22px rgba(43,224,122,0.6)" }}><Zap size={21} className="text-black" fill="black" /></span>
-            <h1 className="font-heading text-3xl font-black uppercase tracking-tight text-white">Transfer<span style={{ color: "#2BE07A" }}>Hub</span></h1>
+            <h1 className="font-heading text-3xl font-black uppercase tracking-tight text-white"><span style={{ color: "#2BE07A" }}>Hub</span> Transfer</h1>
             <span className="ml-auto flex items-center gap-1.5 rounded-full bg-black/30 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-[#2BE07A]">
               <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[#2BE07A]" /> Live
             </span>
@@ -202,7 +202,7 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
 
       {/* Header desktop */}
       <div className="mb-5 hidden items-center gap-2 lg:flex">
-        <h1 className="font-heading text-3xl font-black uppercase tracking-tight text-white">Dashboard</h1>
+        <h1 className="font-heading text-3xl font-black uppercase tracking-tight text-white"><span style={{ color: "#2BE07A" }}>Hub</span> Transfer</h1>
         <span className="ml-auto flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-[#2BE07A]">
           <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[#2BE07A]" /> Serie A · Live
         </span>

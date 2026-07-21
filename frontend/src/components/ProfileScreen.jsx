@@ -14,7 +14,7 @@ const Data = ({ icon: Icon, label, value, accent }) => (
   </div>
 );
 
-export const ProfileScreen = ({ id, onBack, saveWatch }) => {
+export const ProfileScreen = ({ id, onBack, saveWatch, go }) => {
   const [p, setP] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -27,7 +27,17 @@ export const ProfileScreen = ({ id, onBack, saveWatch }) => {
   if (!p) return null;
 
   const isCoach = p.kind === "coach";
-  const bookmark = () => { saveWatch("Radar", { id: p.id, name: p.name, team: p.team, position: p.position || p.role }); toast.success("Salvato nella Watchlist (Radar)"); };
+  const bookmark = () => {
+    saveWatch("Radar", { id: p.id, name: p.name, team: p.team, position: p.position || p.role });
+    localStorage.setItem("th_role", "journalist");
+    toast.success("Salvato in Watchlist — apro il Giornalista");
+    go && go("workspace");
+  };
+  const goDS = () => {
+    localStorage.setItem("th_role", "ds");
+    toast.success("Apro il Direttore Sportivo");
+    go && go("workspace");
+  };
 
   return (
     <div className="fade-up">
@@ -48,7 +58,10 @@ export const ProfileScreen = ({ id, onBack, saveWatch }) => {
               {p.extracomunitario && <span className="rounded-full px-2 py-0.5 text-[10px] font-black uppercase text-yellow" style={{ background: "#F5C51818", border: "1px solid #F5C51844" }}>Extracom.</span>}
             </div>
             <h1 className="mt-1 font-heading text-2xl font-black leading-tight text-white">{p.name}</h1>
-            <div className="mt-1 flex items-center gap-2 text-sm text-white/60"><TeamBadge team={p.team_info || p.team} size={20} /> <span className="font-bold text-white">{V(p.team)}</span></div>
+            <button data-testid="profile-team-link" onClick={goDS} className="mt-1 flex items-center gap-2 text-sm text-white/60 transition-opacity hover:opacity-80">
+              <TeamBadge team={p.team_info || p.team} size={20} /> <span className="font-bold text-white">{V(p.team)}</span>
+              <span className="rounded-md px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-[#2BE07A]" style={{ background: "rgba(43,224,122,0.15)", border: "1px solid rgba(43,224,122,0.4)" }}>Simula DS →</span>
+            </button>
           </div>
         </div>
         <div className="relative mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">

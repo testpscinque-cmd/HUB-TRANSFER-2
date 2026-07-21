@@ -37,6 +37,9 @@ Rebrand da "MemoryTransfer" (tema chiaro Fantacalcio, ora archiviato) deciso dal
 - Legare la timeline profilo alle news live per keyword (ora usa UPDATES seed per le saghe principali).
 
 ## Note
+- Update 2026-07-21 (rebrand + link consegna):
+  - **Rebrand "HUB TRANSFER"** (HUB verde) ovunque: SideNav, hero Dashboard mobile, titolo Dashboard desktop (ex "Dashboard").
+  - **Collegamenti dal profilo**: badge "Simula DS →" sulla squadra → apre Workspace in modalità DS; pulsante "Salva" → salva in Watchlist (Radar) e apre Workspace Giornalista (via `th_role` in localStorage + `go`).
 - Update 2026-07-21 (rose + ciliegina):
   - **Rose DS ampliate**: DB da 96 → **212 giocatori** (8-15 per squadra, tutte le 20 rose piene con titolari + riserve principali). SEED_VERSION 30 → **31** (re-seed Mongo automatico allo start del backend).
   - **Ciliegina "Here we go!"**: badge verde pulsante alla Fabrizio Romano sulle news con stato **Ufficiale + fonte verificata** (`herewego-*`).

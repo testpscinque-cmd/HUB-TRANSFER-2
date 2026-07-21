@@ -14,7 +14,7 @@ export const SideNav = ({ tab, onNav }) => (
   >
     <div className="mb-9 flex items-center gap-2 px-2">
       <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2BE07A]"><Zap size={19} className="text-black" fill="black" /></span>
-      <span className="font-heading text-xl font-black uppercase tracking-tight text-white">Transfer<span style={{ color: "#2BE07A" }}>Hub</span></span>
+      <span className="font-heading text-xl font-black uppercase tracking-tight text-white"><span style={{ color: "#2BE07A" }}>Hub</span> Transfer</span>
     </div>
     <nav className="flex flex-col gap-1.5">
       {items.map((it) => {
