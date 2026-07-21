@@ -52,9 +52,9 @@ export const StatusBar = ({ color = "#8B93A7", label }) => (
 );
 
 const TIER_STYLE = {
-  Top: { c: "#2E7DF6" }, Media: { c: "#F5C518" }, Accessibile: { c: "#8B93A7" },
-  "Budget Alto": { c: "#2E7DF6" }, Bilanciato: { c: "#F5C518" }, Autofinanziamento: { c: "#8B93A7" },
-  Alta: { c: "#2E7DF6" }, Bassa: { c: "#FF4D4D" },
+  Top: { c: "#E9EEF7" }, Media: { c: "#F5C518" }, Accessibile: { c: "#8B93A7" },
+  "Budget Alto": { c: "#E9EEF7" }, Bilanciato: { c: "#F5C518" }, Autofinanziamento: { c: "#8B93A7" },
+  Alta: { c: "#22C55E" }, Bassa: { c: "#FF4D4D" },
 };
 export const TierBadge = ({ tier }) => {
   const s = TIER_STYLE[tier] || { c: "#8B93A7" };

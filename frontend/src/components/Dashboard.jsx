@@ -154,7 +154,7 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
     <div className="fade-up">
       {/* Header (non fisso) */}
       <div className="mb-4 flex items-center gap-2">
-        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2E7DF6]"><Zap size={19} className="text-white" fill="white" /></span>
+        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2BE07A]"><Zap size={19} className="text-black" fill="black" /></span>
         <h1 className="font-heading text-2xl font-black uppercase tracking-tight text-white">Transfer<span style={{ color: "#2BE07A" }}>Hub</span></h1>
         <span className="ml-auto rounded-full bg-white/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-white/60">Serie A</span>
       </div>
@@ -165,15 +165,15 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
         <div className="glass rounded-2xl p-3">
           <div className="grid grid-cols-2 gap-2">
             <input list="player-list" data-testid="mm-player" value={pName} onChange={(e) => setPName(e.target.value)} placeholder="Giocatore / Allenatore"
-              className="rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/35 focus:border-[#2E7DF6] focus:outline-none" />
+              className="rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/35 focus:border-white/40 focus:outline-none" />
             <input list="team-list" data-testid="mm-team" value={pTeam} onChange={(e) => setPTeam(e.target.value)} placeholder="Squadra target"
-              className="rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/35 focus:border-[#2E7DF6] focus:outline-none" />
+              className="rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/35 focus:border-white/40 focus:outline-none" />
           </div>
           <datalist id="player-list">{names.map((n) => <option key={n} value={n} />)}</datalist>
           <datalist id="team-list">{teams.map((t) => <option key={t.id} value={t.name} />)}</datalist>
           <button data-testid="match-scoop-btn" onClick={runMatch} disabled={matching}
-            className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#2E7DF6] py-2.5 font-heading text-sm font-black uppercase tracking-wider text-white transition-all active:scale-[0.98] disabled:opacity-60">
-            {matching ? <span className="h-4 w-4 rounded-full border-2 border-white/40 border-t-white spin" /> : <Zap size={16} fill="white" />}
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-white py-2.5 font-heading text-sm font-black uppercase tracking-wider text-[#0A0E17] transition-all active:scale-[0.98] disabled:opacity-60">
+            {matching ? <span className="h-4 w-4 rounded-full border-2 border-black/20 border-t-black spin" /> : <Zap size={16} fill="black" className="text-black" />}
             {matching ? "Analisi dati..." : "Match Scoop"}
           </button>
         </div>
@@ -185,14 +185,14 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
           <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/35" />
           <input data-testid="news-search-input" value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.key === "Enter" && runSearch()}
             placeholder="Cerca notizie, fonti, parole chiave..."
-            className="w-full rounded-xl border border-white/10 bg-white/5 py-2.5 pl-9 pr-3 text-sm text-white placeholder:text-white/35 focus:border-[#2E7DF6] focus:outline-none" />
+            className="w-full rounded-xl border border-white/10 bg-white/5 py-2.5 pl-9 pr-3 text-sm text-white placeholder:text-white/35 focus:border-white/40 focus:outline-none" />
         </div>
         <button data-testid="news-search-btn" onClick={runSearch} className="rounded-xl bg-white/10 px-3 py-2.5 text-sm font-bold text-white active:scale-95">Cerca</button>
       </div>
       <div className="mb-4 flex gap-2">
         {[["all", "Tutto"], ["posts", "Post"], ["videos", "Video"]].map(([k, l]) => (
           <button key={k} data-testid={`filter-${k}`} onClick={() => setFilter(k)}
-            className={`rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-all ${filter === k ? "bg-[#2E7DF6] text-black" : "glass text-white/60"}`}>
+            className={`rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-all ${filter === k ? "bg-white text-black" : "glass text-white/60"}`}>
             {l}
           </button>
         ))}
@@ -200,7 +200,7 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-16"><span className="h-8 w-8 rounded-full border-2 border-white/20 border-t-[#2E7DF6] spin" /></div>
+        <div className="flex justify-center py-16"><span className="h-8 w-8 rounded-full border-2 border-white/20 border-t-white spin" /></div>
       ) : (
         <div className="space-y-3">
           {feed.length === 0 && <p className="py-12 text-center text-sm text-white/40">Nessuna notizia trovata.</p>}

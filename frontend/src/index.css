@@ -50,9 +50,9 @@ html, body {
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.glow-green { box-shadow: 0 0 18px rgba(46, 125, 246, 0.45); }
+.glow-green { box-shadow: 0 0 18px rgba(233, 238, 247, 0.25); }
 .glow-yellow { box-shadow: 0 0 16px rgba(245, 197, 24, 0.4); }
-.text-green { color: #2E7DF6; }
+.text-green { color: #E9EEF7; }
 .text-yellow { color: var(--yellow); }
 .text-red { color: var(--red); }
 

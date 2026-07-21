@@ -57,7 +57,7 @@ export const Profili = ({ onOpenProfile, saveWatch }) => {
       <div className="mb-3 flex gap-2">
         {[["player", "Giocatori"], ["coach", "Allenatori"]].map(([k, l]) => (
           <button key={k} data-testid={`kind-${k}`} onClick={() => setKind(k)}
-            className={`rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-all ${kind === k ? "bg-[#2E7DF6] text-black" : "glass text-white/60"}`}>
+            className={`rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-all ${kind === k ? "bg-white text-black" : "glass text-white/60"}`}>
             {l}
           </button>
         ))}
@@ -67,10 +67,10 @@ export const Profili = ({ onOpenProfile, saveWatch }) => {
         <div className="relative flex-1">
           <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/35" />
           <input data-testid="profili-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Cerca nome..."
-            className="w-full rounded-xl border border-white/10 bg-white/5 py-2.5 pl-9 pr-3 text-sm text-white placeholder:text-white/35 focus:border-[#2E7DF6] focus:outline-none" />
+            className="w-full rounded-xl border border-white/10 bg-white/5 py-2.5 pl-9 pr-3 text-sm text-white placeholder:text-white/35 focus:border-white/40 focus:outline-none" />
         </div>
         <select data-testid="profili-team-filter" value={team} onChange={(e) => setTeam(e.target.value)}
-          className="rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white focus:border-[#2E7DF6] focus:outline-none">
+          className="rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white focus:border-white/40 focus:outline-none">
           <option value="">Tutte</option>
           {teams.map((t) => <option key={t.id} value={t.name} className="bg-[#12141C]">{t.name}</option>)}
         </select>

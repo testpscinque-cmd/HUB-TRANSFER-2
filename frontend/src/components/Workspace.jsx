@@ -73,12 +73,12 @@ const DirettoreSportivo = () => {
         <label className="block">
           <span className="text-[10px] font-bold uppercase tracking-wider text-white/40">Budget Trasferimenti (M€)</span>
           <input data-testid="ds-budget" type="number" value={budget} onChange={(e) => setBudget(+e.target.value)}
-            className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 font-heading text-xl font-black focus:outline-none" style={{ color: budget < 0 ? "#FF4D4D" : "#2E7DF6" }} />
+            className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 font-heading text-xl font-black focus:outline-none" style={{ color: budget < 0 ? "#FF4D4D" : "#E9EEF7" }} />
         </label>
         <label className="block">
           <span className="text-[10px] font-bold uppercase tracking-wider text-white/40">Spazio Monte Ingaggi (M€)</span>
           <input data-testid="ds-wages" type="number" value={wages} onChange={(e) => setWages(+e.target.value)}
-            className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 font-heading text-xl font-black focus:outline-none" style={{ color: wages < 0 ? "#FF4D4D" : "#2E7DF6" }} />
+            className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 font-heading text-xl font-black focus:outline-none" style={{ color: wages < 0 ? "#FF4D4D" : "#E9EEF7" }} />
         </label>
         {deficit && <div className="col-span-2 flex items-center gap-2 rounded-lg bg-red-500/15 px-3 py-2 text-xs font-bold text-red"><TrendingDown size={14} /> Deficit di bilancio! Rientra prima di chiudere.</div>}
       </div>
@@ -88,12 +88,12 @@ const DirettoreSportivo = () => {
         <div className="relative">
           <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/35" />
           <input data-testid="ds-buy-search" value={buyQ} onChange={(e) => setBuyQ(e.target.value)} placeholder="Simula acquisto: cerca un giocatore..."
-            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/35 focus:border-[#2E7DF6] focus:outline-none" />
+            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/35 focus:border-[#E9EEF7] focus:outline-none" />
         </div>
         {buyResults.map((p) => (
           <div key={p.id} className="mt-2 flex items-center gap-2 rounded-lg bg-white/5 p-2">
             <PlayerCutout name={p.name} size={30} /><span className="flex-1 text-sm text-white">{p.name} <span className="text-white/40">· {p.team} · {p.market_value}</span></span>
-            <button data-testid={`ds-buy-${p.id}`} onClick={() => buy(p)} className="rounded-lg bg-[#2E7DF6] px-2.5 py-1 text-xs font-black text-black">Acquista</button>
+            <button data-testid={`ds-buy-${p.id}`} onClick={() => buy(p)} className="rounded-lg bg-[#E9EEF7] px-2.5 py-1 text-xs font-black text-black">Acquista</button>
           </div>
         ))}
       </div>
@@ -124,7 +124,7 @@ const DirettoreSportivo = () => {
         );
       })}
 
-      <button data-testid="ds-report-btn" onClick={() => setReport(true)} className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#2E7DF6] py-3 font-heading text-sm font-black uppercase tracking-wider text-black active:scale-[0.98]">
+      <button data-testid="ds-report-btn" onClick={() => setReport(true)} className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#E9EEF7] py-3 font-heading text-sm font-black uppercase tracking-wider text-black active:scale-[0.98]">
         Vedi Rosa Finale
       </button>
 
@@ -135,8 +135,8 @@ const DirettoreSportivo = () => {
             <button onClick={() => setReport(false)} className="absolute right-4 top-4 text-white/50"><X size={20} /></button>
             <h3 className="mb-3 font-heading text-xl font-black text-white">{team.name} — Rosa Finale</h3>
             <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-xl bg-white/5 p-3"><div className="text-[10px] uppercase text-white/40">Budget</div><div className="font-heading text-2xl font-black" style={{ color: budget < 0 ? "#FF4D4D" : "#2E7DF6" }}>{budget}M</div></div>
-              <div className="rounded-xl bg-white/5 p-3"><div className="text-[10px] uppercase text-white/40">Monte Ingaggi</div><div className="font-heading text-2xl font-black" style={{ color: wages < 0 ? "#FF4D4D" : "#2E7DF6" }}>{wages}M</div></div>
+              <div className="rounded-xl bg-white/5 p-3"><div className="text-[10px] uppercase text-white/40">Budget</div><div className="font-heading text-2xl font-black" style={{ color: budget < 0 ? "#FF4D4D" : "#E9EEF7" }}>{budget}M</div></div>
+              <div className="rounded-xl bg-white/5 p-3"><div className="text-[10px] uppercase text-white/40">Monte Ingaggi</div><div className="font-heading text-2xl font-black" style={{ color: wages < 0 ? "#FF4D4D" : "#E9EEF7" }}>{wages}M</div></div>
             </div>
             <p className="mt-4 flex items-center gap-1 text-xs font-bold uppercase text-green"><TrendingUp size={13} /> Acquisti ({moves.in.length})</p>
             {moves.in.map((p) => <div key={p.id} className="text-sm text-white/80">+ {p.name} <span className="text-white/40">({p.market_value})</span></div>)}
@@ -158,6 +158,7 @@ const Giornalista = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) => {
   const [jq, setJq] = useState("");
   const [target, setTarget] = useState(columns[0] || "Radar");
   const [newCol, setNewCol] = useState("");
+  const [dossierText, setDossierText] = useState(null);
 
   useEffect(() => { api.getPlayers().then(setAllPlayers).catch(() => {}); }, []);
 
@@ -166,22 +167,36 @@ const Giornalista = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) => {
   const createCol = () => { if (!newCol.trim()) return; setTarget(newCol.trim()); toast.success(`Colonna "${newCol.trim()}" pronta — aggiungi un giocatore`); };
 
   const dossier = async (col) => {
-    const items = watchlist[col] || [];
-    if (!items.length) { toast.error("Colonna vuota"); return; }
+    const items = (watchlist[col] || []).filter((i) => i && i.id);
+    if (!items.length) { toast.error("Lista vuota"); return; }
     setBusy(true);
     try {
-      const profiles = await Promise.all(items.map((i) => api.getProfile(i.id).catch(() => null)));
       let txt = `DOSSIER — ${col}\n${new Date().toLocaleDateString("it-IT")}\n\n`;
-      profiles.filter(Boolean).forEach((p) => {
-        txt += `▸ ${p.name} (${p.team}) — ${p.position || p.role}, ${p.age} anni, scadenza ${p.contract_expiry || "---"}\n`;
-        const verified = (p.timeline || []).filter((u) => u.verified);
-        verified.forEach((u) => { txt += `   • [${u.stage.toUpperCase()}] ${u.text} — ${u.source} ✓\n`; });
-        txt += "\n";
-      });
-      await navigator.clipboard.writeText(txt);
-      toast.success("Dossier copiato negli appunti");
+      for (const i of items) {
+        if (/^(p|c)-/.test(i.id)) {
+          const p = await api.getProfile(i.id).catch(() => null);
+          if (p) {
+            txt += `▸ ${p.name} (${p.team}) — ${p.position || p.role || "-"}, ${p.age || "-"} anni, scadenza ${p.contract_expiry || "---"}\n`;
+            (p.timeline || []).filter((u) => u.verified).forEach((u) => { txt += `   • [${(u.stage || "").toUpperCase()}] ${u.text} — ${u.source} (verificata)\n`; });
+            txt += "\n";
+            continue;
+          }
+        }
+        txt += `▸ ${i.name || "Notizia"}${i.team ? ` — ${i.team}` : ""}\n\n`;
+      }
+      setDossierText(txt);
     } catch { toast.error("Errore generazione dossier"); }
     finally { setBusy(false); }
+  };
+
+  const copyDossier = async () => {
+    try { await navigator.clipboard.writeText(dossierText); toast.success("Dossier copiato"); }
+    catch {
+      const ta = document.createElement("textarea"); ta.value = dossierText;
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); toast.success("Dossier copiato"); } catch { toast.error("Seleziona e copia manualmente"); }
+      document.body.removeChild(ta);
+    }
   };
 
   return (
@@ -202,13 +217,13 @@ const Giornalista = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) => {
         <div className="relative">
           <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/35" />
           <input data-testid="jrn-search" value={jq} onChange={(e) => setJq(e.target.value)} placeholder="Cerca un giocatore da salvare..."
-            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/35 focus:border-[#2E7DF6] focus:outline-none" />
+            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/35 focus:border-[#E9EEF7] focus:outline-none" />
         </div>
         {results.map((p) => (
           <div key={p.id} className="mt-2 flex items-center gap-2 rounded-lg bg-white/5 p-2">
             <PlayerCutout name={p.name} size={28} />
             <span className="flex-1 text-sm text-white">{p.name} <span className="text-white/40">· {p.team}</span></span>
-            <button data-testid={`jrn-add-${p.id}`} onClick={() => add(p)} className="flex items-center gap-1 rounded-lg bg-[#2E7DF6] px-2.5 py-1 text-xs font-black text-white"><Plus size={12} /> Aggiungi</button>
+            <button data-testid={`jrn-add-${p.id}`} onClick={() => add(p)} className="flex items-center gap-1 rounded-lg bg-white px-2.5 py-1 text-xs font-black text-[#0A0E17]"><Plus size={12} /> Aggiungi</button>
           </div>
         ))}
       </div>
@@ -218,7 +233,7 @@ const Giornalista = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) => {
           <div className="mb-3 flex items-center gap-2">
             <span className="font-heading text-sm font-bold uppercase tracking-wider text-white">{col}</span>
             <span className="text-xs text-white/40">({(watchlist[col] || []).length})</span>
-            <button data-testid={`dossier-${col}`} onClick={() => dossier(col)} disabled={busy} className="ml-auto flex items-center gap-1.5 rounded-lg bg-[#2E7DF6] px-3 py-1.5 text-xs font-black uppercase text-black active:scale-95 disabled:opacity-60">
+            <button data-testid={`dossier-${col}`} onClick={() => dossier(col)} disabled={busy} className="ml-auto flex items-center gap-1.5 rounded-lg bg-[#E9EEF7] px-3 py-1.5 text-xs font-black uppercase text-black active:scale-95 disabled:opacity-60">
               <FileText size={13} /> Esporta Dossier
             </button>
           </div>
@@ -253,7 +268,7 @@ export const Workspace = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) 
         <p className="mb-8 text-center text-sm text-white/50">Scegli il tuo ruolo. Potrai cambiarlo in seguito.</p>
         <div className="grid gap-4 sm:grid-cols-2">
           <button data-testid="role-ds" onClick={() => setR("ds")} className="glass flex flex-col items-center gap-3 rounded-3xl p-8 active:scale-[0.97]">
-            <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#2E7DF6]/15"><Briefcase size={30} className="text-green" /></span>
+            <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#E9EEF7]/15"><Briefcase size={30} className="text-green" /></span>
             <span className="font-heading text-lg font-black text-white">Direttore Sportivo</span>
             <span className="text-center text-xs text-white/50">Simula il mercato: budget, cessioni e acquisti.</span>
           </button>
