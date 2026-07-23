@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
-import { Briefcase, PenTool, ChevronDown, TrendingDown, TrendingUp, X, FileText, Copy, Trash2, Search, Plus, ExternalLink } from "lucide-react";
+import { Briefcase, PenTool, ChevronDown, TrendingDown, TrendingUp, X, Trash2, Search, Plus, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import * as api from "@/lib/api";
+import { useI18n } from "@/lib/i18n";
 import { PlayerCutout, TeamBadge, TierBadge } from "@/components/bits";
+import { ArticleDraftDialog } from "@/components/ArticleDraftDialog";
+import { TransferCardDialog } from "@/components/TransferCardDialog";
 
 const ROLES = [["POR", "Portieri"], ["DIF", "Difensori"], ["CEN", "Centrocampisti"], ["ATT", "Attaccanti"]];
 const ROLE_FLAG = { POR: "#F5C518", DIF: "#8B93A7", CEN: "#2BE07A", ATT: "#FF7A00" };
@@ -157,13 +160,16 @@ const DirettoreSportivo = () => {
 
 /* ---------------- Giornalista ---------------- */
 const Giornalista = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) => {
+  const { t } = useI18n();
   const columns = Object.keys(watchlist).length ? Object.keys(watchlist) : ["Radar"];
   const [busy, setBusy] = useState(false);
   const [allPlayers, setAllPlayers] = useState([]);
   const [jq, setJq] = useState("");
   const [target, setTarget] = useState(columns[0] || "Radar");
   const [newCol, setNewCol] = useState("");
-  const [dossierText, setDossierText] = useState(null);
+  const [transferProfile, setTransferProfile] = useState(null);
+  const [draftProfile, setDraftProfile] = useState(null);
+  const [profileLoading, setProfileLoading] = useState(false);
 
   useEffect(() => { api.getPlayers().then(setAllPlayers).catch(() => {}); }, []);
 
@@ -171,42 +177,28 @@ const Giornalista = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) => {
   const add = (p) => { saveWatch(target || "Radar", { id: p.id, name: p.name, team: p.team, position: p.position }); toast.success(`${p.name} aggiunto a ${target}`); setJq(""); };
   const createCol = () => { if (!newCol.trim()) return; setTarget(newCol.trim()); toast.success(`Colonna "${newCol.trim()}" pronta — aggiungi un giocatore`); };
 
-  const dossier = async (col) => {
-    const items = (watchlist[col] || []).filter((i) => i && i.id);
-    if (!items.length) { toast.error("Lista vuota"); return; }
-    setBusy(true);
-    try {
-      let txt = `DOSSIER — ${col}\n${new Date().toLocaleDateString("it-IT")}\n\n`;
-      for (const i of items) {
-        if (/^(p|c)-/.test(i.id)) {
-          const p = await api.getProfile(i.id).catch(() => null);
-          if (p) {
-            txt += `▸ ${p.name} (${p.team}) — ${p.position || p.role || "-"}, ${p.age || "-"} anni, scadenza ${p.contract_expiry || "---"}\n`;
-            (p.timeline || []).filter((u) => u.verified).forEach((u) => { txt += `   • [${(u.stage || "").toUpperCase()}] ${u.text} — ${u.source} (verificata)\n`; });
-            txt += "\n";
-            continue;
-          }
-        }
-        txt += `▸ ${i.name || "Notizia"}${i.team ? ` — ${i.team}` : ""}\n\n`;
-      }
-      setDossierText(txt);
-    } catch { toast.error("Errore generazione dossier"); }
-    finally { setBusy(false); }
+  const openTransferFor = async (id) => {
+    setProfileLoading(true);
+    const profile = await api.getProfile(id).catch(() => null);
+    setProfileLoading(false);
+    if (!profile) { toast.error("Impossibile caricare il profilo"); return; }
+    setTransferProfile(profile);
   };
 
-  const copyDossier = async () => {
-    try { await navigator.clipboard.writeText(dossierText); toast.success("Dossier copiato"); }
-    catch {
-      const ta = document.createElement("textarea"); ta.value = dossierText;
-      document.body.appendChild(ta); ta.select();
-      try { document.execCommand("copy"); toast.success("Dossier copiato"); } catch { toast.error("Seleziona e copia manualmente"); }
-      document.body.removeChild(ta);
-    }
+  const openDraftFor = async (id) => {
+    setProfileLoading(true);
+    const profile = await api.getProfile(id).catch(() => null);
+    setProfileLoading(false);
+    if (!profile) { toast.error("Impossibile caricare il profilo"); return; }
+    setDraftProfile(profile);
   };
+
+  const closeTransfer = () => setTransferProfile(null);
+  const closeDraft = () => setDraftProfile(null);
 
   return (
     <div className="fade-up space-y-4">
-      <p className="text-sm text-white/60">Cerca e salva giocatori nelle tue liste, poi genera un dossier pronto da pubblicare.</p>
+      <p className="text-sm text-white/60">Cerca e salva giocatori nelle tue liste, poi genera report e Transfer Card profilate.</p>
 
       <div className="glass rounded-2xl p-4">
         <div className="relative mb-3">
@@ -248,9 +240,6 @@ const Giornalista = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) => {
           <div className="mb-3 flex items-center gap-2">
             <span className="font-heading text-sm font-bold uppercase tracking-wider text-white">{col}</span>
             <span className="text-xs text-white/40">({(watchlist[col] || []).length})</span>
-            <button data-testid={`dossier-${col}`} onClick={() => dossier(col)} disabled={busy} className="ml-auto flex items-center gap-1.5 rounded-lg bg-[#E9EEF7] px-3 py-1.5 text-xs font-black uppercase text-black active:scale-95 disabled:opacity-60">
-              <FileText size={13} /> Esporta Dossier
-            </button>
           </div>
           {(watchlist[col] || []).length === 0 ? (
             <p className="text-xs text-white/30">Nessun elemento salvato.</p>
@@ -269,6 +258,16 @@ const Giornalista = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) => {
                     </div>
                   </button>
                   {i.link && <a href={i.link} target="_blank" rel="noreferrer" className="text-white/40 hover:text-[#2BE07A]"><ExternalLink size={14} /></a>}
+                  {/^(p|c)-/.test(i.id) && (
+                    <div className="flex items-center gap-1">
+                      <button onClick={(e) => { e.stopPropagation(); openTransferFor(i.id); }} disabled={profileLoading} className="rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-[10px] font-black uppercase tracking-wider text-white/80 hover:bg-white/10 disabled:opacity-50">
+                        TRANSFER CARD
+                      </button>
+                      <button onClick={(e) => { e.stopPropagation(); openDraftFor(i.id); }} disabled={profileLoading} className="rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-[10px] font-black uppercase tracking-wider text-white/80 hover:bg-white/10 disabled:opacity-50">
+                        ESPORTA BOZZA
+                      </button>
+                    </div>
+                  )}
                   <button onClick={() => removeWatch(col, i.id)} className="text-white/40 hover:text-red"><Trash2 size={15} /></button>
                 </div>
               ))}
@@ -277,21 +276,8 @@ const Giornalista = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) => {
         </div>
       ))}
 
-      {dossierText && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setDossierText(null)} />
-          <div className="glass-strong pop-in relative z-10 max-h-[85vh] w-full max-w-md overflow-hidden rounded-3xl p-5" data-testid="dossier-modal">
-            <button onClick={() => setDossierText(null)} className="absolute right-4 top-4 text-white/50"><X size={20} /></button>
-            <h3 className="mb-3 flex items-center gap-2 font-heading text-xl font-black text-white"><FileText size={18} /> Dossier</h3>
-            <textarea data-testid="dossier-text" readOnly value={dossierText}
-              className="h-64 w-full resize-none rounded-xl border border-white/10 bg-white/5 p-3 font-mono text-xs leading-relaxed text-white/90 focus:outline-none" />
-            <button data-testid="dossier-copy" onClick={copyDossier}
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#E9EEF7] py-3 font-heading text-sm font-black uppercase tracking-wider text-black active:scale-[0.98]">
-              <Copy size={15} /> Copia negli appunti
-            </button>
-          </div>
-        </div>
-      )}
+      <TransferCardDialog open={Boolean(transferProfile)} onClose={closeTransfer} profile={transferProfile} rumors={transferProfile?.timeline || []} />
+      <ArticleDraftDialog open={Boolean(draftProfile)} onClose={closeDraft} profile={draftProfile} />
     </div>
   );
 };
@@ -315,7 +301,7 @@ export const Workspace = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) 
           <button data-testid="role-journalist" onClick={() => setR("journalist")} className="glass flex flex-col items-center gap-3 rounded-3xl p-8 active:scale-[0.97]">
             <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10"><PenTool size={30} className="text-white/80" /></span>
             <span className="font-heading text-lg font-black text-white">Giornalista</span>
-            <span className="text-center text-xs text-white/50">Watchlist, archivio e generatore di dossier.</span>
+            <span className="text-center text-xs text-white/50">Watchlist, archivio e report executive.</span>
           </button>
         </div>
       </div>

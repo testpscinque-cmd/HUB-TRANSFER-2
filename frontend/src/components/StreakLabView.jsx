@@ -13,29 +13,83 @@ const GoogleG = () => (
 
 const medal = ["#F59E0B", "#94A3B8", "#B45309"];
 
-export const StreakLabView = ({ challenge, streak, leaderboard, onVote }) => {
+const QUESTIONS = [
+  { id: "q1", question_text: "Bremer si trasferisce al Manchester United?", answer: "SI" },
+  { id: "q2", question_text: "Lukaku si trasferisce alla Juventus?", answer: "NO" },
+  { id: "q3", question_text: "Koulibaly si trasferisce al Paris Saint-Germain?", answer: "NO" },
+  { id: "q4", question_text: "Salah si trasferisce al Real Madrid?", answer: "NO" },
+  { id: "q5", question_text: "Vlahovic si trasferisce al Chelsea?", answer: "SI" },
+  { id: "q6", question_text: "Barella si trasferisce al Barcellona?", answer: "NO" },
+  { id: "q7", question_text: "Zaniolo si trasferisce all'Inter?", answer: "NO" },
+  { id: "q8", question_text: "Haaland si trasferisce al Bayern Monaco?", answer: "NO" },
+  { id: "q9", question_text: "De Ketelaere si trasferisce al Milan?", answer: "SI" },
+  { id: "q10", question_text: "Kvaratskhelia si trasferisce al Chelsea?", answer: "SI" },
+];
+
+const LEADERBOARD = [
+  { id: "u-you", mock_username: "You", highest_streak: 10 },
+  { id: "u-marketgod", mock_username: "MarketGod", highest_streak: 12 },
+  { id: "u-transferwiz", mock_username: "TransferWiz", highest_streak: 11 },
+  { id: "u-scoutzero", mock_username: "ScoutZero", highest_streak: 10 },
+  { id: "u-velocity", mock_username: "Velocity", highest_streak: 9 },
+];
+
+export const StreakLabView = () => {
   const { t } = useI18n();
   const [entered, setEntered] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [voting, setVoting] = useState(false);
-  const [lastResult, setLastResult] = useState(null);
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [feedback, setFeedback] = useState(null);
+  const [finished, setFinished] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  const currentQuestion = QUESTIONS[questionIndex];
 
   const enter = () => {
     setConnecting(true);
-    setTimeout(() => { setConnecting(false); setEntered(true); }, 1000);
+    setTimeout(() => {
+      setConnecting(false);
+      setEntered(true);
+    }, 800);
+  };
+
+  const restart = () => {
+    setQuestionIndex(0);
+    setCurrentStreak(0);
+    setFeedback(null);
+    setFinished(false);
+    setFailed(false);
   };
 
   const vote = async (answer) => {
-    if (voting || !challenge?.id) return;
+    if (voting || finished || failed) return;
     setVoting(true);
-    setLastResult(null);
-    const res = await onVote(answer);
+    setFeedback(null);
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
     setVoting(false);
-    setLastResult(res?.correct ? "correct" : "wrong");
-    setTimeout(() => setLastResult(null), 2500);
+
+    if (answer === currentQuestion.answer) {
+      const nextIndex = questionIndex + 1;
+      setCurrentStreak((value) => value + 1);
+      setFeedback(t.correctToast);
+
+      if (nextIndex >= QUESTIONS.length) {
+        setFinished(true);
+        return;
+      }
+
+      setQuestionIndex(nextIndex);
+      return;
+    }
+
+    setFailed(true);
+    setCurrentStreak(0);
+    setFeedback(t.wrongToast);
   };
 
-  // STATE 1 — Gateway
   if (!entered) {
     return (
       <div className="flex min-h-[70vh] items-center justify-center" data-testid="streak-gateway">
@@ -59,58 +113,79 @@ export const StreakLabView = ({ challenge, streak, leaderboard, onVote }) => {
     );
   }
 
-  // STATE 2 — Daily Arena
   return (
     <div className="tm-fade-up mx-auto max-w-2xl" data-testid="streak-arena">
-      <div className="mb-6 flex items-center justify-center gap-6 rounded-xl border border-slate-200 bg-white px-6 py-4 shadow-sm">
-        <div className="flex items-center gap-2" data-testid="current-streak">
+      <div className="mb-6 flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-8">
+        <div className="flex items-center gap-3">
           <Flame size={22} className="text-orange-500" />
-          <span className="font-heading text-2xl font-black text-slate-900">{streak?.current_streak ?? 0}</span>
-          <span className="text-[11px] uppercase tracking-widest text-slate-400">{t.currentStreak}</span>
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.25em] text-slate-400">{t.currentStreak}</div>
+            <div className="font-heading text-3xl font-black text-slate-900">{currentStreak}</div>
+          </div>
         </div>
-        <div className="h-8 w-px bg-slate-200" />
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Trophy size={20} className="text-[#05A845]" />
-          <span className="font-heading text-2xl font-black text-slate-900">{streak?.highest_streak ?? 0}</span>
-          <span className="text-[11px] uppercase tracking-widest text-slate-400">{t.best}</span>
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.25em] text-slate-400">{t.best}</div>
+            <div className="font-heading text-3xl font-black text-slate-900">{QUESTIONS.length}</div>
+          </div>
         </div>
       </div>
 
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <p className="mb-2 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">{t.dailyChallenge}</p>
-        {challenge?.id ? (
+        <div className="mb-5 flex items-center justify-between gap-3">
+          <div>
+            <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">{t.dailyChallenge}</div>
+            <div className="text-xs text-slate-500">{t.questionProgress}: {questionIndex + 1}/{QUESTIONS.length}</div>
+          </div>
+          <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-slate-600">{t.yesNoHint}</span>
+        </div>
+
+        {finished ? (
+          <div className="text-center">
+            <h3 className="mb-4 text-2xl font-heading font-black uppercase tracking-tight text-slate-900">{t.finisherTitle}</h3>
+            <p className="mx-auto max-w-xl text-sm leading-relaxed text-slate-500">{t.finisherSub}</p>
+            <button onClick={restart} className="mt-8 rounded-xl bg-[#05A845] px-6 py-3 font-heading text-sm font-black uppercase tracking-wider text-white transition hover:bg-[#048B39]">
+              {t.playAgain}
+            </button>
+          </div>
+        ) : (
           <>
             <h3 className="mb-6 text-center font-heading text-2xl font-black leading-tight text-slate-900" data-testid="challenge-question">
-              {challenge.question_text}
+              {currentQuestion.question_text}
             </h3>
             <div className="grid grid-cols-2 gap-4">
               <button
                 data-testid="vote-yes"
                 onClick={() => vote("SI")}
-                disabled={voting}
-                className="flex items-center justify-center gap-2 rounded-xl bg-[#05A845] py-6 font-heading text-2xl font-black uppercase text-white transition-all hover:bg-[#048B39] disabled:opacity-60"
+                disabled={voting || failed}
+                className="flex items-center justify-center rounded-xl bg-[#05A845] py-5 font-heading text-2xl font-black uppercase text-white transition-all hover:bg-[#048B39] disabled:opacity-60"
               >
                 {voting ? <Loader2 size={22} className="animate-spin" /> : t.voteYes}
               </button>
               <button
                 data-testid="vote-no"
                 onClick={() => vote("NO")}
-                disabled={voting}
-                className="flex items-center justify-center gap-2 rounded-xl bg-red-500 py-6 font-heading text-2xl font-black uppercase text-white transition-all hover:bg-red-600 disabled:opacity-60"
+                disabled={voting || failed}
+                className="flex items-center justify-center rounded-xl bg-red-500 py-5 font-heading text-2xl font-black uppercase text-white transition-all hover:bg-red-600 disabled:opacity-60"
               >
                 {voting ? <Loader2 size={22} className="animate-spin" /> : t.voteNo}
               </button>
             </div>
-            {voting && <p className="mt-4 text-center text-sm text-slate-400">{t.verifying}</p>}
-            {lastResult && (
-              <div className={`mt-4 flex items-center justify-center gap-2 text-sm font-bold ${lastResult === "correct" ? "text-[#05A845]" : "text-red-500"}`}>
-                {lastResult === "correct" ? <Check size={16} /> : <X size={16} />}
-                {lastResult === "correct" ? t.correctToast : t.wrongToast}
+            {feedback && (
+              <div className={`mt-5 flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold ${failed ? "bg-red-50 text-red-600" : "bg-emerald-50 text-emerald-700"}`}>
+                {failed ? <X size={16} /> : <Check size={16} />}
+                {feedback}
+              </div>
+            )}
+            {failed && (
+              <div className="mt-5 text-center">
+                <button onClick={restart} className="rounded-xl bg-slate-900 px-6 py-3 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-slate-800">
+                  {t.restart}
+                </button>
               </div>
             )}
           </>
-        ) : (
-          <p className="py-8 text-center text-sm text-slate-400">{t.noChallenge}</p>
         )}
       </div>
 
@@ -120,7 +195,7 @@ export const StreakLabView = ({ challenge, streak, leaderboard, onVote }) => {
           <h3 className="font-heading text-sm font-bold uppercase tracking-wider text-slate-900">{t.topTipsters}</h3>
         </div>
         <div className="space-y-1.5">
-          {leaderboard.map((u, i) => {
+          {LEADERBOARD.map((u, i) => {
             const isYou = u.mock_username === "You";
             return (
               <div

@@ -63,7 +63,7 @@ export const SourceDirectory = ({ sources, compact = false }) => {
       <div className={compact ? "p-3" : "grid gap-x-8 gap-y-4 p-5 sm:grid-cols-2"}>
         {sources.map((s) => (
           <div key={s.id} className={compact ? "mb-3 last:mb-0" : ""} data-testid={`source-${s.id}`}>
-            <div className="flex items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-1.5">
               <span className="text-sm font-bold text-slate-900">{s.source_name}</span>
               {s.reliability_score > 85 && (
                 <BadgeCheck size={15} className="text-[#1D9BF0]" data-testid={`verified-${s.id}`} />

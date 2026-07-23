@@ -76,9 +76,9 @@ const VideoModal = ({ v, onClose }) => (
 );
 
 const MatchModal = ({ res, onClose, onOpenProfile }) => (
-  <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div className="fixed inset-x-0 top-0 z-[9999] flex min-h-screen items-start justify-center overflow-y-auto p-4 pt-6">
     <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-    <div className="glass-strong pop-in relative z-10 w-full max-w-sm rounded-3xl p-6 text-center" data-testid="match-modal">
+    <div className="glass-strong pop-in relative z-10 mx-auto w-full max-w-[min(100vw-2rem,640px)] max-h-[calc(100vh-4rem)] overflow-y-auto rounded-3xl p-6 text-center" data-testid="match-modal">
       <button onClick={onClose} className="absolute right-4 top-4 text-white/50 hover:text-white"><X size={20} /></button>
       {!res.found ? (
         <p className="py-6 text-white/80">{res.message}</p>
@@ -183,34 +183,39 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
 
   return (
     <div className="fade-up">
-      {/* Hero FIFA/EA */}
-      <div className="relative mb-5 overflow-hidden rounded-3xl border border-white/10 p-5 lg:hidden" data-testid="dash-hero">
-        <div className="absolute inset-0" style={{ background: "linear-gradient(115deg, rgba(43,224,122,0.24), transparent 58%), #0c1320" }} />
-        <div className="absolute -right-10 -top-12 h-44 w-44 rounded-full" style={{ background: "radial-gradient(circle, rgba(43,224,122,0.40), transparent 70%)" }} />
-        <div className="fifa-grid absolute inset-0 opacity-[0.05]" />
-        <div className="relative">
-          <div className="flex items-center gap-2">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2BE07A]" style={{ boxShadow: "0 0 22px rgba(43,224,122,0.6)" }}><Zap size={21} className="text-black" fill="black" /></span>
-            <h1 className="font-heading text-3xl font-black uppercase tracking-tight text-white"><span style={{ color: "#2BE07A" }}>Hub</span> Transfer</h1>
-            <span className="ml-auto flex items-center gap-1.5 rounded-full bg-black/30 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-[#2BE07A]">
-              <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[#2BE07A]" /> Live
+      <div className="relative mb-7 min-h-[50vh] overflow-hidden rounded-[2.5rem] border border-white/10 bg-[#090b12]/95 shadow-[0_24px_80px_rgba(0,0,0,0.24)]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(43,224,122,0.14),transparent_24%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,0.12),transparent_24%)]" />
+        <div className="absolute left-1/2 top-1/4 h-96 w-96 -translate-x-1/2 rounded-full bg-emerald-500/20 blur-[100px] -z-10" />
+        <div className="absolute right-10 top-20 h-72 w-72 rounded-full bg-cyan-400/15 blur-[120px] -z-10" />
+        <div className="relative mx-auto flex min-h-[50vh] max-w-6xl flex-col justify-center gap-8 px-6 py-12 text-center sm:px-10">
+          <div className="space-y-4">
+            <span className="inline-flex rounded-full border border-white/10 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white/75 backdrop-blur">
+              HUB TRANSFER
             </span>
+            <h1 className="mx-auto max-w-4xl text-5xl font-black uppercase tracking-[-0.03em] text-white sm:text-6xl lg:text-7xl">
+              HUB TRANSFER
+            </h1>
+            <p className="mx-auto max-w-3xl text-base leading-8 text-white/75 sm:text-lg">
+              Il mercato diventa un hub premium: insight live, transfer card brandizzate ed esportabili, report rapidi con un’esperienza visuale potente.
+            </p>
           </div>
-          <p className="mt-2.5 text-sm text-white/60">Il terminale del calciomercato di Serie A — scoop, indice di fattibilità e dossier pronti da pubblicare.</p>
-        </div>
-      </div>
 
-      {/* Header desktop */}
-      <div className="mb-5 hidden items-center gap-2 lg:flex">
-        <h1 className="font-heading text-3xl font-black uppercase tracking-tight text-white"><span style={{ color: "#2BE07A" }}>Hub</span> Transfer</h1>
-        <span className="ml-auto flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-[#2BE07A]">
-          <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[#2BE07A]" /> Serie A · Live
-        </span>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {[
+              { label: "Rumor live" },
+              { label: "Simulazioni pro" },
+              { label: "Transfer Card" },
+            ].map((item) => (
+              <div key={item.label} className="glass rounded-3xl border border-white/10 px-4 py-4">
+                <p className="text-sm font-heading font-black uppercase tracking-[0.28em] text-white">{item.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Matchmaker */}
       <div className="mb-5">
-        <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.2em] text-white/40">Matchmaker · Fattibilità Scoop</p>
         <div className="glass rounded-2xl p-3">
           <div className="grid grid-cols-2 gap-2">
             <input list="player-list" data-testid="mm-player" value={pName} onChange={(e) => setPName(e.target.value)} placeholder="Giocatore / Allenatore"

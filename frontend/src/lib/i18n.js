@@ -99,6 +99,17 @@ const translations = {
     formPressId: "Press ID / Profile URL",
     submit: "Submit Application",
     verificationSent: "Application submitted — our team will review it.",
+    verifiedTitle: "Verified Sources",
+    verifiedSub: "Trusted tipsters and media outlets chosen to strengthen your transfer radar.",
+    verifiedBadge: "Verified Community",
+    verifiedIntro: "Apply once to earn the verified badge and share credibility with the network.",
+    applyVerification: "Become a verified source",
+    questionProgress: "Question",
+    yesNoHint: "Rispondi SÌ o NO",
+    finisherTitle: "Hai completato la serie!",
+    finisherSub: "Hai risposto correttamente a tutte le domande. Ripeti il percorso per migliorare ancora.",
+    playAgain: "Ricomincia",
+    restart: "Ricomincia",
     // streak lab
     streakGateTitle: "The Streak Lab",
     streakGateSub: "Predict transfer outcomes. Build the longest streak. Climb the tipster leaderboard.",
@@ -234,6 +245,17 @@ const translations = {
     formPressId: "Press ID / URL Profilo",
     submit: "Invia Richiesta",
     verificationSent: "Richiesta inviata — il nostro team la esaminerà.",
+    verifiedTitle: "Fonti Verificate",
+    verifiedSub: "Tipster e media affidabili scelti per arricchire il tuo radar sul calciomercato.",
+    verifiedBadge: "Community Verificata",
+    verifiedIntro: "Richiedi il badge verificato e aumenta la tua credibilità in piattaforma.",
+    applyVerification: "Diventa fonte verificata",
+    questionProgress: "Domanda",
+    yesNoHint: "Rispondi SÌ o NO",
+    finisherTitle: "Hai completato la serie!",
+    finisherSub: "Hai risposto correttamente a tutte le domande. Ripeti il percorso per migliorare ancora.",
+    playAgain: "Ricomincia",
+    restart: "Ricomincia",
     streakGateTitle: "The Streak Lab",
     streakGateSub: "Prevedi gli esiti di mercato. Costruisci la striscia più lunga. Scala la classifica dei tipster.",
     signInPlay: "Accedi con Google per Giocare",
@@ -288,4 +310,11 @@ export const I18nProvider = ({ children }) => {
   );
 };
 
-export const useI18n = () => useContext(I18nContext);
+export const useI18n = () => {
+  const context = useContext(I18nContext);
+  if (!context) {
+    console.warn("useI18n must be used within I18nProvider");
+    return { lang: "it", t: translations.it, toggle: () => {} };
+  }
+  return context;
+};

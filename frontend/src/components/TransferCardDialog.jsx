@@ -18,10 +18,16 @@ export const TransferCardDialog = ({ open, onClose, profile, rumors }) => {
 
   if (!open || !profile) return null;
 
+  const playerName = profile.full_name || profile.name || "Player";
+  const club = profile.current_club || profile.team || "—";
+  const position = profile.position || profile.role || "—";
+  const salary = profile.estimated_salary || profile.salary || profile.wage || "—";
+  const value = profile.market_value || profile.value || "—";
+  const contractExpiry = profile.contract_expiry || profile.expiry || "—";
   const isCoach = profile.role === "Coach";
   // Evolutionary line: oldest -> newest
   const ordered = [...rumors].sort(
-    (a, b) => new Date(a.logged_at || a.date_logged) - new Date(b.logged_at || b.date_logged)
+    (a, b) => new Date(a.logged_at || a.date_logged || a.date) - new Date(b.logged_at || b.date_logged || b.date)
   );
   const latest = ordered[ordered.length - 1];
   const latestCfg = latest ? stageConfig[latest.stage] || stageConfig["Interesse Iniziale"] : null;
@@ -32,7 +38,7 @@ export const TransferCardDialog = ({ open, onClose, profile, rumors }) => {
     try {
       const dataUrl = await toPng(cardRef.current, { pixelRatio: 2, cacheBust: true, backgroundColor: "#0F172A" });
       const link = document.createElement("a");
-      link.download = `transfercard-${profile.full_name.replace(/\s+/g, "-").toLowerCase()}.png`;
+      link.download = `transfercard-${playerName.replace(/\s+/g, "-").toLowerCase()}.png`;
       link.href = dataUrl;
       link.click();
       toast.success(t.imageSaved);
@@ -45,10 +51,10 @@ export const TransferCardDialog = ({ open, onClose, profile, rumors }) => {
 
   const copySummary = async () => {
     const lines = [
-      `${profile.full_name} — ${profile.current_club}`,
-      `${t.contractData}: ${yearOf(profile.contract_expiry)} · ${profile.estimated_salary || "—"} · ${profile.market_value || "—"}`,
+      `${playerName} — ${club}`,
+      `${t.contractData}: ${contractExpiry} · ${salary} · ${value}`,
       "",
-      ...ordered.map((r) => `• [${stageLabel(r.stage, lang)}] ${r.evolution_description} (${r.source_name})`),
+      ...ordered.map((r) => `• [${stageLabel(r.stage, lang)}] ${r.evolution_description || r.text || "Aggiornamento"} (${r.source_name || "Fonte sconosciuta"})`),
     ];
     await navigator.clipboard.writeText(lines.join("\n"));
     setCopied(true);
@@ -77,7 +83,7 @@ export const TransferCardDialog = ({ open, onClose, profile, rumors }) => {
                   <Zap size={15} className="text-white" fill="white" />
                 </span>
                 <span className="font-heading text-sm font-black uppercase tracking-tight text-white">
-                  Memory<span style={{ color: "#39D3A0" }}>Transfer</span>
+                  Hub<span style={{ color: "#39D3A0" }}>Transfer</span>
                 </span>
               </div>
               <span className="rounded-full px-2 py-0.5 font-heading text-[9px] font-black uppercase tracking-[0.2em]" style={{ background: "rgba(255,255,255,0.08)", color: "#94A3B8" }}>
@@ -86,13 +92,13 @@ export const TransferCardDialog = ({ open, onClose, profile, rumors }) => {
             </div>
 
             <div className="flex items-center gap-4 px-5 pt-4">
-              <PlayerAvatar name={profile.full_name} size={64} isCoach={isCoach} rounded="rounded-2xl" />
+              <PlayerAvatar name={playerName} size={64} isCoach={isCoach} rounded="rounded-2xl" />
               <div className="min-w-0 flex-1">
-                <div className="truncate font-heading text-2xl font-black leading-tight text-white">{profile.full_name}</div>
+                <div className="truncate font-heading text-2xl font-black leading-tight text-white">{playerName}</div>
                 <div className="mt-0.5 flex items-center gap-1.5 text-xs" style={{ color: "#94A3B8" }}>
-                  <Crest club={profile.current_club} size={18} />
-                  <span className="font-bold text-white">{profile.current_club}</span>
-                  <span>· {profile.position}</span>
+                  <Crest club={club} size={18} />
+                  <span className="font-bold text-white">{club}</span>
+                  <span>· {position}</span>
                 </div>
               </div>
             </div>
@@ -109,9 +115,9 @@ export const TransferCardDialog = ({ open, onClose, profile, rumors }) => {
             {/* Contract snapshot */}
             <div className="mx-5 mt-3 grid grid-cols-3 gap-2">
               {[
-                { k: t.expiry, v: yearOf(profile.contract_expiry) },
-                { k: t.salary, v: profile.estimated_salary || "—" },
-                { k: t.marketValue, v: profile.market_value || "—" },
+                { k: t.expiry, v: contractExpiry },
+                { k: t.salary, v: salary },
+                { k: t.marketValue, v: value },
               ].map((c) => (
                 <div key={c.k} className="rounded-xl px-2.5 py-2 text-center" style={{ background: "rgba(255,255,255,0.05)" }}>
                   <div className="font-heading text-sm font-black text-white">{c.v}</div>
@@ -147,7 +153,7 @@ export const TransferCardDialog = ({ open, onClose, profile, rumors }) => {
               <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: "#64748B" }}>
                 {ordered.length} updates · {profile.representation_agency || "—"}
               </span>
-              <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: "#64748B" }}>memorytransfer.app</span>
+              <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: "#64748B" }}>hubtransfer.app</span>
             </div>
           </div>
         </div>
