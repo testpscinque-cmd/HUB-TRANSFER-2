@@ -8,9 +8,22 @@ function initials(name = "") {
   return (p.length === 1 ? p[0].slice(0, 2) : p[0][0] + p[p.length - 1][0]).toUpperCase();
 }
 
-// FIFA-style "serious" cutout — grey silhouette on a card gradient (subtle team tint).
-export const PlayerCutout = ({ name, size = 64, color, className = "" }) => {
-  const tint = color || "#4B5563";
+export const TEAM_COLORS = {
+  Atalanta: "#1C61B6", Bologna: "#A21C28", Cagliari: "#B01F30", Como: "#0B3D91",
+  Cremonese: "#9B1C2E", Fiorentina: "#5E2E8E", Genoa: "#C8102E", Inter: "#0A1A8C",
+  Juventus: "#111111", Lazio: "#5CB8E6", Lecce: "#E30613", Milan: "#C8102E",
+  Napoli: "#12A0D7", Parma: "#F5C518", Pisa: "#0A2A66", Roma: "#8E1F2F",
+  Sassuolo: "#0B7A3B", Torino: "#7A0E14", Udinese: "#1F2937", Verona: "#F4C300",
+};
+export const teamColor = (team) => {
+  if (!team) return null;
+  const name = typeof team === "string" ? team : team.name;
+  return (typeof team === "object" && team.color) || TEAM_COLORS[name] || null;
+};
+
+// FIFA-style "serious" cutout — grey silhouette on a card gradient (team-color tint).
+export const PlayerCutout = ({ name, size = 64, color, team, className = "" }) => {
+  const tint = color || teamColor(team) || "#4B5563";
   return (
     <div
       className={`relative flex shrink-0 items-center justify-center overflow-hidden ${className}`}

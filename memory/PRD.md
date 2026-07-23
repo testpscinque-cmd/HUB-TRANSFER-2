@@ -37,6 +37,14 @@ Rebrand da "MemoryTransfer" (tema chiaro Fantacalcio, ora archiviato) deciso dal
 - Legare la timeline profilo alle news live per keyword (ora usa UPDATES seed per le saghe principali).
 
 ## Note
+- Update 2026-07-24 (v2 impatto contest):
+  - **Hero home ridisegnato** (bold, headline grande + foto stadio + stats) per una thumbnail 16:9 d'impatto nella griglia contest.
+  - **News molto arricchite**: +18 post curati con testate nuove (DAZN, Pedullà, SportItalia, TMW, Corriere dello Sport, Relevo, The Athletic, L'Équipe, Il Mattino…); TIER1 ampliato; 40+ item nel feed.
+  - **Video con anteprima foto** + 2 video in più.
+  - **Avatar tinta-squadra ovunque** (`TEAM_COLORS`/`teamColor`; PlayerCutout prop `team`).
+  - **DS trattativa**: modale con **costo cartellino + ingaggio** (acquisto E cessione) applicati a budget/monte ingaggi; **giocatore custom fuori Serie A**.
+  - **Giornalista**: **Breaking Studio** (annunci pronti stile Romano, copia + "Su X") + **colonna Screening Live a destra** con salva scoop.
+  - Ripristinate **Streak Lab** e **Verified** in nav.
 - Update 2026-07-24 (upgrade "best of old+new", budget elevato):
   - **Backend feed curato**: `CURATED_NEWS` (~25 post stile X: Romano, Sky, Di Marzio, Gazzetta…) in `seed_data.py`; `/news/live` fonde curati + Google News (ricerca SEMPRE popolata); nuovo `/news/official`.
   - **Dashboard**: hero compatto con foto stadio + stat pills (Giocatori/Trattative/Ufficiali/Fonti); striscia **Ufficialità** (Here we go); **card notizie bianche stile X** (avatar fonte + spunta + orario visibile + chip giocatore); Matchmaker→"Vedi notizie collegate"; modali in **portal** (fix risultato in mezzo alla pagina); auto-refresh.

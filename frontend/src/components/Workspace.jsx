@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Briefcase, PenTool, ChevronDown, TrendingDown, TrendingUp, X, Trash2, Search, Plus, ExternalLink, Pencil, Check } from "lucide-react";
+import { Briefcase, PenTool, ChevronDown, TrendingDown, TrendingUp, X, Trash2, Search, Plus, ExternalLink, Pencil, Check, Bookmark, Copy, Zap, Radio } from "lucide-react";
 import { toast } from "sonner";
 import * as api from "@/lib/api";
 import { useI18n } from "@/lib/i18n";
-import { PlayerCutout, TeamBadge, TierBadge } from "@/components/bits";
+import { PlayerCutout, TeamBadge, TierBadge, VerifiedTick, timeAgo } from "@/components/bits";
 import { ArticleDraftDialog } from "@/components/ArticleDraftDialog";
 import { TransferCardDialog } from "@/components/TransferCardDialog";
 
@@ -38,22 +38,36 @@ const DirettoreSportivo = () => {
     setRoster(pl.map((p) => ({ ...p })));
   };
 
-  const sell = (p) => {
-    setRoster((r) => r.filter((x) => x.id !== p.id));
-    setBudget((b) => +(b + parseM(p.market_value)).toFixed(1));
-    setWages((w) => +(w + parseM(p.salary)).toFixed(1));
-    setMoves((m) => ({ ...m, out: [...m.out, p] }));
-    toast.success(`Ceduto ${p.name} · +${parseM(p.market_value)}M budget`);
+  const [deal, setDeal] = useState(null);
+  const openDeal = (mode, p) => {
+    if (mode === "buy") setDeal({ mode, player: p, name: p.name, position: p.position, team: p.team, fee: parseM(p.market_value), wage: parseM(p.salary) });
+    else if (mode === "sell") setDeal({ mode, player: p, name: p.name, position: p.position, fee: parseM(p.market_value), wage: parseM(p.salary) });
+    else setDeal({ mode: "custom", name: "", position: "ATT", team: "", fee: 0, wage: 0 });
   };
-  const buy = (p) => {
-    if (roster.find((x) => x.id === p.id)) { toast.error("Già in rosa"); return; }
-    setRoster((r) => [{ ...p, isNew: true }, ...r]);
-    setBudget((b) => +(b - parseM(p.market_value)).toFixed(1));
-    setWages((w) => +(w - parseM(p.salary)).toFixed(1));
-    setMoves((m) => ({ ...m, in: [...m.in, p] }));
-    setBuyQ("");
-    toast.success(`Acquistato ${p.name} · -${parseM(p.market_value)}M budget`);
+  const setDF = (k, v) => setDeal((d) => ({ ...d, [k]: v }));
+  const confirmDeal = () => {
+    const d = deal;
+    if (d.mode === "sell") {
+      setRoster((r) => r.filter((x) => x.id !== d.player.id));
+      setBudget((b) => +(b + (+d.fee || 0)).toFixed(1));
+      setWages((w) => +(w + (+d.wage || 0)).toFixed(1));
+      setMoves((m) => ({ ...m, out: [...m.out, { ...d.player, market_value: `€${d.fee}M` }] }));
+      toast.success(`Ceduto ${d.player.name} · +${d.fee}M budget`);
+    } else {
+      if (d.mode === "custom" && !d.name.trim()) { toast.error("Inserisci il nome del giocatore"); return; }
+      const id = d.mode === "custom" ? `custom-${Date.now()}` : d.player.id;
+      const np = { id, name: d.name, position: d.position, team: d.mode === "custom" ? (d.team || "Svincolato") : d.player.team,
+        market_value: `€${d.fee}M`, salary: `€${d.wage}M`, value_tier: d.player?.value_tier || "Media", isNew: true };
+      setRoster((r) => [np, ...r]);
+      setBudget((b) => +(b - (+d.fee || 0)).toFixed(1));
+      setWages((w) => +(w - (+d.wage || 0)).toFixed(1));
+      setMoves((m) => ({ ...m, in: [...m.in, np] }));
+      toast.success(`Acquistato ${d.name} · -${d.fee}M budget`);
+    }
+    setDeal(null); setBuyQ("");
   };
+  const sell = (p) => openDeal("sell", p);
+  const buy = (p) => { if (roster.find((x) => x.id === p.id)) { toast.error("Già in rosa"); return; } openDeal("buy", p); };
 
   const [editId, setEditId] = useState(null);
   const [editVals, setEditVals] = useState({});
@@ -98,15 +112,20 @@ const DirettoreSportivo = () => {
 
       {/* Acquisto */}
       <div className="glass mb-4 rounded-2xl p-3">
-        <div className="relative">
-          <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/35" />
-          <input data-testid="ds-buy-search" value={buyQ} onChange={(e) => setBuyQ(e.target.value)} placeholder="Simula acquisto: cerca un giocatore..."
-            className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/35 focus:border-[#E9EEF7] focus:outline-none" />
+        <div className="mb-2 flex items-center gap-2">
+          <div className="relative flex-1">
+            <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/35" />
+            <input data-testid="ds-buy-search" value={buyQ} onChange={(e) => setBuyQ(e.target.value)} placeholder="Cerca un giocatore da acquistare..."
+              className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/35 focus:border-[#2BE07A]/50 focus:outline-none" />
+          </div>
+          <button data-testid="ds-custom-btn" onClick={() => openDeal("custom")} title="Giocatore fuori campionato"
+            className="flex items-center gap-1 rounded-xl bg-[#2BE07A] px-3 py-2 text-xs font-black uppercase text-black active:scale-95"><Plus size={13} /> Fuori Serie A</button>
         </div>
         {buyResults.map((p) => (
           <div key={p.id} className="mt-2 flex items-center gap-2 rounded-lg bg-white/5 p-2">
-            <PlayerCutout name={p.name} size={30} /><span className="flex-1 text-sm text-white">{p.name} <span className="text-white/40">· {p.team} · {p.market_value}</span></span>
-            <button data-testid={`ds-buy-${p.id}`} onClick={() => buy(p)} className="rounded-lg bg-[#E9EEF7] px-2.5 py-1 text-xs font-black text-black">Acquista</button>
+            <PlayerCutout name={p.name} team={p.team} size={30} />
+            <span className="flex-1 text-sm text-white">{p.name} <span className="text-white/40">· {p.team} · {p.market_value}</span></span>
+            <button data-testid={`ds-buy-${p.id}`} onClick={() => buy(p)} className="rounded-lg bg-[#E9EEF7] px-2.5 py-1 text-xs font-black text-black active:scale-95">Tratta</button>
           </div>
         ))}
       </div>
@@ -156,7 +175,7 @@ const DirettoreSportivo = () => {
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
-                        <PlayerCutout name={p.name} size={30} />
+                        <PlayerCutout name={p.name} team={p.team} size={30} />
                         <div className="min-w-0 flex-1"><div className="truncate text-sm font-bold text-white">{p.name} {p.isNew && <span className="text-[9px] font-black text-green">NUOVO</span>}</div><div className="text-[11px] text-white/40">{p.market_value} · {p.salary}</div></div>
                         <button data-testid={`ds-edit-${p.id}`} onClick={() => startEdit(p)} title="Modifica" className="text-white/40 hover:text-white active:scale-90"><Pencil size={14} /></button>
                         <button data-testid={`ds-sell-${p.id}`} onClick={() => sell(p)} className="rounded-lg bg-white/10 px-2.5 py-1 text-xs font-bold text-white/80 active:scale-95">Cedi</button>
@@ -173,6 +192,56 @@ const DirettoreSportivo = () => {
       <button data-testid="ds-report-btn" onClick={() => setReport(true)} className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#E9EEF7] py-3 font-heading text-sm font-black uppercase tracking-wider text-black active:scale-[0.98]">
         Vedi Rosa Finale
       </button>
+
+      {deal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={() => setDeal(null)} />
+          <div className="glass-strong pop-in relative z-10 w-full max-w-sm rounded-3xl p-5" data-testid="ds-deal-modal">
+            <button onClick={() => setDeal(null)} className="absolute right-4 top-4 text-white/50"><X size={20} /></button>
+            <p className="text-[11px] font-black uppercase tracking-[0.2em]" style={{ color: deal.mode === "sell" ? "#FF6B6B" : "#2BE07A" }}>
+              {deal.mode === "sell" ? "Cessione" : deal.mode === "custom" ? "Colpo fuori Serie A" : "Trattativa in entrata"}
+            </p>
+            <div className="mt-3 flex items-center gap-3">
+              <PlayerCutout name={deal.name || "?"} team={deal.team} size={48} />
+              <div className="min-w-0 flex-1">
+                {deal.mode === "custom" ? (
+                  <input data-testid="ds-deal-name" value={deal.name} onChange={(e) => setDF("name", e.target.value)} placeholder="Nome giocatore"
+                    className="w-full rounded-lg border border-white/10 bg-white/10 px-2 py-1.5 text-sm font-bold text-white placeholder:text-white/35 focus:outline-none" />
+                ) : (
+                  <div className="truncate font-heading text-lg font-black text-white">{deal.name}</div>
+                )}
+                <div className="mt-1 flex items-center gap-1.5">
+                  {deal.mode === "custom" ? (
+                    <>
+                      <select value={deal.position} onChange={(e) => setDF("position", e.target.value)} className="rounded border border-white/10 bg-white/10 px-1.5 py-0.5 text-[11px] text-white focus:outline-none">
+                        {ROLES.map(([c]) => <option key={c} value={c} className="bg-[#141A28]">{c}</option>)}
+                      </select>
+                      <input value={deal.team} onChange={(e) => setDF("team", e.target.value)} placeholder="Da (club)" className="w-24 rounded border border-white/10 bg-white/10 px-1.5 py-0.5 text-[11px] text-white placeholder:text-white/35 focus:outline-none" />
+                    </>
+                  ) : <RoleFlag code={deal.position} />}
+                </div>
+              </div>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <label className="block">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-white/40">{deal.mode === "sell" ? "Incasso cartellino (M€)" : "Costo cartellino (M€)"}</span>
+                <input data-testid="ds-deal-fee" type="number" value={deal.fee} onChange={(e) => setDF("fee", e.target.value)}
+                  className="mt-1 w-full rounded-lg border border-white/10 bg-white/10 px-2 py-2 font-heading text-lg font-black text-white focus:border-[#2BE07A]/50 focus:outline-none" />
+              </label>
+              <label className="block">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-white/40">Ingaggio (M€/anno)</span>
+                <input data-testid="ds-deal-wage" type="number" value={deal.wage} onChange={(e) => setDF("wage", e.target.value)}
+                  className="mt-1 w-full rounded-lg border border-white/10 bg-white/10 px-2 py-2 font-heading text-lg font-black text-white focus:border-[#2BE07A]/50 focus:outline-none" />
+              </label>
+            </div>
+            <button data-testid="ds-deal-confirm" onClick={confirmDeal}
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl py-3 font-heading text-sm font-black uppercase tracking-wider active:scale-[0.98]"
+              style={{ background: deal.mode === "sell" ? "#FF6B6B" : "#2BE07A", color: deal.mode === "sell" ? "#fff" : "#000" }}>
+              <Check size={16} /> {deal.mode === "sell" ? "Conferma cessione" : "Chiudi la trattativa"}
+            </button>
+          </div>
+        </div>
+      )}
 
       {report && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -208,8 +277,33 @@ const Giornalista = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) => {
   const [transferProfile, setTransferProfile] = useState(null);
   const [draftProfile, setDraftProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
+  const [news, setNews] = useState([]);
+  const [bk, setBk] = useState({ player: "", from: "", to: "", stage: "ufficiale", fee: "" });
+  const [bkText, setBkText] = useState("");
 
-  useEffect(() => { api.getPlayers().then(setAllPlayers).catch(() => {}); }, []);
+  useEffect(() => {
+    api.getPlayers().then(setAllPlayers).catch(() => {});
+    api.getLiveNews("Serie A", 16).then(setNews).catch(() => {});
+  }, []);
+
+  const copyText = (text) => {
+    const done = () => toast.success("Copiato negli appunti!");
+    const fb = () => { const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.focus(); ta.select(); try { document.execCommand("copy"); done(); } catch { toast.error("Copia non riuscita"); } document.body.removeChild(ta); };
+    try { if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(done).catch(fb); else fb(); } catch { fb(); }
+  };
+  const genBreaking = () => {
+    const { player, from, to, stage, fee } = bk;
+    if (!player.trim()) { toast.error("Inserisci il nome del giocatore"); return; }
+    const route = [from, to].filter(Boolean).join(" ➡️ ");
+    const feeTxt = fee ? ` Operazione da ${fee}.` : "";
+    let txt;
+    if (stage === "ufficiale") txt = `🚨🟢 UFFICIALE: ${player}${to ? ` è un nuovo giocatore del ${to}` : ""}. HERE WE GO! ✅\n\n${route}${feeTxt}\nContratto depositato, annuncio ufficiale in arrivo.\n\n#Calciomercato #SerieA`;
+    else if (stage === "herewego") txt = `🚨 ${player} ➡️ ${to || "?"}. HERE WE GO! ✅🔴 Accordo totale tra i club e col giocatore, visite mediche fissate.${feeTxt}\n\n#HereWeGo #SerieA`;
+    else if (stage === "trattativa") txt = `🔵 ${player}: trattativa avviata${to ? ` con il ${to}` : ""}. Contatti diretti in corso${fee ? `, base d'intesa ${fee}` : ""}. Fiducia in crescita nelle prossime ore. 🔎\n\n${route}\n#Calciomercato #SerieA`;
+    else txt = `📝 ${player}: nome nuovo sul taccuino${to ? ` del ${to}` : ""}. Indiscrezione da verificare, si valuta la fattibilità dell'operazione.${feeTxt}\n\n#Calciomercato #Rumor`;
+    setBkText(txt);
+  };
+  const saveNews = (n) => { saveWatch("Scoop", { id: `post-${n.id}`, name: n.title, team: n.source, link: n.link }); toast.success("Scoop salvato"); };
 
   const results = jq.length >= 2 ? allPlayers.filter((p) => p.name.toLowerCase().includes(jq.toLowerCase())).slice(0, 6) : [];
   const add = (p) => { saveWatch(target || "Radar", { id: p.id, name: p.name, team: p.team, position: p.position }); toast.success(`${p.name} aggiunto a ${target}`); setJq(""); };
@@ -235,8 +329,36 @@ const Giornalista = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) => {
   const closeDraft = () => setDraftProfile(null);
 
   return (
-    <div className="fade-up space-y-4">
-      <p className="text-sm text-white/60">Cerca e salva giocatori nelle tue liste, poi genera report e Transfer Card profilate.</p>
+    <div className="fade-up grid gap-4 lg:grid-cols-3">
+      <div className="space-y-4 lg:col-span-2">
+        <p className="text-sm text-white/60">Il tuo desk: salva scoop, costruisci watchlist e sforna annunci pronti da pubblicare.</p>
+
+        {/* Breaking Studio — genera annunci pronti da postare */}
+        <div className="glass rounded-2xl p-4" data-testid="breaking-studio" style={{ borderTop: "2px solid #2BE07A" }}>
+          <p className="mb-3 flex items-center gap-1.5 font-heading text-sm font-black uppercase tracking-wider text-white"><Zap size={15} className="text-[#2BE07A]" fill="#2BE07A" /> Breaking Studio</p>
+          <div className="grid grid-cols-2 gap-2">
+            <input data-testid="bk-player" value={bk.player} onChange={(e) => setBk((b) => ({ ...b, player: e.target.value }))} placeholder="Giocatore" className="col-span-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/35 focus:border-[#2BE07A]/50 focus:outline-none" />
+            <input value={bk.from} onChange={(e) => setBk((b) => ({ ...b, from: e.target.value }))} placeholder="Da (club)" className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/35 focus:outline-none" />
+            <input value={bk.to} onChange={(e) => setBk((b) => ({ ...b, to: e.target.value }))} placeholder="A (club)" className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/35 focus:outline-none" />
+            <select data-testid="bk-stage" value={bk.stage} onChange={(e) => setBk((b) => ({ ...b, stage: e.target.value }))} className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:outline-none">
+              <option value="rumor" className="bg-[#141A28]">Rumor</option>
+              <option value="trattativa" className="bg-[#141A28]">Trattativa</option>
+              <option value="herewego" className="bg-[#141A28]">Here we go</option>
+              <option value="ufficiale" className="bg-[#141A28]">Ufficiale</option>
+            </select>
+            <input value={bk.fee} onChange={(e) => setBk((b) => ({ ...b, fee: e.target.value }))} placeholder="Cifra (es. €25M)" className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/35 focus:outline-none" />
+          </div>
+          <button data-testid="bk-generate" onClick={genBreaking} className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#2BE07A] py-2.5 font-heading text-sm font-black uppercase tracking-wider text-black active:scale-[0.98]"><Zap size={15} fill="black" /> Genera annuncio</button>
+          {bkText && (
+            <div className="mt-3">
+              <textarea data-testid="bk-output" readOnly value={bkText} className="h-32 w-full resize-none rounded-xl border border-white/10 bg-white/5 p-3 text-sm leading-relaxed text-white/90 focus:outline-none" />
+              <div className="mt-2 flex gap-2">
+                <button data-testid="bk-copy" onClick={() => copyText(bkText)} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-white py-2 text-sm font-black text-black active:scale-95"><Copy size={14} /> Copia</button>
+                <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(bkText)}`} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 rounded-xl bg-white/10 px-3 py-2 text-sm font-bold text-white active:scale-95"><ExternalLink size={14} /> Su X</a>
+              </div>
+            </div>
+          )}
+        </div>
 
       <div className="glass rounded-2xl p-4">
         <div className="relative mb-3">
@@ -313,6 +435,32 @@ const Giornalista = ({ watchlist, removeWatch, saveWatch, onOpenProfile }) => {
           )}
         </div>
       ))}
+
+      </div>{/* end left column */}
+
+      {/* Screening Live — colonna news a destra (stile Memory) */}
+      <aside className="space-y-3 lg:col-span-1">
+        <div className="glass rounded-2xl p-4">
+          <p className="mb-3 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-[#2BE07A]"><Radio size={13} /> Screening Live</p>
+          <div className="max-h-[68vh] space-y-2 overflow-y-auto pr-1">
+            {news.length === 0 && <p className="text-xs text-white/30">Caricamento…</p>}
+            {news.map((n) => (
+              <div key={n.id} data-testid={`jrn-news-${n.id}`} className="rounded-xl border border-white/5 bg-white/[0.03] p-2.5">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-white/70">
+                  <span className="truncate">{n.source}</span>{n.verified && <VerifiedTick size={11} />}
+                  <span className="ml-auto shrink-0 text-white/35">{timeAgo(n.published)}</span>
+                </div>
+                <p className="mt-1 line-clamp-2 text-[12.5px] leading-snug text-white/85">{n.title}</p>
+                <div className="mt-1.5 flex items-center gap-2">
+                  <span className="rounded px-1.5 py-0.5 text-[9px] font-black uppercase" style={{ color: n.color, background: `${n.color}22` }}>{n.stage}</span>
+                  <button data-testid={`jrn-savenews-${n.id}`} onClick={() => saveNews(n)} title="Salva scoop" className="text-white/45 hover:text-[#2BE07A] active:scale-90"><Bookmark size={13} /></button>
+                  <a href={n.link} target="_blank" rel="noreferrer" className="ml-auto text-white/40 hover:text-white"><ExternalLink size={12} /></a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </aside>
 
       <TransferCardDialog open={Boolean(transferProfile)} onClose={closeTransfer} profile={transferProfile} rumors={transferProfile?.timeline || []} />
       <ArticleDraftDialog open={Boolean(draftProfile)} onClose={closeDraft} profile={draftProfile} />

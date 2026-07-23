@@ -58,8 +58,8 @@ const NewsCard = ({ n, onSave, onSearch }) => (
 
 const VideoCard = ({ v, onOpen, onOpenProfile, onSave }) => (
   <div data-testid={`video-${v.id}`} className="glass hover-lift fade-up overflow-hidden rounded-2xl">
-    <button onClick={() => onOpen(v)} className="relative flex h-32 w-full items-center justify-center"
-      style={{ background: "linear-gradient(135deg, rgba(36,224,122,0.18), rgba(15,23,42,0.5))" }}>
+    <button onClick={() => onOpen(v)} className="relative flex h-32 w-full items-center justify-center overflow-hidden"
+      style={{ background: v.thumb ? `linear-gradient(rgba(10,14,23,0.15), rgba(10,14,23,0.7)), url('${v.thumb}') center/cover` : "linear-gradient(135deg, rgba(36,224,122,0.18), rgba(15,23,42,0.5))" }}>
       <span className="flex h-14 w-14 items-center justify-center rounded-full bg-black/55 backdrop-blur"><Play size={22} className="ml-0.5 text-white" fill="white" /></span>
       <span className="absolute left-3 top-3 rounded-md bg-red-500 px-1.5 py-0.5 text-[9px] font-black uppercase text-white">▶ Video</span>
       <span className="absolute bottom-2 right-3 rounded bg-black/50 px-1.5 py-0.5 text-[10px] font-bold text-white/85">{v.views} views</span>
@@ -82,7 +82,8 @@ const VideoModal = ({ v, onClose }) => (
     <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={onClose} />
     <div className="glass-strong pop-in relative z-10 w-full max-w-md rounded-2xl p-5" data-testid="video-modal">
       <button onClick={onClose} className="absolute right-3 top-3 text-white/50 hover:text-white"><X size={20} /></button>
-      <div className="mb-4 flex h-44 items-center justify-center rounded-xl" style={{ background: "linear-gradient(135deg, rgba(36,224,122,0.22), rgba(15,23,42,0.6))" }}>
+      <div className="mb-4 flex h-44 items-center justify-center overflow-hidden rounded-xl"
+        style={{ background: v.thumb ? `linear-gradient(rgba(10,14,23,0.2), rgba(10,14,23,0.65)), url('${v.thumb}') center/cover` : "linear-gradient(135deg, rgba(36,224,122,0.22), rgba(15,23,42,0.6))" }}>
         <Play size={42} className="text-white/85" fill="white" />
       </div>
       <p className="text-lg font-bold text-white">{v.title}</p>
@@ -226,23 +227,27 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
   return (
     <div className="fade-up">
       {/* Compact hero */}
-      <div className="relative mb-4 overflow-hidden rounded-2xl border border-white/10 p-4" data-testid="dash-hero"
-        style={{ background: "linear-gradient(120deg, rgba(14,21,36,0.94), rgba(14,21,36,0.55) 58%, rgba(43,224,122,0.30)), url('https://images.unsplash.com/photo-1502481686408-d428268c24ff?crop=entropy&cs=srgb&fm=jpg&q=70&w=1200') center/cover" }}>
-        <div className="fifa-grid absolute inset-0 opacity-[0.05]" />
-        <div className="relative flex items-center gap-2.5">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2BE07A]" style={{ boxShadow: "0 0 20px rgba(43,224,122,0.5)" }}><Zap size={20} className="text-black" fill="black" /></span>
-          <div className="leading-tight">
-            <h1 className="font-heading text-2xl font-black uppercase tracking-tight text-white"><span style={{ color: "#2BE07A" }}>Hub</span> Transfer</h1>
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/45">Calciomercato Serie A · Live</p>
+      <div className="relative mb-5 overflow-hidden rounded-3xl border border-white/10 p-6 sm:p-8" data-testid="dash-hero"
+        style={{ minHeight: "300px", background: "linear-gradient(115deg, rgba(11,17,29,0.96) 22%, rgba(11,17,29,0.55) 60%, rgba(43,224,122,0.42)), url('https://images.unsplash.com/photo-1502481686408-d428268c24ff?crop=entropy&cs=srgb&fm=jpg&q=75&w=1400') center/cover" }}>
+        <div className="fifa-grid absolute inset-0 opacity-[0.06]" />
+        <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full" style={{ background: "radial-gradient(circle, rgba(43,224,122,0.5), transparent 70%)" }} />
+        <div className="relative max-w-2xl">
+          <div className="flex items-center gap-2">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2BE07A]" style={{ boxShadow: "0 0 22px rgba(43,224,122,0.6)" }}><Zap size={18} className="text-black" fill="black" /></span>
+            <span className="font-heading text-lg font-black uppercase tracking-tight text-white"><span style={{ color: "#2BE07A" }}>Hub</span> Transfer</span>
+            <span className="ml-2 flex items-center gap-1.5 rounded-full bg-black/40 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-[#2BE07A]"><span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[#2BE07A]" /> Live · Serie A</span>
           </div>
-          <span className="ml-auto flex items-center gap-1.5 rounded-full bg-black/30 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-[#2BE07A]">
-            <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[#2BE07A]" /> Live
-          </span>
+          <h1 className="mt-4 font-heading text-4xl font-black uppercase leading-[0.92] text-white sm:text-5xl lg:text-6xl">
+            Il calciomercato<br />di <span style={{ color: "#2BE07A", textShadow: "0 0 30px rgba(43,224,122,0.5)" }}>Serie A</span>, in un colpo d'occhio.
+          </h1>
+          <p className="mt-3 max-w-xl text-sm text-white/75 sm:text-base">
+            YouTube, X, Google e Transfermarkt in un unico terminale: scoop verificati, indice di fattibilità e simulazioni da Direttore Sportivo. Con la <b className="text-white">FIFA feel</b>.
+          </p>
         </div>
-        <div className="relative mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div className="relative mt-6 grid max-w-3xl grid-cols-2 gap-2 sm:grid-cols-4">
           <Stat icon={Users} label="Giocatori" value={playerCount} color="#38BDF8" />
           <Stat icon={TrendingUp} label="Trattative" value={stats.trattative} color="#EAB308" />
-          <Stat icon={BadgeCheck} label="Ufficiali" value={stats.ufficiali} color="#2BE07A" />
+          <Stat icon={BadgeCheck} label="Ufficiali" value={official.length} color="#2BE07A" />
           <Stat icon={Radio} label="Fonti" value={stats.fonti} color="#E9EEF7" />
         </div>
       </div>

@@ -8,7 +8,7 @@ const Card = ({ e, onOpen, onSave }) => (
   <div data-testid={`profile-card-${e.id}`} className="glass group fade-up overflow-hidden rounded-[1.75rem] p-4 transition duration-200 hover:-translate-y-1 hover:border-[#2BE07A]/20 hover:shadow-[0_16px_40px_rgba(43,224,122,0.18)]">
     <div className="flex items-start justify-between gap-4">
       <div className="flex items-start gap-4">
-        <PlayerCutout name={e.name} size={56} className="transition-transform duration-200 group-hover:scale-[1.05]" />
+        <PlayerCutout name={e.name} team={e.team} size={56} className="transition-transform duration-200 group-hover:scale-[1.05]" />
         <div className="min-w-0">
           <button onClick={() => onOpen(e.id)} className="min-w-0 text-left">
             <div className="truncate font-heading text-lg font-black text-white">{e.name}</div>

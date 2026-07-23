@@ -398,18 +398,48 @@ CURATED_NEWS = [
     _n("UFFICIALE ✅ Denzel Dumfries rinnova con l'Inter fino al 2028. Nessun addio: l'olandese resta a Milano.", "Sky Sport", "SkySport", True, "ufficiale", "Denzel Dumfries", "Inter", 52),
     _n("Genoa, De Winter piace a mezza Serie A: il club rossoblù non scende sotto i 20M. Trattative in stand-by.", "Matteo Moretto", "MatteMoretto", False, "rumor", "Koni De Winter", "Genoa", 24),
     _n("Fiorentina, Kean-Arabia: la Fiorentina spera che il giocatore rifiuti e resti. Decisione attesa nei prossimi giorni.", "Gianluca Di Marzio", "DiMarzio", True, "trattativa", "Moise Kean", "Fiorentina", 4),
+    # --- Testate aggiuntive / screening live ampliato ---
+    _n("🚨 BREAKING: la Juventus ha trovato l'accordo con il giocatore per il rinnovo fino al 2029. Manca solo l'annuncio. Here we go presto.", "Alfredo Pedullà", "AlfredoPedulla", True, "trattativa", "Kenan Yıldız", "Juventus", 2),
+    _n("Napoli, chiusa l'operazione in difesa: definiti tutti i dettagli con il club, contratto quinquennale. Visite fissate.", "SportItalia", "tvdellosport", True, "ufficiale", "Sam Beukema", "Bologna", 34),
+    _n("Inter, contatti diretti con l'entourage: si lavora su commissioni e bonus. Il giocatore spinge per il trasferimento.", "Matteo Moretto", "MatteMoretto", False, "trattativa", "Ademola Lookman", "Atalanta", 1),
+    _n("Milan, sondaggio esplorativo per un centrocampista di livello internazionale. Prime chiacchierate positive.", "Tuttomercatoweb", "TMWmagazine", False, "rumor", "Youssouf Fofana", "Milan", 7),
+    _n("Roma, avviati i discorsi per il rinnovo del capitano: fiducia sulla fumata bianca entro fine mese.", "Il Romanista", "IlRomanista", False, "trattativa", "Lorenzo Pellegrini", "Roma", 9),
+    _n("Como, colpo internazionale in arrivo: i lariani accelerano su un profilo seguito anche in Liga.", "Relevo", "relevo", True, "rumor", "Nico Paz", "Como", 5),
+    _n("Napoli, Il Mattino: Conte ha chiesto un altro esterno offensivo. La dirigenza sonda il mercato estero.", "Il Mattino", "mattinodinapoli", True, "rumor", "Noa Lang", "Napoli", 12),
+    _n("Fiorentina, offerta araba shock per l'attaccante: la proprietà valuta, ma il tecnico fa muro.", "Corriere dello Sport", "CorSport", True, "trattativa", "Moise Kean", "Fiorentina", 3),
+    _n("Atalanta, la Dea blinda il gioiello: rinnovo con adeguamento e clausola. Gasperini soddisfatto.", "DAZN", "DAZN_IT", True, "ufficiale", "Ederson", "Atalanta", 44),
+    _n("The Athletic: three Premier League clubs monitoring the Serie A striker ahead of a possible summer move.", "The Athletic", "TheAthleticFC", True, "rumor", "Mateo Retegui", "Atalanta", 16),
+    _n("L'Équipe: un club de Ligue 1 se renseigne sur le milieu italien, dossier à suivre dans les prochains jours.", "L'Équipe", "lequipe", True, "rumor", "Samuele Ricci", "Torino", 20),
+    _n("Lazio, si sblocca la trattativa in uscita: accordo vicino sulla base di un prestito con diritto. Dettagli definiti.", "Gianluca Di Marzio", "DiMarzio", True, "trattativa", "Matteo Guendouzi", "Lazio", 6),
+    _n("UFFICIALE ✅ Il Torino annuncia il nuovo difensore centrale: contratto fino al 2029. Benvenuto!", "Sky Sport", "SkySport", True, "ufficiale", "Guillermo Maripán", "Torino", 50),
+    _n("Bologna, si registra l'interesse concreto di un top club per l'esterno svizzero. Richiesta fissata a 40M.", "Nicolò Schira", "NicoSchira", False, "trattativa", "Dan Ndoye", "Bologna", 8),
+    _n("Genoa, il gioiello classe 2006 fa gola a mezza Europa: il club rossoblù chiede almeno 25M più bonus.", "Rudy Galetti", "RudyGaletti", False, "rumor", "Koni De Winter", "Genoa", 14),
+    _n("Udinese, cessione eccellente in vista: contatti con un club di Bundesliga per il difensore sloveno.", "Tuttomercatoweb", "TMWmagazine", False, "trattativa", "Jaka Bijol", "Udinese", 11),
+    _n("Cremonese, colpo esperienza per la salvezza: definito l'arrivo dell'attaccante svincolato. Firma imminente.", "Calciomercato.it", "cmdotcom", False, "trattativa", "Jamie Vardy", "Cremonese", 4),
+    _n("Parma, si punta forte sul talento argentino: affare da chiudere sulla base di un prestito oneroso.", "Gianluca Di Marzio", "DiMarzio", True, "rumor", "Mateo Pellegrino", "Parma", 18),
+
 ]
 
 
 # Tier-1 sources auto-verified in scanner
-TIER1_SOURCES = ["Fabrizio Romano", "Sky Sport", "Sky Sport Italia", "Gianluca Di Marzio", "Gazzetta dello Sport", "Gazzetta"]
+TIER1_SOURCES = ["Fabrizio Romano", "Sky Sport", "Sky Sport Italia", "Gianluca Di Marzio", "Gazzetta dello Sport", "Gazzetta", "DAZN", "Alfredo Pedullà", "SportItalia", "The Athletic", "L'Équipe", "Corriere dello Sport", "Relevo", "Il Mattino"]
+
+_VT = [
+    "https://images.unsplash.com/photo-1626248801379-51a0748a5f96?crop=entropy&cs=srgb&fm=jpg&q=70&w=640",
+    "https://images.unsplash.com/photo-1602674809970-89073c530b0a?crop=entropy&cs=srgb&fm=jpg&q=70&w=640",
+    "https://images.unsplash.com/photo-1607627000458-210e8d2bdb1d?crop=entropy&cs=srgb&fm=jpg&q=70&w=640",
+    "https://images.unsplash.com/flagged/photo-1550413231-202a9d53a331?crop=entropy&cs=srgb&fm=jpg&q=70&w=640",
+]
 
 # Mock video news (YouTube-style) for the VIDEO scanner
 MOCK_VIDEOS = [
-    {"id": "v1", "title": "Calciomercato: Vlahović verso l'addio? Tutte le cifre", "channel": "Sky Sport", "verified": True, "player": "Dušan Vlahović", "team": "Juventus", "views": "142K", "days_ago": 1},
-    {"id": "v2", "title": "Lookman-Inter: a che punto siamo davvero", "channel": "Fabrizio Romano", "verified": True, "player": "Ademola Lookman", "team": "Atalanta", "views": "310K", "days_ago": 2},
-    {"id": "v3", "title": "De Bruyne al Napoli: l'annuncio ufficiale", "channel": "Gazzetta dello Sport", "verified": True, "player": "Kevin De Bruyne", "team": "Napoli", "views": "520K", "days_ago": 5},
-    {"id": "v4", "title": "Moise Kean e la clausola: scenari di mercato", "channel": "Calciomercato.it", "verified": False, "player": "Moise Kean", "team": "Fiorentina", "views": "88K", "days_ago": 3},
-    {"id": "v5", "title": "Nico Paz, il gioiello del Como: futuro tra Real e big", "channel": "Gianluca Di Marzio", "verified": True, "player": "Nico Paz", "team": "Como", "views": "97K", "days_ago": 2},
-    {"id": "v6", "title": "Comuzzo, derby di mercato: Napoli in pressing", "channel": "TransferMarketTV", "verified": False, "player": "Pietro Comuzzo", "team": "Fiorentina", "views": "45K", "days_ago": 4},
+    {"id": "v1", "title": "Calciomercato: Vlahović verso l'addio? Tutte le cifre", "channel": "Sky Sport", "verified": True, "player": "Dušan Vlahović", "team": "Juventus", "views": "142K", "days_ago": 1, "thumb": _VT[0]},
+    {"id": "v2", "title": "Lookman-Inter: a che punto siamo davvero", "channel": "Fabrizio Romano", "verified": True, "player": "Ademola Lookman", "team": "Atalanta", "views": "310K", "days_ago": 2, "thumb": _VT[1]},
+    {"id": "v3", "title": "De Bruyne al Napoli: l'annuncio ufficiale", "channel": "Gazzetta dello Sport", "verified": True, "player": "Kevin De Bruyne", "team": "Napoli", "views": "520K", "days_ago": 5, "thumb": _VT[2]},
+    {"id": "v4", "title": "Moise Kean e la clausola: scenari di mercato", "channel": "DAZN", "verified": True, "player": "Moise Kean", "team": "Fiorentina", "views": "88K", "days_ago": 3, "thumb": _VT[3]},
+    {"id": "v5", "title": "Nico Paz, il gioiello del Como: futuro tra Real e big", "channel": "Gianluca Di Marzio", "verified": True, "player": "Nico Paz", "team": "Como", "views": "97K", "days_ago": 2, "thumb": _VT[0]},
+    {"id": "v6", "title": "Comuzzo, derby di mercato: Napoli in pressing", "channel": "SportItalia", "verified": True, "player": "Pietro Comuzzo", "team": "Fiorentina", "views": "45K", "days_ago": 4, "thumb": _VT[1]},
+    {"id": "v7", "title": "Jonathan David alla Juve: l'annuncio e i numeri", "channel": "Sky Sport", "verified": True, "player": "Jonathan David", "team": "Juventus", "views": "260K", "days_ago": 2, "thumb": _VT[2]},
+    {"id": "v8", "title": "Højlund-Napoli: le cifre del prestito con obbligo", "channel": "Fabrizio Romano", "verified": True, "player": "Rasmus Højlund", "team": "Napoli", "views": "180K", "days_ago": 1, "thumb": _VT[3]},
 ]
+
