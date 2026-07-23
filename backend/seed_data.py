@@ -364,6 +364,43 @@ UPDATES = [
     _u("Rafael Leão", 4, "rumor", "Tuttosport", False, "Voci su un possibile addio di Leão: il Milan al momento non tratta."),
 ]
 
+# ---------------- CURATED NEWS (X/Twitter-style feed, always populated) ----------------
+# hours_ago: how recent. stage: rumor|trattativa|ufficiale. handle for X-style @.
+def _n(title, source, handle, verified, stage, player, team, hours_ago):
+    return {"id": "n-" + _slug(title)[:40] + "-" + str(hours_ago), "title": title, "source": source,
+            "handle": handle, "verified": verified, "stage": stage, "player": player, "team": team,
+            "hours_ago": hours_ago}
+
+CURATED_NEWS = [
+    _n("🚨 EXCL: la Juventus apre alla cessione di Vlahović in questa sessione. Contatti in corso con un club di Premier League, si tratta su cifre e ingaggio. Here we go soon? 🔜", "Fabrizio Romano", "FabrizioRomano", True, "trattativa", "Dušan Vlahović", "Juventus", 3),
+    _n("Inter, pressing su Ademola Lookman: sondaggio con l'Atalanta ma la distanza sulla valutazione resta ampia (oltre 50M). Trattativa aperta.", "Gianluca Di Marzio", "DiMarzio", True, "trattativa", "Ademola Lookman", "Atalanta", 5),
+    _n("UFFICIALE: Kevin De Bruyne è un nuovo giocatore del Napoli. Contratto fino al 2027. ✍️ Here we go confermato.", "Sky Sport", "SkySport", True, "ufficiale", "Kevin De Bruyne", "Napoli", 26),
+    _n("Il Real Madrid monitora la recompra su Nico Paz. Il Como lavora al rinnovo con ingaggio raddoppiato per blindare il gioiello argentino.", "Sky Sport", "SkySport", True, "rumor", "Nico Paz", "Como", 8),
+    _n("Napoli torna con forza su Pietro Comuzzo: offerta migliorata alla Fiorentina, che per ora resiste. Affare da seguire nelle prossime ore.", "Fabrizio Romano", "FabrizioRomano", True, "trattativa", "Pietro Comuzzo", "Fiorentina", 10),
+    _n("Un club saudita valuta di pagare la clausola di Moise Kean. La Fiorentina prova a rinnovare e alzare la clausola rescissoria.", "Nicolò Schira", "NicoSchira", False, "rumor", "Moise Kean", "Fiorentina", 12),
+    _n("Milan, si valuta il futuro di Rafael Leão: al momento nessuna trattativa, i rossoneri fanno muro. Solo voci dalla Premier.", "Tuttosport", "tuttosport", False, "rumor", "Rafael Leão", "Milan", 14),
+    _n("UFFICIALE ✅ Jonathan David è un nuovo attaccante della Juventus. Firma fino al 2030, operazione a parametro zero.", "Fabrizio Romano", "FabrizioRomano", True, "ufficiale", "Jonathan David", "Juventus", 40),
+    _n("Roma, Evan Ferguson può restare: i giallorossi trattano il riscatto con il Brighton. Gasperini lo vuole trattenere.", "Gianluca Di Marzio", "DiMarzio", True, "trattativa", "Evan Ferguson", "Roma", 7),
+    _n("Rasmus Højlund-Napoli: è fatta per il prestito con obbligo. Il danese ha già detto sì, visite mediche in programma. 🔴 Here we go!", "Fabrizio Romano", "FabrizioRomano", True, "ufficiale", "Rasmus Højlund", "Napoli", 30),
+    _n("Lazio, Guendouzi nel mirino di un club inglese. Sarri lo considera incedibile: nessuna offerta ufficiale finora.", "Gazzetta dello Sport", "Gazzetta_it", True, "rumor", "Matteo Guendouzi", "Lazio", 16),
+    _n("Bologna, il Napoli insiste per Dan Ndoye: contatti avviati, si discute la formula. Richiesta rossoblù intorno ai 35M.", "Matteo Moretto", "MatteMoretto", False, "trattativa", "Dan Ndoye", "Bologna", 9),
+    _n("Atalanta, l'Inter riflette anche su Ederson a centrocampo: è l'alternativa a Lookman. Prime valutazioni interne.", "Sky Sport", "SkySport", True, "rumor", "Éderson", "Atalanta", 18),
+    _n("UFFICIALE: Christopher Nkunku al Milan. Colpo di prestigio per Allegri, contratto fino al 2030. 🔴⚫", "Sky Sport", "SkySport", True, "ufficiale", "Christopher Nkunku", "Milan", 48),
+    _n("Fiorentina, chiusura vicina per il rinnovo di Comuzzo con clausola più alta. La dirigenza vuole blindarlo prima delle offerte.", "Gianluca Di Marzio", "DiMarzio", True, "trattativa", "Pietro Comuzzo", "Fiorentina", 22),
+    _n("Juventus, per il post-Vlahović spunta un nome nuovo in attacco. La dirigenza monitora diversi profili in Serie A.", "Tuttosport", "tuttosport", False, "rumor", "Dušan Vlahović", "Juventus", 20),
+    _n("Torino, Ricci verso la permanenza: il Milan ci ha pensato ma il prezzo è alto. Vagnati fa muro.", "Gianluca Di Marzio", "DiMarzio", True, "rumor", "Samuele Ricci", "Torino", 28),
+    _n("Roma, offerta per Manu Koné dalla Premier: i giallorossi rispondono picche. Vale almeno 40M per Massara.", "Fabrizio Romano", "FabrizioRomano", True, "trattativa", "Manu Koné", "Roma", 11),
+    _n("Como scatenato: dopo Nico Paz, Fabregas chiede altri rinforzi di qualità. Budget importante per la sessione.", "Calciomercato.it", "cmdotcom", False, "rumor", "Nico Paz", "Como", 33),
+    _n("Inter, Frattesi richiesto in Premier: l'Inter valuta solo offerte sopra i 40M. Nessuna trattativa concreta al momento.", "Nicolò Schira", "NicoSchira", False, "rumor", "Davide Frattesi", "Inter", 15),
+    _n("Napoli, Conte blinda Anguissa: rinnovo in dirittura d'arrivo. Fumata bianca attesa a breve.", "Sky Sport", "SkySport", True, "trattativa", "André-Frank Zambo Anguissa", "Napoli", 6),
+    _n("Lecce, Krstović nel mirino di due club di Serie A: la valutazione è salita a 25M dopo l'ottima stagione.", "Gazzetta dello Sport", "Gazzetta_it", True, "rumor", "Nikola Krstović", "Lecce", 19),
+    _n("Milan, Theo Hernández in scadenza 2026: rinnovo in stallo, si valutano offerte. Situazione da monitorare.", "Fabrizio Romano", "FabrizioRomano", True, "trattativa", "Theo Hernández", "Milan", 13),
+    _n("UFFICIALE ✅ Denzel Dumfries rinnova con l'Inter fino al 2028. Nessun addio: l'olandese resta a Milano.", "Sky Sport", "SkySport", True, "ufficiale", "Denzel Dumfries", "Inter", 52),
+    _n("Genoa, De Winter piace a mezza Serie A: il club rossoblù non scende sotto i 20M. Trattative in stand-by.", "Matteo Moretto", "MatteMoretto", False, "rumor", "Koni De Winter", "Genoa", 24),
+    _n("Fiorentina, Kean-Arabia: la Fiorentina spera che il giocatore rifiuti e resti. Decisione attesa nei prossimi giorni.", "Gianluca Di Marzio", "DiMarzio", True, "trattativa", "Moise Kean", "Fiorentina", 4),
+]
+
+
 # Tier-1 sources auto-verified in scanner
 TIER1_SOURCES = ["Fabrizio Romano", "Sky Sport", "Sky Sport Italia", "Gianluca Di Marzio", "Gazzetta dello Sport", "Gazzetta"]
 

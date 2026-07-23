@@ -1,11 +1,9 @@
-import { LayoutGrid, Users, Briefcase, Sparkles, BadgeCheck } from "lucide-react";
+import { LayoutGrid, Users, Briefcase } from "lucide-react";
 
 const items = [
   { key: "dashboard", label: "Home", icon: LayoutGrid },
   { key: "profili", label: "Database", icon: Users },
   { key: "workspace", label: "Workspace", icon: Briefcase },
-  { key: "streak", label: "Streak", icon: Sparkles },
-  { key: "verified", label: "Verified", icon: BadgeCheck },
 ];
 
 export const BottomNav = ({ tab, onNav }) => (

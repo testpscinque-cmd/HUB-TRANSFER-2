@@ -68,4 +68,5 @@ export const generateArticle = async (profileId, lang = "it") => {
 };
 export const matchmaker = (player_query, team_query) => post("/matchmaker", { player_query, team_query });
 export const getLiveNews = (q = "Serie A", limit = 30) => get(`/news/live?q=${encodeURIComponent(q)}&limit=${limit}`);
+export const getOfficialNews = () => get(`/news/official`);
 export const getVideos = (q = "") => get(`/news/videos${q ? `?q=${encodeURIComponent(q)}` : ""}`);

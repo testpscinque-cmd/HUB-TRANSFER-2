@@ -37,6 +37,9 @@ export const Profili = ({ onOpenProfile, saveWatch }) => {
   const [kind, setKind] = useState("player");
   const [q, setQ] = useState("");
   const [team, setTeam] = useState("");
+  const [position, setPosition] = useState("");
+  const [nationality, setNationality] = useState("");
+  const [valueTier, setValueTier] = useState("");
   const [teams, setTeams] = useState([]);
   const [players, setPlayers] = useState([]);
   const [coaches, setCoaches] = useState([]);
@@ -54,9 +57,12 @@ export const Profili = ({ onOpenProfile, saveWatch }) => {
     return base.filter((e) => {
       if (q && !e.name.toLowerCase().includes(q.toLowerCase())) return false;
       if (team && e.team !== team) return false;
+      if (position && (e.position || e.role) !== position) return false;
+      if (nationality && (e.nationality || "") !== nationality) return false;
+      if (valueTier && (e.value_tier || "") !== valueTier) return false;
       return true;
     });
-  }, [kind, players, coaches, q, team]);
+  }, [kind, players, coaches, q, team, position, nationality, valueTier]);
 
   return (
     <div className="fade-up">
@@ -81,17 +87,34 @@ export const Profili = ({ onOpenProfile, saveWatch }) => {
         ))}
       </div>
 
-      <div className="mb-4 flex gap-2">
-        <div className="relative flex-1">
+      <div className="mb-4 flex flex-wrap gap-2">
+        <div className="relative min-w-[160px] flex-1">
           <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/35" />
           <input data-testid="profili-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Cerca nome..."
-            className="w-full rounded-xl border border-white/10 bg-white/5 py-2.5 pl-9 pr-3 text-sm text-white placeholder:text-white/35 focus:border-white/40 focus:outline-none" />
+            className="w-full rounded-xl border border-white/10 bg-white/5 py-2.5 pl-9 pr-3 text-sm text-white placeholder:text-white/35 focus:border-[#2BE07A]/50 focus:outline-none" />
         </div>
         <select data-testid="profili-team-filter" value={team} onChange={(e) => setTeam(e.target.value)}
-          className="rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white focus:border-white/40 focus:outline-none">
-          <option value="">Tutte</option>
+          className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white focus:border-[#2BE07A]/50 focus:outline-none sm:flex-none">
+          <option value="">Squadra</option>
           {teams.map((t) => <option key={t.id} value={t.name} className="bg-[#12141C]">{t.name}</option>)}
         </select>
+        {kind === "player" && <select data-testid="profili-position-filter" value={position} onChange={(e) => setPosition(e.target.value)}
+          className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white focus:border-[#2BE07A]/50 focus:outline-none sm:flex-none">
+          <option value="">Ruolo</option>
+          {["POR", "DIF", "CEN", "ATT"].map((pos) => <option key={pos} value={pos} className="bg-[#12141C]">{pos}</option>)}
+        </select>}
+        <select data-testid="profili-nationality-filter" value={nationality} onChange={(e) => setNationality(e.target.value)}
+          className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white focus:border-[#2BE07A]/50 focus:outline-none sm:flex-none">
+          <option value="">Nazione</option>
+          {Array.from(new Set((kind === "player" ? players : coaches).map((p) => p.nationality).filter(Boolean))).sort().map((n) => (
+            <option key={n} value={n} className="bg-[#12141C]">{n}</option>
+          ))}
+        </select>
+        {kind === "player" && <select data-testid="profili-tier-filter" value={valueTier} onChange={(e) => setValueTier(e.target.value)}
+          className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white focus:border-[#2BE07A]/50 focus:outline-none sm:flex-none">
+          <option value="">Fascia</option>
+          {["Top", "Media", "Accessibile"].map((v) => <option key={v} value={v} className="bg-[#12141C]">{v}</option>)}
+        </select>}
       </div>
 
       {list.length === 0 ? (

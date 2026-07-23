@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Briefcase, PenTool, ChevronDown, TrendingDown, TrendingUp, X, Trash2, Search, Plus, ExternalLink } from "lucide-react";
+import { Briefcase, PenTool, ChevronDown, TrendingDown, TrendingUp, X, Trash2, Search, Plus, ExternalLink, Pencil, Check } from "lucide-react";
 import { toast } from "sonner";
 import * as api from "@/lib/api";
 import { useI18n } from "@/lib/i18n";
@@ -55,6 +55,11 @@ const DirettoreSportivo = () => {
     toast.success(`Acquistato ${p.name} · -${parseM(p.market_value)}M budget`);
   };
 
+  const [editId, setEditId] = useState(null);
+  const [editVals, setEditVals] = useState({});
+  const startEdit = (p) => { setEditId(p.id); setEditVals({ name: p.name, salary: p.salary, market_value: p.market_value }); };
+  const saveEdit = (id) => { setRoster((r) => r.map((x) => (x.id === id ? { ...x, ...editVals } : x))); setEditId(null); toast.success("Giocatore aggiornato"); };
+
   const deficit = budget < 0 || wages < 0;
   const buyResults = buyQ.length >= 2 ? allPlayers.filter((p) => p.name.toLowerCase().includes(buyQ.toLowerCase()) && p.team !== team?.name).slice(0, 5) : [];
 
@@ -106,6 +111,22 @@ const DirettoreSportivo = () => {
         ))}
       </div>
 
+      {/* Campo (panoramica formazione) */}
+      <div className="relative mb-3 h-32 overflow-hidden rounded-2xl border border-white/10" style={{ background: "linear-gradient(160deg,#0d7a3a,#0a5227)" }}>
+        <div className="absolute inset-0 opacity-25" style={{ backgroundImage: "repeating-linear-gradient(0deg, rgba(255,255,255,0.3) 0 2px, transparent 2px 34px)" }} />
+        <div className="absolute left-1/2 top-1/2 h-16 w-16 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white/25" />
+        <div className="absolute left-0 right-0 top-1/2 h-0.5 -translate-y-1/2 bg-white/25" />
+        <div className="relative flex h-full items-center justify-around px-3 text-center text-white">
+          {ROLES.map(([code]) => (
+            <div key={code} className="flex flex-col items-center">
+              <span className="font-heading text-2xl font-black" style={{ textShadow: "0 2px 6px rgba(0,0,0,0.5)" }}>{roster.filter((p) => p.position === code).length}</span>
+              <span className="text-[9px] font-black uppercase tracking-widest text-white/85">{code}</span>
+            </div>
+          ))}
+        </div>
+        <span className="absolute right-3 top-2 rounded bg-black/30 px-2 py-0.5 text-[10px] font-black uppercase text-white/90">{roster.length} in rosa</span>
+      </div>
+
       {/* Rosa a cassetti */}
       {ROLES.map(([code, label]) => {
         const group = roster.filter((p) => p.position === code);
@@ -120,10 +141,27 @@ const DirettoreSportivo = () => {
               <div className="space-y-1.5 px-3 pb-3">
                 {group.length === 0 && <p className="px-1 py-2 text-xs text-white/30">Nessun giocatore.</p>}
                 {group.map((p) => (
-                  <div key={p.id} className="flex items-center gap-2 rounded-lg bg-white/5 p-2">
-                    <PlayerCutout name={p.name} size={30} />
-                    <div className="min-w-0 flex-1"><div className="truncate text-sm font-bold text-white">{p.name} {p.isNew && <span className="text-[9px] font-black text-green">NUOVO</span>}</div><div className="text-[11px] text-white/40">{p.market_value} · {p.salary}</div></div>
-                    <button data-testid={`ds-sell-${p.id}`} onClick={() => sell(p)} className="rounded-lg bg-white/10 px-2.5 py-1 text-xs font-bold text-white/80 active:scale-95">Cedi</button>
+                  <div key={p.id} className="rounded-lg bg-white/5 p-2">
+                    {editId === p.id ? (
+                      <div className="flex flex-col gap-1.5">
+                        <input data-testid={`ds-edit-name-${p.id}`} value={editVals.name} onChange={(e) => setEditVals((v) => ({ ...v, name: e.target.value }))}
+                          className="rounded-md border border-white/10 bg-white/10 px-2 py-1 text-sm font-bold text-white focus:border-[#2BE07A]/50 focus:outline-none" />
+                        <div className="flex gap-1.5">
+                          <input data-testid={`ds-edit-salary-${p.id}`} value={editVals.salary} onChange={(e) => setEditVals((v) => ({ ...v, salary: e.target.value }))} placeholder="Ingaggio"
+                            className="min-w-0 flex-1 rounded-md border border-white/10 bg-white/10 px-2 py-1 text-xs text-white placeholder:text-white/35 focus:outline-none" />
+                          <input data-testid={`ds-edit-value-${p.id}`} value={editVals.market_value} onChange={(e) => setEditVals((v) => ({ ...v, market_value: e.target.value }))} placeholder="Valore"
+                            className="min-w-0 flex-1 rounded-md border border-white/10 bg-white/10 px-2 py-1 text-xs text-white placeholder:text-white/35 focus:outline-none" />
+                          <button data-testid={`ds-save-${p.id}`} onClick={() => saveEdit(p.id)} className="rounded-md bg-[#2BE07A] px-2 py-1 text-black active:scale-95"><Check size={14} /></button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <PlayerCutout name={p.name} size={30} />
+                        <div className="min-w-0 flex-1"><div className="truncate text-sm font-bold text-white">{p.name} {p.isNew && <span className="text-[9px] font-black text-green">NUOVO</span>}</div><div className="text-[11px] text-white/40">{p.market_value} · {p.salary}</div></div>
+                        <button data-testid={`ds-edit-${p.id}`} onClick={() => startEdit(p)} title="Modifica" className="text-white/40 hover:text-white active:scale-90"><Pencil size={14} /></button>
+                        <button data-testid={`ds-sell-${p.id}`} onClick={() => sell(p)} className="rounded-lg bg-white/10 px-2.5 py-1 text-xs font-bold text-white/80 active:scale-95">Cedi</button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

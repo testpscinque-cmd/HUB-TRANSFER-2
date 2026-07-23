@@ -37,6 +37,15 @@ Rebrand da "MemoryTransfer" (tema chiaro Fantacalcio, ora archiviato) deciso dal
 - Legare la timeline profilo alle news live per keyword (ora usa UPDATES seed per le saghe principali).
 
 ## Note
+- Update 2026-07-24 (upgrade "best of old+new", budget elevato):
+  - **Backend feed curato**: `CURATED_NEWS` (~25 post stile X: Romano, Sky, Di Marzio, Gazzetta…) in `seed_data.py`; `/news/live` fonde curati + Google News (ricerca SEMPRE popolata); nuovo `/news/official`.
+  - **Dashboard**: hero compatto con foto stadio + stat pills (Giocatori/Trattative/Ufficiali/Fonti); striscia **Ufficialità** (Here we go); **card notizie bianche stile X** (avatar fonte + spunta + orario visibile + chip giocatore); Matchmaker→"Vedi notizie collegate"; modali in **portal** (fix risultato in mezzo alla pagina); auto-refresh.
+  - **Profili/Database**: filtri Ruolo/Nazione/Fascia responsive (fix dipendenze useMemo + flex-wrap mobile).
+  - **ProfileScreen**: riscritto **dark coerente** (FIX bug schermata bianca del rollback) con avatar grigio FIFA, **Termometro trattativa**, banner **Here we go**, timeline evolutiva, Simula DS + Salva→Giornalista.
+  - **bits.jsx**: `PlayerCutout` ora silhouette grigia stile FIFA; nuovo `Thermometer`.
+  - **Workspace DS**: **campo da gioco** (formazione POR/DIF/CEN/ATT) + **campi editabili** (nome/ingaggio/valore, matita→salva).
+  - **Tema** più chiaro/pop; rimosso toggle Light mode; nav ridotta alle 3 sezioni core (Home/Database/Workspace) anche su mobile.
+  - **PENDENTI (non fatti)**: traduzione EN/IT completa (i18n, lavoro grosso); Dossier PDF (era stato tolto da un rollback, non reinserito).
 - Update 2026-07-21 (rebrand + link consegna):
   - **Rebrand "HUB TRANSFER"** (HUB verde) ovunque: SideNav, hero Dashboard mobile, titolo Dashboard desktop (ex "Dashboard").
   - **Collegamenti dal profilo**: badge "Simula DS →" sulla squadra → apre Workspace in modalità DS; pulsante "Salva" → salva in Watchlist (Radar) e apre Workspace Giornalista (via `th_role` in localStorage + `go`).

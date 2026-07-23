@@ -18,7 +18,7 @@ from email.utils import parsedate_to_datetime
 
 import seed_data
 from seed_data import (
-    TEAMS, PLAYERS, COACHES, UPDATES, SEED_VERSION, TIER1_SOURCES, MOCK_VIDEOS,
+    TEAMS, PLAYERS, COACHES, UPDATES, SEED_VERSION, TIER1_SOURCES, MOCK_VIDEOS, CURATED_NEWS,
 )
 
 ROOT_DIR = Path(__file__).parent
@@ -135,8 +135,9 @@ async def matchmaker(req: MatchReq):
     }
 
 
-# ---------------- Live News (Google News RSS) + Video (mock) ----------------
+# ---------------- Live News (curated + Google News RSS) + Video (mock) ----------------
 _news_cache = {}
+STAGE_COLOR = {"ufficiale": "#22C55E", "trattativa": "#EAB308", "rumor": "#94A3B8"}
 
 
 def _status_from_title(title):
@@ -146,6 +147,25 @@ def _status_from_title(title):
     if any(k in t for k in ["accordo", "trattativa", "vicino", "contatti", "offerta", "sì", "affare"]):
         return "trattativa", "#EAB308"
     return "rumor", "#94A3B8"
+
+
+def _curated_feed(query):
+    now = datetime.now(timezone.utc)
+    ql = (query or "").strip().lower()
+    generic = ql in ("", "serie a", "calciomercato", "serie a calciomercato")
+    out = []
+    for n in CURATED_NEWS:
+        hay = f"{n['title']} {n['source']} {n.get('handle','')} {n.get('player','')} {n.get('team','')}".lower()
+        if not generic and ql not in hay:
+            continue
+        row = dict(n)
+        row["published"] = (now - timedelta(hours=row.pop("hours_ago", 0))).isoformat()
+        row["color"] = STAGE_COLOR.get(row.get("stage"), "#94A3B8")
+        row["type"] = "post"
+        row["link"] = f"https://news.google.com/search?q={quote_plus(n.get('player') or query or 'Serie A')}%20calciomercato&hl=it"
+        row["curated"] = True
+        out.append(row)
+    return out
 
 
 def _fetch_google_news(query, limit):
@@ -190,16 +210,33 @@ async def news_live(q: str = "Serie A", limit: int = 30):
     cached = _news_cache.get(key)
     if cached and now - cached[0] < 45:
         return cached[1]
+    curated = _curated_feed(q)
+    live = []
     try:
         loop = asyncio.get_event_loop()
-        items = await loop.run_in_executor(None, _fetch_google_news, q, limit)
-        _news_cache[key] = (now, items)
-        return items
+        live = await loop.run_in_executor(None, _fetch_google_news, q, limit)
     except Exception as e:
         logger.error(f"news_live error: {e}")
-        if cached:
-            return cached[1]
-        return []
+    # Merge: curated first (rich, always present) + live Google News, dedupe by title
+    seen = set()
+    merged = []
+    for it in curated + live:
+        t = it.get("title", "").strip().lower()[:60]
+        if t in seen:
+            continue
+        seen.add(t)
+        merged.append(it)
+    merged.sort(key=lambda x: x.get("published", ""), reverse=True)
+    merged = merged[:limit]
+    _news_cache[key] = (now, merged)
+    return merged
+
+
+@api_router.get("/news/official")
+async def news_official(limit: int = 8):
+    items = [n for n in _curated_feed("") if n.get("stage") == "ufficiale"]
+    items.sort(key=lambda x: x.get("published", ""), reverse=True)
+    return items[:limit]
 
 
 @api_router.get("/news/videos")
