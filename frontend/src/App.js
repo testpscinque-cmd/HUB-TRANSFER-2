@@ -45,7 +45,7 @@ export default function App() {
           <ProfileScreen id={profileId} onBack={closeProfile} onOpenProfile={openProfile} saveWatch={saveWatch} go={go} />
         ) : (
           <>
-            {tab === "dashboard" && <Dashboard onOpenProfile={openProfile} saveWatch={saveWatch} />}
+            {tab === "dashboard" && <Dashboard onOpenProfile={openProfile} saveWatch={saveWatch} onNavigate={go} />}
             {tab === "profili" && <Profili onOpenProfile={openProfile} saveWatch={saveWatch} />}
             {tab === "workspace" && <Workspace watchlist={watchlist} saveWatch={saveWatch} removeWatch={removeWatch} onOpenProfile={openProfile} />}
             {tab === "streak" && <StreakLabView />}

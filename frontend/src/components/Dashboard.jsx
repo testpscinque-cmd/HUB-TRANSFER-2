@@ -111,7 +111,7 @@ const MatchModal = ({ res, onClose, onOpenProfile }) => (
   </div>
 );
 
-export const Dashboard = ({ onOpenProfile, saveWatch }) => {
+export const Dashboard = ({ onOpenProfile, saveWatch, onNavigate }) => {
   const [pName, setPName] = useState("");
   const [pTeam, setPTeam] = useState("");
   const saveScoop = (item) => { saveWatch("Scoop", item); toast.success("Salvato in Watchlist (Scoop)"); };
@@ -196,19 +196,20 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
               HUB TRANSFER
             </h1>
             <p className="mx-auto max-w-3xl text-base leading-8 text-white/75 sm:text-lg">
-              Il mercato diventa un hub premium: insight live, transfer card brandizzate ed esportabili, report rapidi con un’esperienza visuale potente.
+              Il calciomercato in un unico hub: segui i rumor in tempo reale, individua i profili ideali, traccia ogni trattativa, simula campagne acquisti e tanto altro.
             </p>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-3">
             {[
-              { label: "Rumor live" },
-              { label: "Simulazioni pro" },
-              { label: "Transfer Card" },
+              { label: "Rumor live", target: "dashboard" },
+              { label: "Simulazioni pro", target: "workspace" },
+              { label: "Transfer Card", target: "profili" },
             ].map((item) => (
-              <div key={item.label} className="glass rounded-3xl border border-white/10 px-4 py-4">
+              <button key={item.label} type="button" onClick={() => onNavigate(item.target)}
+                className="glass rounded-3xl border border-white/10 px-4 py-6 text-left transition hover:opacity-90 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-white/20">
                 <p className="text-sm font-heading font-black uppercase tracking-[0.28em] text-white">{item.label}</p>
-              </div>
+              </button>
             ))}
           </div>
         </div>
