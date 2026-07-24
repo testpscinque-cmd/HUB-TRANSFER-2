@@ -98,3 +98,40 @@ html, body {
 .fifa-grid { background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.9) 0 1px, transparent 1px 58px); }
 @keyframes slide-down { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 .slide-down { animation: slide-down 0.3s ease-out both; }
+
+/* --- Hero: contemporary hub-transfer look --- */
+.hero-gradient-text {
+  background: linear-gradient(92deg, #2BE07A 0%, #7CF29A 45%, #C6F94F 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 0 24px rgba(43,224,122,0.35));
+}
+@keyframes hero-shine {
+  0%   { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+  40%  { opacity: 0.9; }
+  100% { transform: translateX(160%) skewX(-18deg); opacity: 0; }
+}
+.hero-shine::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(100deg, transparent 35%, rgba(255,255,255,0.14) 50%, transparent 65%);
+  animation: hero-shine 5.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes hero-orb {
+  0%,100% { transform: translate3d(0,0,0) scale(1); opacity: 0.55; }
+  50%     { transform: translate3d(8px,-6px,0) scale(1.06); opacity: 0.75; }
+}
+.hero-orb { animation: hero-orb 7s ease-in-out infinite; }
+.hero-grid-fine {
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: radial-gradient(ellipse at 30% 40%, black 0%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at 30% 40%, black 0%, transparent 75%);
+}
+@keyframes live-dot { 0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,77,77,0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(255,77,77,0); } }
+.live-dot { animation: live-dot 1.6s ease-out infinite; }

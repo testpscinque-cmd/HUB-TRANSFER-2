@@ -226,30 +226,66 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
 
   return (
     <div className="fade-up">
-      {/* Compact hero */}
-      <div className="relative mb-5 overflow-hidden rounded-3xl border border-white/10 p-6 sm:p-8 lg:p-10 xl:p-12 min-h-[340px] sm:min-h-[420px] lg:min-h-[540px]" data-testid="dash-hero"
-        style={{ background: "linear-gradient(115deg, rgba(11,17,29,0.96) 22%, rgba(11,17,29,0.55) 60%, rgba(43,224,122,0.42)), url('https://images.unsplash.com/photo-1502481686408-d428268c24ff?crop=entropy&cs=srgb&fm=jpg&q=75&w=1400') center/cover" }}>
-        <div className="fifa-grid absolute inset-0 opacity-[0.06]" />
-        <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full" style={{ background: "radial-gradient(circle, rgba(43,224,122,0.5), transparent 70%)" }} />
-        <div className="relative mx-auto flex max-w-5xl flex-col items-center justify-center text-center gap-4">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#2BE07A]" style={{ boxShadow: "0 0 26px rgba(43,224,122,0.55)" }}>
-            <Zap size={22} className="text-black" fill="black" />
+      {/* Hero — compact, contemporary, showcase-ready */}
+      <div className="hero-shine relative mb-5 overflow-hidden rounded-3xl border border-white/10" data-testid="dash-hero"
+        style={{
+          background:
+            "radial-gradient(120% 140% at 100% 0%, rgba(43,224,122,0.35) 0%, rgba(43,224,122,0) 55%), radial-gradient(90% 120% at 0% 100%, rgba(46,125,246,0.28) 0%, rgba(46,125,246,0) 55%), linear-gradient(120deg, rgba(6,10,18,0.92) 0%, rgba(9,15,26,0.85) 60%, rgba(9,15,26,0.72) 100%), url('https://images.unsplash.com/photo-1502481686408-d428268c24ff?crop=entropy&cs=srgb&fm=jpg&q=75&w=1400') center/cover"
+        }}>
+        {/* fine grid + orbs (decor) */}
+        <div className="hero-grid-fine absolute inset-0 opacity-70" />
+        <div className="hero-orb pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full" style={{ background: "radial-gradient(circle, rgba(43,224,122,0.55), transparent 70%)" }} />
+        <div className="hero-orb pointer-events-none absolute -bottom-24 -left-20 h-56 w-56 rounded-full" style={{ background: "radial-gradient(circle, rgba(46,125,246,0.35), transparent 70%)", animationDelay: "1.2s" }} />
+
+        <div className="relative px-5 py-6 sm:px-8 sm:py-8 lg:px-10 lg:py-10">
+          {/* top badges row */}
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-black/40 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.25em] text-white/90 backdrop-blur">
+              <span className="live-dot h-1.5 w-1.5 rounded-full bg-red-500" /> LIVE
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.28em] text-white/85 backdrop-blur">
+              <Zap size={11} className="text-[#2BE07A]" fill="#2BE07A" /> HUB TRANSFER
+            </span>
+            <span className="ml-auto hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-white/70 backdrop-blur md:inline-flex">
+              Season 25/26 · Serie A
+            </span>
           </div>
-          <div className="mx-auto mb-4 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-black uppercase tracking-[0.35em] text-white/90">
-            HUB TRANSFER
-          </div>
-          <h1 className="mx-auto max-w-4xl font-heading text-2xl font-black uppercase leading-[1.05] text-white sm:text-3xl lg:text-4xl xl:text-5xl">
-            Il calciomercato in un unico hub.
+
+          {/* headline */}
+          <h1 className="font-heading font-black uppercase leading-[0.92] tracking-[-0.02em] text-white text-[clamp(2rem,6.2vw,4.5rem)]">
+            <span className="block">Tutto il calciomercato</span>
+            <span className="block">
+              in un{" "}
+              <span className="hero-gradient-text relative inline-block">
+                hub
+                <span className="absolute -bottom-1 left-0 h-[6px] w-full rounded-full opacity-80"
+                  style={{ background: "linear-gradient(90deg, #2BE07A, #C6F94F)" }} />
+              </span>
+              .
+            </span>
           </h1>
-          <p className="mx-auto mt-3 max-w-3xl text-sm text-white/80 sm:text-base lg:text-lg">
-            Segui i rumor in tempo reale, traccia le trattative, gestisci il workspace da professionista e tanto altro ancora.
+
+          <p className="mt-4 max-w-2xl text-[13px] leading-relaxed text-white/70 sm:text-sm lg:text-base">
+            Rumor in tempo reale, trattative tracciate, workspace da professionista.
+            <span className="text-white/90"> Un unico command center per il mercato.</span>
           </p>
-        </div>
-        <div className="relative mt-8 grid mx-auto w-full max-w-5xl grid-cols-2 gap-3 sm:grid-cols-4">
-          <Stat icon={Users} label="Giocatori" value={playerCount} color="#38BDF8" />
-          <Stat icon={TrendingUp} label="Trattative" value={stats.trattative} color="#EAB308" />
-          <Stat icon={BadgeCheck} label="Ufficiali" value={official.length} color="#2BE07A" />
-          <Stat icon={Radio} label="Fonti" value={stats.fonti} color="#E9EEF7" />
+
+          {/* inline stat chips (compact) */}
+          <div className="mt-5 flex flex-wrap gap-2">
+            {[
+              { icon: Users, label: "Giocatori", value: playerCount, color: "#7DD3FC" },
+              { icon: TrendingUp, label: "Trattative", value: stats.trattative, color: "#F5C518" },
+              { icon: BadgeCheck, label: "Ufficiali", value: official.length, color: "#2BE07A" },
+              { icon: Radio, label: "Fonti", value: stats.fonti, color: "#E9EEF7" },
+            ].map(({ icon: Icon, label, value, color }) => (
+              <div key={label} data-testid={`stat-${label}`}
+                className="group flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 backdrop-blur transition-colors hover:border-white/20 hover:bg-white/10">
+                <Icon size={13} style={{ color }} />
+                <span className="font-heading text-[13px] font-black text-white leading-none">{value ?? "—"}</span>
+                <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-white/50 leading-none">{label}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
