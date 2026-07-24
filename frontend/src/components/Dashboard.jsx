@@ -227,24 +227,25 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
   return (
     <div className="fade-up">
       {/* Compact hero */}
-      <div className="relative mb-5 overflow-hidden rounded-3xl border border-white/10 p-6 sm:p-8" data-testid="dash-hero"
-        style={{ minHeight: "300px", background: "linear-gradient(115deg, rgba(11,17,29,0.96) 22%, rgba(11,17,29,0.55) 60%, rgba(43,224,122,0.42)), url('https://images.unsplash.com/photo-1502481686408-d428268c24ff?crop=entropy&cs=srgb&fm=jpg&q=75&w=1400') center/cover" }}>
+      <div className="relative mb-5 overflow-hidden rounded-3xl border border-white/10 p-6 sm:p-8 lg:p-10 xl:p-12 min-h-[340px] sm:min-h-[420px] lg:min-h-[540px]" data-testid="dash-hero"
+        style={{ background: "linear-gradient(115deg, rgba(11,17,29,0.96) 22%, rgba(11,17,29,0.55) 60%, rgba(43,224,122,0.42)), url('https://images.unsplash.com/photo-1502481686408-d428268c24ff?crop=entropy&cs=srgb&fm=jpg&q=75&w=1400') center/cover" }}>
         <div className="fifa-grid absolute inset-0 opacity-[0.06]" />
         <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full" style={{ background: "radial-gradient(circle, rgba(43,224,122,0.5), transparent 70%)" }} />
-        <div className="relative max-w-2xl">
-          <div className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2BE07A]" style={{ boxShadow: "0 0 22px rgba(43,224,122,0.6)" }}><Zap size={18} className="text-black" fill="black" /></span>
-            <span className="font-heading text-lg font-black uppercase tracking-tight text-white"><span style={{ color: "#2BE07A" }}>Hub</span> Transfer</span>
-            <span className="ml-2 flex items-center gap-1.5 rounded-full bg-black/40 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-[#2BE07A]"><span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[#2BE07A]" /> Live · Serie A</span>
+        <div className="relative mx-auto flex max-w-5xl flex-col items-center justify-center text-center gap-4">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#2BE07A]" style={{ boxShadow: "0 0 26px rgba(43,224,122,0.55)" }}>
+            <Zap size={22} className="text-black" fill="black" />
           </div>
-          <h1 className="mt-4 font-heading text-4xl font-black uppercase leading-[0.92] text-white sm:text-5xl lg:text-6xl">
-            Il calciomercato<br />di <span style={{ color: "#2BE07A", textShadow: "0 0 30px rgba(43,224,122,0.5)" }}>Serie A</span>, in un colpo d'occhio.
+          <div className="mx-auto mb-4 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-black uppercase tracking-[0.35em] text-white/90">
+            HUB TRANSFER
+          </div>
+          <h1 className="mx-auto max-w-4xl font-heading text-2xl font-black uppercase leading-[1.05] text-white sm:text-3xl lg:text-4xl xl:text-5xl">
+            Il calciomercato in un unico hub.
           </h1>
-          <p className="mt-3 max-w-xl text-sm text-white/75 sm:text-base">
-            YouTube, X, Google e Transfermarkt in un unico terminale: scoop verificati, indice di fattibilità e simulazioni da Direttore Sportivo. Con la <b className="text-white">FIFA feel</b>.
+          <p className="mx-auto mt-3 max-w-3xl text-sm text-white/80 sm:text-base lg:text-lg">
+            Segui i rumor in tempo reale, traccia le trattative, gestisci il workspace da professionista e tanto altro ancora.
           </p>
         </div>
-        <div className="relative mt-6 grid max-w-3xl grid-cols-2 gap-2 sm:grid-cols-4">
+        <div className="relative mt-8 grid mx-auto w-full max-w-5xl grid-cols-2 gap-3 sm:grid-cols-4">
           <Stat icon={Users} label="Giocatori" value={playerCount} color="#38BDF8" />
           <Stat icon={TrendingUp} label="Trattative" value={stats.trattative} color="#EAB308" />
           <Stat icon={BadgeCheck} label="Ufficiali" value={official.length} color="#2BE07A" />
@@ -270,9 +271,7 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
         </div>
       )}
 
-      {/* Matchmaker */}
       <div className="glass mb-4 rounded-2xl p-3">
-        <p className="mb-2 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white/45"><Zap size={12} /> Matchmaker · Fattibilità</p>
         <div className="grid grid-cols-2 gap-2">
           <input list="player-list" data-testid="mm-player" value={pName} onChange={(e) => setPName(e.target.value)} placeholder="Giocatore / Allenatore"
             className="rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/35 focus:border-[#2BE07A]/50 focus:outline-none" />
@@ -316,7 +315,7 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
       {loading ? (
         <div className="flex justify-center py-16"><span className="h-8 w-8 rounded-full border-2 border-white/20 border-t-white spin" /></div>
       ) : (
-        <div className="space-y-3">
+        <div className="columns-1 gap-3 sm:columns-2 [&>*]:mb-3 [&>*]:break-inside-avoid">
           {feed.length === 0 && <p className="py-12 text-center text-sm text-white/40">Nessuna notizia trovata.</p>}
           {feed.map((item) => item.type === "video"
             ? <VideoCard key={item.id} v={item} onOpen={setVideo} onOpenProfile={onOpenProfile} onSave={saveScoop} />

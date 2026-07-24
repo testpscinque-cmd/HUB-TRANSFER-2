@@ -47,7 +47,7 @@ export const ProfileScreen = ({ id, onBack, saveWatch, go }) => {
       </div>
 
       <div className="glass relative overflow-hidden rounded-3xl p-5">
-        <div className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full" style={{ background: `radial-gradient(circle, ${p.team_info?.color || "#2BE07A"}44, transparent 70%)` }} />
+        <div className="pointer-events-none absolute -right-4 sm:-right-8 -top-8 h-40 w-40 rounded-full" style={{ background: `radial-gradient(circle, ${p.team_info?.color || "#2BE07A"}44, transparent 70%)` }} />
         <div className="relative flex items-center gap-4">
           <PlayerCutout name={p.name} size={92} color={p.team_info?.color} />
           <div className="min-w-0 flex-1">

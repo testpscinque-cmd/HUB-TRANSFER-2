@@ -132,7 +132,15 @@ webpackConfig.devServer = (devServerConfig) => {
 if (isDevServer) {
   try {
     const { withVisualEdits } = require("@emergentbase/visual-edits/craco");
-    webpackConfig = withVisualEdits(webpackConfig);
+    // Ensure @babel/traverse is available; visual-edits' babel plugin requires it at runtime.
+    try {
+      require.resolve("@babel/traverse");
+      webpackConfig = withVisualEdits(webpackConfig);
+    } catch (innerErr) {
+      console.warn(
+        "[visual-edits] @babel/traverse not found — visual editing disabled to avoid build errors."
+      );
+    }
   } catch (err) {
     if (err.code === 'MODULE_NOT_FOUND' && err.message.includes('@emergentbase/visual-edits/craco')) {
       console.warn(
