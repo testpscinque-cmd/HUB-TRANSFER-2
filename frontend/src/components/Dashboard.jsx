@@ -343,8 +343,9 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
 
       {pending && (
         <button data-testid="new-news-badge" onClick={applyPending}
-          className="slide-down mb-3 flex w-full items-center justify-center gap-2 rounded-xl border border-[#2BE07A]/40 bg-[#2BE07A]/10 py-2.5 font-heading text-xs font-black uppercase tracking-wider text-[#2BE07A] active:scale-[0.98]">
-          <RefreshCw size={14} /> {pending.count} nuove notizie · aggiorna
+          className="pending-shine slide-down relative mb-3 flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl border border-[#2BE07A]/40 bg-[#2BE07A]/10 py-2.5 font-heading text-xs font-black uppercase tracking-wider text-[#2BE07A] active:scale-[0.98]">
+          <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[#2BE07A]" />
+          <RefreshCw size={14} className="animate-[spin_2.4s_linear_infinite]" /> {pending.count} nuove notizie · aggiorna
         </button>
       )}
 

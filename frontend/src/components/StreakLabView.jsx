@@ -24,14 +24,25 @@ const QUESTIONS = [
   { id: "q8", question_text: "Haaland si trasferisce al Bayern Monaco?", answer: "NO" },
   { id: "q9", question_text: "De Ketelaere si trasferisce al Milan?", answer: "SI" },
   { id: "q10", question_text: "Kvaratskhelia si trasferisce al Chelsea?", answer: "SI" },
+  // — Nuove domande 2026 —
+  { id: "q11", question_text: "Lamine Yamal rinnova con il Barcellona nel 2026?", answer: "SI" },
+  { id: "q12", question_text: "Osimhen si trasferisce al Chelsea nel mercato 2026?", answer: "SI" },
+  { id: "q13", question_text: "Mbappé lascia il Real Madrid nel gennaio 2026?", answer: "NO" },
+  { id: "q14", question_text: "Zirkzee torna in Serie A al Milan nel 2026?", answer: "NO" },
+  { id: "q15", question_text: "Leao si trasferisce al PSG per oltre 100M€ nel 2026?", answer: "NO" },
+  { id: "q16", question_text: "Retegui è il nuovo attaccante dell'Atlético Madrid nel 2026?", answer: "SI" },
+  { id: "q17", question_text: "Guler diventa titolare fisso al Real Madrid nel 2026?", answer: "SI" },
+  { id: "q18", question_text: "Wirtz si trasferisce al Real Madrid nell'estate 2026?", answer: "NO" },
+  { id: "q19", question_text: "Camavinga viene ceduto al Manchester City nel 2026?", answer: "NO" },
+  { id: "q20", question_text: "Nico Williams firma con il Barcellona nel 2026?", answer: "SI" },
 ];
 
 const LEADERBOARD = [
-  { id: "u-you", mock_username: "You", highest_streak: 10 },
-  { id: "u-marketgod", mock_username: "MarketGod", highest_streak: 12 },
-  { id: "u-transferwiz", mock_username: "TransferWiz", highest_streak: 11 },
-  { id: "u-scoutzero", mock_username: "ScoutZero", highest_streak: 10 },
-  { id: "u-velocity", mock_username: "Velocity", highest_streak: 9 },
+  { id: "u-you", mock_username: "You", highest_streak: 18 },
+  { id: "u-marketgod", mock_username: "MarketGod", highest_streak: 20 },
+  { id: "u-transferwiz", mock_username: "TransferWiz", highest_streak: 19 },
+  { id: "u-scoutzero", mock_username: "ScoutZero", highest_streak: 17 },
+  { id: "u-velocity", mock_username: "Velocity", highest_streak: 16 },
 ];
 
 export const StreakLabView = () => {

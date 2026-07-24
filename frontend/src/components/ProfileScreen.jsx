@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
-import { ArrowLeft, Bookmark, CalendarClock, Wallet, TrendingUp, Flag, Radio, Briefcase } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowLeft, Bookmark, CalendarClock, Wallet, TrendingUp, Flag, Radio, Briefcase, Share2, FileText } from "lucide-react";
 import { toast } from "sonner";
 import * as api from "@/lib/api";
 import { PlayerCutout, TeamBadge, TierBadge, VerifiedTick, StatusBar, dateFull, Thermometer } from "@/components/bits";
+import { TransferCardDialog } from "@/components/TransferCardDialog";
+import { ArticleDraftDialog } from "@/components/ArticleDraftDialog";
 
 const STAGE = { rumor: { c: "#8B93A7", l: "Rumor" }, trattativa: { c: "#F5C518", l: "Trattativa" }, ufficiale: { c: "#22C55E", l: "Ufficiale" } };
+// Map local short stages -> canonical stage keys used by dialogs
+const STAGE_MAP = { rumor: "Interesse Iniziale", trattativa: "Trattativa Avanzata", ufficiale: "Fumata Bianca/Ufficiale" };
 const V = (x) => (x === undefined || x === null || x === "" ? "---" : x);
 
 const Data = ({ icon: Icon, label, value, accent }) => (
@@ -17,11 +21,41 @@ const Data = ({ icon: Icon, label, value, accent }) => (
 export const ProfileScreen = ({ id, onBack, saveWatch, go }) => {
   const [p, setP] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [cardOpen, setCardOpen] = useState(false);
+  const [draftOpen, setDraftOpen] = useState(false);
 
   useEffect(() => {
     setLoading(true);
     api.getProfile(id).then(setP).catch(() => toast.error("Profilo non trovato")).finally(() => setLoading(false));
   }, [id]);
+
+  // Normalize profile + rumors for the shared dialogs (TransferCard / ArticleDraft)
+  const dialogProfile = useMemo(() => {
+    if (!p) return null;
+    return {
+      ...p,
+      full_name: p.full_name || p.name,
+      current_club: p.current_club || p.team,
+      estimated_salary: p.estimated_salary || p.salary,
+      market_value: p.market_value,
+      contract_expiry: p.contract_expiry,
+      position: p.position || p.role,
+      role: p.kind === "coach" ? "Coach" : p.role || p.position,
+      nationality: p.nationality,
+    };
+  }, [p]);
+  const dialogRumors = useMemo(() => {
+    if (!p?.timeline) return [];
+    return p.timeline.map((u, i) => ({
+      id: `r-${i}`,
+      stage: STAGE_MAP[u.stage] || "Interesse Iniziale",
+      evolution_description: u.text,
+      source_name: u.source,
+      logged_at: u.date,
+      date_logged: u.date,
+      date: u.date,
+    }));
+  }, [p]);
 
   if (loading) return <div className="flex justify-center py-20"><span className="h-8 w-8 rounded-full border-2 border-white/20 border-t-[#2BE07A] spin" /></div>;
   if (!p) return null;
@@ -41,9 +75,25 @@ export const ProfileScreen = ({ id, onBack, saveWatch, go }) => {
 
   return (
     <div className="fade-up">
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <button data-testid="profile-back" onClick={onBack} className="flex items-center gap-1.5 rounded-xl glass px-3 py-2 text-sm font-bold text-white/80"><ArrowLeft size={16} /> Indietro</button>
-        <button data-testid="profile-bookmark" onClick={bookmark} className="flex items-center gap-1.5 rounded-xl glass px-3 py-2 text-sm font-bold text-[#2BE07A]"><Bookmark size={16} /> Salva</button>
+        <div className="flex items-center gap-2">
+          <button
+            data-testid="profile-transfer-card"
+            onClick={() => { if (!timeline.length) { toast.error("Nessun aggiornamento da esportare"); return; } setCardOpen(true); }}
+            className="flex items-center gap-1.5 rounded-xl border border-[#2BE07A]/40 bg-[#2BE07A]/10 px-3 py-2 text-xs font-black uppercase tracking-wider text-[#2BE07A] transition hover:bg-[#2BE07A]/15 active:scale-95 sm:text-sm"
+          >
+            <Share2 size={14} /> <span className="hidden sm:inline">Transfer Card</span><span className="sm:hidden">Card</span>
+          </button>
+          <button
+            data-testid="profile-export-draft"
+            onClick={() => { if (!timeline.length) { toast.error("Nessun aggiornamento da esportare"); return; } setDraftOpen(true); }}
+            className="flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs font-black uppercase tracking-wider text-white/85 transition hover:bg-white/10 active:scale-95 sm:text-sm"
+          >
+            <FileText size={14} /> <span className="hidden sm:inline">Esporta Bozza</span><span className="sm:hidden">Bozza</span>
+          </button>
+          <button data-testid="profile-bookmark" onClick={bookmark} className="flex items-center gap-1.5 rounded-xl glass px-3 py-2 text-xs font-bold text-[#2BE07A] sm:text-sm"><Bookmark size={14} /> Salva</button>
+        </div>
       </div>
 
       <div className="glass relative overflow-hidden rounded-3xl p-5">
@@ -109,6 +159,9 @@ export const ProfileScreen = ({ id, onBack, saveWatch, go }) => {
           </div>
         )}
       </div>
+
+      <TransferCardDialog open={cardOpen} onClose={() => setCardOpen(false)} profile={dialogProfile} rumors={dialogRumors} />
+      <ArticleDraftDialog open={draftOpen} onClose={() => setDraftOpen(false)} profile={dialogProfile} />
     </div>
   );
 };
