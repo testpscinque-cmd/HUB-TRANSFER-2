@@ -54,7 +54,7 @@ export const SourceDirectory = ({ sources, compact = false }) => {
           <button
             data-testid="apply-verification-btn"
             onClick={() => setModal(true)}
-            className="shrink-0 rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-bold text-slate-700 transition-colors hover:border-[#05A845] hover:text-[#05A845]"
+            className="shrink-0 rounded-lg border border-[#1D9BF0]/40 bg-[#1D9BF0]/5 px-3 py-1.5 text-xs font-bold text-[#1D9BF0] transition-colors hover:border-[#1D9BF0] hover:bg-[#1D9BF0]/10"
           >
             {t.applyVerification}
           </button>

@@ -230,7 +230,7 @@ export const Dashboard = ({ onOpenProfile, saveWatch }) => {
       <div className="hero-shine relative mb-5 overflow-hidden rounded-3xl border border-white/10" data-testid="dash-hero"
         style={{
           background:
-            "radial-gradient(120% 140% at 100% 0%, rgba(43,224,122,0.35) 0%, rgba(43,224,122,0) 55%), radial-gradient(90% 120% at 0% 100%, rgba(46,125,246,0.28) 0%, rgba(46,125,246,0) 55%), linear-gradient(120deg, rgba(6,10,18,0.92) 0%, rgba(9,15,26,0.85) 60%, rgba(9,15,26,0.72) 100%), url('https://images.unsplash.com/photo-1502481686408-d428268c24ff?crop=entropy&cs=srgb&fm=jpg&q=75&w=1400') center/cover"
+            "radial-gradient(120% 140% at 100% 0%, rgba(43,224,122,0.32) 0%, rgba(43,224,122,0) 55%), radial-gradient(90% 120% at 0% 100%, rgba(46,125,246,0.30) 0%, rgba(46,125,246,0) 55%), linear-gradient(120deg, rgba(6,10,18,0.94) 0%, rgba(9,15,26,0.82) 55%, rgba(9,15,26,0.65) 100%), url('https://images.pexels.com/photos/15920138/pexels-photo-15920138.jpeg?auto=compress&cs=tinysrgb&w=1600') center/cover"
         }}>
         {/* fine grid + orbs (decor) */}
         <div className="hero-grid-fine absolute inset-0 opacity-70" />
